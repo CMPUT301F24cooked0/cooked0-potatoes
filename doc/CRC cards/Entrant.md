@@ -11,3 +11,4 @@
 ## Details
 
 - Entrants must be able to add their name, email, optional phone number, and "contact information" on their profile
+- Entrants must be able to add a profile picture
