@@ -2,7 +2,14 @@
 
 ## Responsibilities
 
-- Respresent an administrator and allow them to do everything
+- Respresent an administrator and allow them to do everything, including
+  - Removing events
+  - Resetting entrant profiles
+  - Removing images
+  - Invalidating QR codes
+  - Browsing all events
+  - Browsing all images
+  - Removing facilities
 
 ## Collaborators
 

@@ -3,7 +3,7 @@
 ## Responsibilities
 
 - Store event details
-- Store images?
+- Store event poster image
 
 ## Collaborators
 
@@ -13,4 +13,4 @@
 
 ## Details
 
-- Events must be able to store event details and a picture for an event poster
+-

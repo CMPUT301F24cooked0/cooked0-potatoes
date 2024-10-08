@@ -3,6 +3,11 @@
 ## Responsibilities
 
 - Respresent an entrant and allow them to see event details and join pools
+- Store entrant's name
+- Store entrant's email
+- Store entrant's optional phone number
+- Store entrant's "contact information"
+- Store entrant's optional profile picture
 
 ## Collaborators
 
