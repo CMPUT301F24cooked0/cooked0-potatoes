@@ -7,6 +7,7 @@
 ## Collaborators
 
 - Organizer
+- Event
 
 ## Details
 
