@@ -13,4 +13,4 @@
 
 ## Details
 
--
+- Events must be able to store event details and a picture for an event poster
