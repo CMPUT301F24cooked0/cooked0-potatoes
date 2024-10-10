@@ -2,6 +2,7 @@
 
 ## Responsibilities
 
+- Store information about an administrator account
 - Respresent an administrator and allow them to do everything, including
   - Removing events
   - Resetting entrant profiles
