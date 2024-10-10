@@ -2,6 +2,7 @@
 
 ## Responsibilities
 
+- Store organizer account information
 - Represent an organizer and allow them to:
   - create events
   - organize events
