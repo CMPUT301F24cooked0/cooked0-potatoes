@@ -4,7 +4,6 @@
 
 - Store preliminary role information
 - Initialize basic role functions
-- Roles extend from this class
 
 ## Collaborators
 
