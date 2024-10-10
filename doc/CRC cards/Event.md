@@ -2,7 +2,7 @@
 
 ## Responsibilities
 
-- Store event details
+- Store event description and details 
 - Store event poster image
 
 ## Collaborators
