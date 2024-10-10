@@ -2,6 +2,7 @@
 
 ## Responsibilities
 
+- Store Facility name, address, and details
 - Represent a physical location (room)
 
 ## Collaborators
