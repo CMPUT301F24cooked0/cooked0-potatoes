@@ -6,7 +6,7 @@ Team members are listed in [team.txt](/doc/team.txt)
 
 ## CRC Cards
 
-All CRC cards are stored in [the CRC cards folder](https://github.com/CMPUT301F24cooked0/cooked0-potatoes/wiki/CRC-Cards)
+All CRC cards are stored in [the repository's wiki](https://github.com/CMPUT301F24cooked0/cooked0-potatoes/wiki/CRC-Cards)
 
 ## User Stories
 
