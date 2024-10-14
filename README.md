@@ -11,3 +11,7 @@ All CRC cards are stored in [the repository's wiki](https://github.com/CMPUT301F
 ## User Stories
 
 User stories are stored in [the repository's wiki](https://github.com/CMPUT301F24cooked0/cooked0-potatoes/wiki/User-Stories)
+
+## Project Backlog
+
+Project backlog is stored in [the backlog project](https://github.com/orgs/CMPUT301F24cooked0/projects/1)
