@@ -22,4 +22,4 @@ User interface mockup is stored in [the repository's wiki](https://github.com/CM
 
 ## Storyboard Sequences
 
-Storyboard sequences are stored in [the repository's wiki](https://github.com/CMPUT301F24cooked0/cooked0-potatoes/wiki/Diagram)
+Storyboard sequences are stored in [the repository's wiki](https://github.com/CMPUT301F24cooked0/cooked0-potatoes/wiki/Use-Case-Storyboard)
