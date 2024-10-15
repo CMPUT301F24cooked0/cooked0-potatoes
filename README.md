@@ -18,7 +18,7 @@ Project backlog is stored in [the backlog project](https://github.com/orgs/CMPUT
 
 ## User Interface Mockup
 
-User interface mockup is stored in [the repository's wiki](https://github.com/CMPUT301F24cooked0/cooked0-potatoes/wiki/Screens)
+User interface mockups and their descriptions are stored in [the repository's wiki](https://github.com/CMPUT301F24cooked0/cooked0-potatoes/wiki/UI-Mockup-Descriptions)
 
 ## Storyboard Sequences
 
