@@ -20,6 +20,8 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
+    - name: Move to application (src) directory
+      run: cd src
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
