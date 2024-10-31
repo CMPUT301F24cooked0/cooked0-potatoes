@@ -16,7 +16,7 @@ public class EntrantPoolUnitTest {
     @Test
     public void addEntrantNotInPoolTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email");
+        User entrant = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         assertEquals(entrantPool.getEntrants().size(), 1);
@@ -26,17 +26,16 @@ public class EntrantPoolUnitTest {
     @Test
     public void addEntrantInPoolTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email");
+        User entrant = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
-        User entrant2 = new User("name2", "email2");
-        assertThrows(EntrantAlreadyInPool.class, () -> {entrantPool.addEntrant(entrant2, location);});
+        assertThrows(EntrantAlreadyInPool.class, () -> {entrantPool.addEntrant(entrant, location);});
     }
 
     @Test
     public void removeEntrantNotInPoolTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email");
+        User entrant = new User("name", "email@email.ca");
         entrantPool.removeEntrant(entrant);
         assertEquals(entrantPool.getEntrants().size(), 0);
     }
@@ -44,7 +43,7 @@ public class EntrantPoolUnitTest {
     @Test
     public void removeEntrantInPoolTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email");
+        User entrant = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         assertEquals(entrantPool.getEntrants().size(), 1);
@@ -56,7 +55,7 @@ public class EntrantPoolUnitTest {
     @Test
     public void setEntrantStatusTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email");
+        User entrant = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         entrantPool.setEntrantStatus(entrant, Status.notChosen);
@@ -66,7 +65,7 @@ public class EntrantPoolUnitTest {
     @Test
     public void setEntrantStatusNotInPoolTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email");
+        User entrant = new User("name", "email@email.ca");
         entrantPool.setEntrantStatus(entrant, Status.notChosen);
         assertEquals(entrantPool.getEntrants().size(), 0);
     }
@@ -80,7 +79,7 @@ public class EntrantPoolUnitTest {
     @Test
     public void getEntrantsTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email");
+        User entrant = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         assertEquals(entrantPool.getEntrants().size(), 1);
@@ -96,7 +95,7 @@ public class EntrantPoolUnitTest {
     @Test
     public void getEntrantStatusesTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email");
+        User entrant = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         assertEquals(entrantPool.getEntrantStatuses().size(), 1);
