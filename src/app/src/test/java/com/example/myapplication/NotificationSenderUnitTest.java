@@ -7,6 +7,6 @@ import org.junit.Test;
 public class NotificationSenderUnitTest {
     @Test
     public void sampleTest() {
-        assertEquals(4, 2 + 1);
+        assertEquals(4, 2 + 2);
     }
 }
