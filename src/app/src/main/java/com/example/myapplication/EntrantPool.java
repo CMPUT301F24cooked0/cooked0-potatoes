@@ -54,7 +54,7 @@ public class EntrantPool {
         if (entrantStatus == null) {
             return; // no entrant to remove
         }
-        this.entrants.remove(entrant);
+        this.entrants.remove(entrantStatus);
         // TODO update database
     }
 
