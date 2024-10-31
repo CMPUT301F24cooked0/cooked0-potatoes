@@ -11,10 +11,11 @@ public class User {
     private boolean notification;
 
     public User(String name, String email, int phoneNumber, String profilePicture, boolean isAdmin, boolean isOrganizer, Facility facility){
+        // FIXME user setters here when possible to make use of validation code
         this.name=name;
         this.email=email;
         this.phoneNumber=phoneNumber;
-        this.profilePicture=profilePicture;
+        this.profilePicture=profilePicture; // FIXME profile picture may not be provided by user and must then be auto-generated
         this.isAdmin=isAdmin;
         this.isOrganizer=isOrganizer;
         this.facility=facility;
@@ -22,14 +23,17 @@ public class User {
     }
 
     public void setName(String name){
+        // TODO validate name and throw exception otherwise
         this.name=name;
     }
 
     public void setEmail(String email){
+        // TODO validate email and throw exception otherwise
         this.email=email;
     }
 
     public void setPhoneNumber(int phoneNumber){
+        // TODO validate phone number and throw exception otherwise
         this.phoneNumber=phoneNumber;
     }
 
