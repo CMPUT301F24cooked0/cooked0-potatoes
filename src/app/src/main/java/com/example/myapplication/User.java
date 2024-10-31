@@ -3,15 +3,15 @@ package com.example.myapplication;
 public class User {
     private String name;
     private String email;
-    private int phoneNumber;
+    private Integer phoneNumber;
     private String profilePicture;
     private boolean isAdmin;
     private boolean isOrganizer;
     private Facility facility;
     private boolean notification;
 
-    public User(String name, String email, int phoneNumber, String profilePicture, boolean isAdmin, boolean isOrganizer, Facility facility){
-        // FIXME user setters here when possible to make use of validation code
+    public User(String name, String email, Integer phoneNumber, String profilePicture, boolean isAdmin, boolean isOrganizer, Facility facility){
+        // FIXME use setters here when possible to make use of validation code
         this.name=name;
         this.email=email;
         this.phoneNumber=phoneNumber;
@@ -32,7 +32,7 @@ public class User {
         this.email=email;
     }
 
-    public void setPhoneNumber(int phoneNumber){
+    public void setPhoneNumber(Integer phoneNumber){
         // TODO validate phone number and throw exception otherwise
         this.phoneNumber=phoneNumber;
     }
@@ -53,7 +53,7 @@ public class User {
         return email;
     }
 
-    public int getPhoneNumber(){
+    public Integer getPhoneNumber(){
         return phoneNumber;
     }
 
