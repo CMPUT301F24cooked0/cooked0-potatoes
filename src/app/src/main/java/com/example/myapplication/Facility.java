@@ -1,15 +1,15 @@
 package com.example.myapplication;
 
-import android.location.Location;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
 public class Facility {
     private final String name;
-    private final Location location;
+    private final LatLng location;
     private ArrayList<Event> events;
 
-    public Facility(String name, Location location) {
+    public Facility(String name, LatLng location) {
         this.name = name;
         this.location = location;
         // TODO update database

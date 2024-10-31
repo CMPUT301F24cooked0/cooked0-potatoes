@@ -1,8 +1,8 @@
 package com.example.myapplication;
 
-import android.location.Location;
-
 import androidx.annotation.Nullable;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
@@ -32,7 +32,7 @@ public class EntrantPool {
         return null;
     }
 
-    public void addEntrant(User entrant, Location joinedFrom) throws EntrantAlreadyInPool {
+    public void addEntrant(User entrant, LatLng joinedFrom) throws EntrantAlreadyInPool {
         if (entrant == null) {
             return;
         }

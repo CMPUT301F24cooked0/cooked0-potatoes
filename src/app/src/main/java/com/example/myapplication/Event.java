@@ -1,7 +1,8 @@
 package com.example.myapplication;
 
 import android.graphics.Bitmap;
-import android.location.Location;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -93,7 +94,7 @@ public class Event {
         // TODO update database
     }
 
-    public void addEntrant(User entrant, Location joinedFrom) { // TODO update UML diagram to match
+    public void addEntrant(User entrant, LatLng joinedFrom) { // TODO update UML diagram to match
         this.entrantPool.addEntrant(entrant, joinedFrom); // entrantPool does validation for us
     }
 

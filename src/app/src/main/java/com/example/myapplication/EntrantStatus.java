@@ -1,20 +1,20 @@
 package com.example.myapplication;
 
-import android.location.Location;
+import com.google.android.gms.maps.model.LatLng;
 
 public class EntrantStatus {
     private final User entrant;
-    private final Location joinedFrom;
+    private final LatLng joinedFrom;
     private Status status;
 
-    public EntrantStatus(User entrant, Location joinedFrom) {
+    public EntrantStatus(User entrant, LatLng joinedFrom) {
         this.entrant = entrant;
         this.joinedFrom = joinedFrom;
         this.status = Status.none; // starting status is none (no draw has occurred yet)
         // TODO update database
     }
 
-    public EntrantStatus(User entrant, Location joinedFrom, Status status) {
+    public EntrantStatus(User entrant, LatLng joinedFrom, Status status) {
         this(entrant, joinedFrom);
         this.status = status; // this constructor allows setting a different starting status
     }
@@ -38,7 +38,7 @@ public class EntrantStatus {
         return this.status;
     }
 
-    public Location getJoinedFrom() {
+    public LatLng getJoinedFrom() {
         return this.joinedFrom;
     }
 }
