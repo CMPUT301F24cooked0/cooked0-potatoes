@@ -11,6 +11,7 @@ public class EntrantStatus {
         this.entrant = entrant;
         this.joinedFrom = joinedFrom;
         this.status = Status.none; // starting status is none (no draw has occurred yet)
+        // TODO update database
     }
 
     public EntrantStatus(User entrant, Location joinedFrom, Status status) {
@@ -21,6 +22,7 @@ public class EntrantStatus {
     public void setStatus(Status status) {
         if (status != null) {
             this.status = status;
+            // TODO update database
         }
     }
 

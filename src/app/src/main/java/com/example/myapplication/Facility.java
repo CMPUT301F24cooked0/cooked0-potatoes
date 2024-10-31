@@ -12,6 +12,7 @@ public class Facility {
     public Facility(String name, Location location) {
         this.name = name;
         this.location = location;
+        // TODO update database
     }
 
     public void addEvent(Event event) {
@@ -23,6 +24,7 @@ public class Facility {
             throw new EventAlreadyExistsAtFacility("this event already exists at this facility and cannot be added again");
         }
         this.events.add(event);
+        // TODO update database
     }
 
     public void deleteEvent(Event event) {
@@ -33,10 +35,12 @@ public class Facility {
             return; // event does not exist at this facility, nothing to delete
         }
         this.events.remove(event);
+        // TODO update database
     }
 
     public void deleteAllEvents() {
         this.events.clear();
+        // TODO update database
     }
 
     public ArrayList<Event> getEvents() {

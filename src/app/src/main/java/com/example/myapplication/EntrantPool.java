@@ -11,6 +11,7 @@ public class EntrantPool {
 
     public EntrantPool() {
         this.entrants = new ArrayList<EntrantStatus>();
+        // TODO update database
     }
 
     /**
@@ -42,6 +43,7 @@ public class EntrantPool {
         // joinedFrom can be null though
         EntrantStatus entrantStatus = new EntrantStatus(entrant, joinedFrom);
         this.entrants.add(entrantStatus);
+        // TODO update database
     }
 
     public void removeEntrant(User entrant) {
@@ -53,6 +55,7 @@ public class EntrantPool {
             return; // no entrant to remove
         }
         this.entrants.remove(entrant);
+        // TODO update database
     }
 
     public void setEntrantStatus(User entrant, Status status) {
@@ -64,6 +67,7 @@ public class EntrantPool {
             return; // no entrant to change status of
         }
         entrantStatus.setStatus(status);
+        // TODO update database
     }
 
     public ArrayList<User> getEntrants() {
@@ -83,5 +87,6 @@ public class EntrantPool {
         // TODO implement this method
         // don't forget to update their statuses when drawing!
         return new ArrayList<User>(); // temporary
+        // TODO update database
     }
 }
