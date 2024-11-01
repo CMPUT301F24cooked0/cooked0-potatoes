@@ -7,7 +7,7 @@ public class User {
     private String email;
     private Long phoneNumber;
     private Bitmap profilePicture;
-    private boolean isAdmin;
+    private final boolean isAdmin;
     private Facility facility;
     private boolean receivesOrgAdmNotifications;
 
