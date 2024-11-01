@@ -94,7 +94,7 @@ public class Event {
         // TODO update database
     }
 
-    public void addEntrant(User entrant, LatLng joinedFrom) {
+    public void addEntrant(User entrant, LatLng joinedFrom) throws EntrantAlreadyInPool {
         this.entrantPool.addEntrant(entrant, joinedFrom); // entrantPool does validation for us
     }
 
