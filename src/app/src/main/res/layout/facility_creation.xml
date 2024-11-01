@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appbackground">
+
+
+    <TextView
+        android:id="@+id/createFacilityTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="80dp"
+        android:text="Create A Facility"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/facilityNameHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Facility Name*"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="47dp"
+        tools:layout_editor_absoluteY="340dp" />
+
+    <EditText
+        android:id="@+id/addFacilityName"
+        android:layout_width="325dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="47dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="64dp"
+        android:background="@drawable/edit_text_box"
+        android:backgroundTintMode="multiply"
+        android:drawableTint="#865353"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/facilityAddressHeader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/facilityNameHeader"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <TextView
+        android:id="@+id/facilityAddressHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Facility Address"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="46dp"
+        tools:layout_editor_absoluteY="458dp" />
+
+    <EditText
+        android:id="@+id/addFacilityName2"
+        android:layout_width="325dp"
+        android:layout_height="40dp"
+        android:background="@drawable/edit_text_box"
+        android:backgroundTintMode="multiply"
+        android:drawableTint="#865353"
+        android:inputType="text"
+        tools:layout_editor_absoluteX="47dp"
+        tools:layout_editor_absoluteY="504dp" />
+
+    <Button
+        android:id="@+id/createFacilityButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/submitButtonColor"
+        android:text="Get Started"
+        tools:layout_editor_absoluteX="145dp"
+        tools:layout_editor_absoluteY="594dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

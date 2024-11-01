@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="appbackground">#CAC4D0</color>
+    <color name="submitButtonColor">#FF5069</color>
+    <color name="textboxborder">#A3A1A1</color>
 </resources>
