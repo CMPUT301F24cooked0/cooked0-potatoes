@@ -3,8 +3,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <!-- Background Colours -->
-    <color name="dialogBoxBackground">#ECE6F0</color>
     <color name="appBackground">#CAC4D0</color>
+    <color name="dialogBoxBackground">#ECE6F0</color>
+    <color name="inputFieldBackground">#F1EDF7</color>
+    <!-- Text Colours -->
+    <color name="eventDescriptionColour">#375476</color>
     <!-- Notification Colours -->
     <color name="successNotificationColor">#66C397</color>
     <color name="failureNotificationColor">#E28040</color>
@@ -14,6 +17,7 @@
     <color name="acceptButtonColor">#028707</color>
     <color name="declineButtonColor">#993B25</color>
     <color name="removeButtonColor">#DA313C</color>
-    <!-- Input Field Colours -->
+    <color name="cancelButtonColor">#DFDAEB</color>
+    <!-- Border/Divider Colours -->
     <color name="editTextboxBorder">#A3A1A1</color>
 </resources>
