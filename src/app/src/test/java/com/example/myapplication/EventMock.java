@@ -17,6 +17,10 @@ class EventMock extends Event {
         super(name, date, eventPoster);
     }
 
+    public EventMock(String name, Date date, Bitmap eventPoster, Integer capacity) throws Exception {
+        super(name, date, eventPoster, capacity);
+    }
+
     @Override
     public void setEventPoster(Bitmap eventPoster) throws Exception {
 
