@@ -12,6 +12,7 @@ public class Facility {
     public Facility(String name, LatLng location) {
         this.name = name;
         this.location = location;
+        this.events = new ArrayList<Event>();
         // TODO update database
     }
 

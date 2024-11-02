@@ -13,7 +13,7 @@ public class Event {
     private Integer capacity;
     private Bitmap eventPoster;
     private QRCode qrCode;
-    private EntrantPool entrantPool;
+    private final EntrantPool entrantPool;
 
     public Event(String name, Date date, Bitmap eventPoster) throws Exception {
         this.setName(name);
@@ -94,7 +94,7 @@ public class Event {
         // TODO update database
     }
 
-    public void addEntrant(User entrant, LatLng joinedFrom) { // TODO update UML diagram to match
+    public void addEntrant(User entrant, LatLng joinedFrom) throws EntrantAlreadyInPool {
         this.entrantPool.addEntrant(entrant, joinedFrom); // entrantPool does validation for us
     }
 

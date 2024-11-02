@@ -17,7 +17,7 @@ public class QRCode {
         this.text = text;
     }
 
-    public String getText(String text) {
+    public String getText() {
         return this.text;
     }
 

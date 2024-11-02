@@ -5,9 +5,9 @@ import android.graphics.Bitmap;
 public class User {
     private String name;
     private String email;
-    private Integer phoneNumber;
+    private Long phoneNumber;
     private Bitmap profilePicture;
-    private boolean isAdmin;
+    private final boolean isAdmin;
     private Facility facility;
     private boolean receivesOrgAdmNotifications;
 
@@ -23,7 +23,7 @@ public class User {
         this.setReceivesOrgAdmNotifications(true);
     }
 
-    public User(String name, String email, Integer phoneNumber) throws Exception {
+    public User(String name, String email, Long phoneNumber) throws Exception {
         this(name, email);
         this.setPhoneNumber(phoneNumber);
     }
@@ -33,7 +33,7 @@ public class User {
         this.setProfilePicture(profilePicture);
     }
 
-    public User(String name, String email, Integer phoneNumber, Bitmap profilePicture) throws Exception {
+    public User(String name, String email, Long phoneNumber, Bitmap profilePicture) throws Exception {
         this(name, email, phoneNumber);
         this.setProfilePicture(profilePicture);
     }
@@ -63,7 +63,7 @@ public class User {
         // TODO update database
     }
 
-    public void setPhoneNumber(Integer phoneNumber) throws Exception {
+    public void setPhoneNumber(Long phoneNumber) throws Exception {
         if (phoneNumber != null) {
             if (phoneNumber <= 0) {
                 throw new Exception("phone number cannot be a negative number");
@@ -117,7 +117,7 @@ public class User {
         return this.email;
     }
 
-    public Integer getPhoneNumber(){
+    public Long getPhoneNumber(){
         return this.phoneNumber;
     }
 
