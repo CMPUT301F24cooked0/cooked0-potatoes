@@ -67,10 +67,19 @@
                 android:layout_height="71dp">
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/eventNameHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:text="Event Name*"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:translationX="30dp" />
+
+                <EditText
+                    android:layout_width="305dp"
+                    android:layout_height="34dp"
+                    android:translationX="25dp"
+                    android:translationY="20dp" />
             </FrameLayout>
 
         </LinearLayout>
