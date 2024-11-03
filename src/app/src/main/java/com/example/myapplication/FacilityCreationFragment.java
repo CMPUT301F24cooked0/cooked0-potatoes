@@ -24,7 +24,7 @@ public class FacilityCreationFragment extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.facility_creation);
         facilityNameInput = findViewById(R.id.addFacilityName);
-        facilityAddressInput = findViewById(R.id.addFacilityName2);
+        facilityAddressInput = findViewById(R.id.addFacilityAddress);
         createFacilityButton = findViewById(R.id.createFacilityButton);
         createFacilityButton.setOnClickListener(view -> {
             // get facility name and address from input fields
