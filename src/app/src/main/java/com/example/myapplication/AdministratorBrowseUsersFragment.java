@@ -3,17 +3,24 @@ package com.example.myapplication;
 
 import static java.security.AccessController.getContext;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.EventListener;
@@ -67,5 +74,39 @@ public class AdministratorBrowseUsersFragment extends Fragment {
            }
         });
 
+        userList.setOnClickListener(new AdapterView.onItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView,View view, int position, long id){
+                showDeletePage(position);
+            }
+        });
+    }
+    private void showDeletePage(final int position){
+        AlertDialog.Builder builder=new AlertDialog.Builder(requireActivity());
+        builder.setTitle("Remove User");
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                User user=userDataList.get(position);
+                deleteUser(user,position);
+            }
+        });
+    }
+
+
+    private void deleteUser(final User user, final int position){
+        userRef.document(user.getName()).delete().addOnSuccessListener(new OnSuccessListener<Void>(){ //TODO change to delete based on an ID to avoid deleting duplicates
+            @Override
+            public void onSuccess(Void aVoid){
+                Log.d("Firestore","User Deleted");
+                userList.remove(position);
+                userArrayAdapter.notifyDataSetChanged();
+            }
+        }).addOnFailureListener(new OnFailureListener(){
+            @Override
+            public void onFailure(@NonNull Exception e){
+                Log.w("Firestore","Error Deleting User");
+            }
+        });
     }
 }
