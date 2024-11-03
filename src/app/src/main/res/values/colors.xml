@@ -3,7 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <!-- Background Colours -->
-    <color name="appBackground">#CAC4D0</color>
+    <color name="appBackground">#FEF7FF</color>
     <color name="dialogBoxBackground">#ECE6F0</color>
     <color name="inputFieldBackground">#F1EDF7</color>
     <!-- Text Colours -->
