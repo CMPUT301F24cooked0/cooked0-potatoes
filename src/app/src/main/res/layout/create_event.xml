@@ -19,8 +19,10 @@
         android:textColor="@color/black"
         android:textSize="34sp"
         android:textStyle="bold"
+        android:translationY="-10dp"
         app:layout_constraintBottom_toTopOf="@+id/scrollView2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,8 +30,8 @@
         android:id="@+id/scrollView2"
         style="@android:style/Widget.DeviceDefault.Light.ScrollView"
         android:layout_width="match_parent"
-        android:layout_height="630dp"
-        android:layout_marginTop="14dp"
+        android:layout_height="600dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -204,9 +206,53 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/eventDataFrame"
+                android:id="@+id/startDateFrame"
                 android:layout_width="match_parent"
-                android:layout_height="133dp"/>
+                android:layout_height="133dp">
+
+                <TextView
+                    android:id="@+id/eventStartHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Event Start Date*"
+                    android:translationX="30dp"
+                    android:translationY="30dp" />
+
+                <EditText
+                    android:id="@+id/eventStartInput"
+                    android:layout_width="303dp"
+                    android:layout_height="34dp"
+                    android:background="@drawable/edit_text_box"
+                    android:backgroundTintMode="add"
+                    android:drawableTint="#00865353"
+                    android:hint="DD/MM/YYYY"
+                    android:translationX="30dp"
+                    android:translationY="60dp" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/endDateFrame"
+                android:layout_width="match_parent"
+                android:layout_height="133dp">
+
+                <TextView
+                    android:id="@+id/eventEndHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Event End Date*"
+                    android:translationX="30dp" />
+
+                <EditText
+                    android:id="@+id/eventEndInput"
+                    android:layout_width="303dp"
+                    android:layout_height="34dp"
+                    android:background="@drawable/edit_text_box"
+                    android:backgroundTintMode="add"
+                    android:drawableTint="#00865353"
+                    android:hint="DD/MM/YYYY"
+                    android:translationX="30dp"
+                    android:translationY="30dp" />
+            </FrameLayout>
 
         </LinearLayout>
     </ScrollView>
