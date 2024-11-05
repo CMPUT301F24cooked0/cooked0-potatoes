@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 
-import static java.security.AccessController.getContext;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -26,30 +25,36 @@ import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 public class AdministratorBrowseUsersFragment extends Fragment {
     ListView userList;
     ArrayList<User> userDataList;
     ArrayAdapter<User> userArrayAdapter;
 
-    //private FirebaseFirestore  TODO database
-    //private CollectionReference TODO database reference to users
+    private FirebaseFirestore  db;
+    private CollectionReference userRef;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public void onCreateView(@NonNull LayoutInflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
+        View view=inflater.inflate(R.layout.administrator_browse_users,container,false);
 
-        //TODO initialise database and user reference
-       /*
         db=FirebaseFirestore.getInstance();
         userRef=db.collection("users");
 
-        userListView=view.findViewById(R.id.administrator_browse_users_recyclerview);
+        userList=view.findViewById(R.id.administrator_browse_users_recyclerview);
         userDataList=new ArrayList<>();
         userListInit();
-        */
 
-        userArrayAdapter=new UserArrayAdapter(this,userDataList);
+
+        userArrayAdapter=new UserArrayAdapter(requireContext(),userDataList);
         userList.setAdapter(userArrayAdapter);
 
         userRef.addSnapshotListener(new EventListener<QuerySnapshot>(){
@@ -80,7 +85,9 @@ public class AdministratorBrowseUsersFragment extends Fragment {
                 showDeletePage(position);
             }
         });
+        return view;
     }
+
     private void showDeletePage(final int position){
         AlertDialog.Builder builder=new AlertDialog.Builder(requireActivity());
         builder.setTitle("Remove User");
@@ -91,6 +98,8 @@ public class AdministratorBrowseUsersFragment extends Fragment {
                 deleteUser(user,position);
             }
         });
+        builder.setNegativeButton("Cancel",null);
+        builder.create().show();
     }
 
 
@@ -99,7 +108,7 @@ public class AdministratorBrowseUsersFragment extends Fragment {
             @Override
             public void onSuccess(Void aVoid){
                 Log.d("Firestore","User Deleted");
-                userList.remove(position);
+                userDataList.remove(position);
                 userArrayAdapter.notifyDataSetChanged();
             }
         }).addOnFailureListener(new OnFailureListener(){
