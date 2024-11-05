@@ -7,7 +7,7 @@
     android:background="@color/appBackground">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/createEventTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="84dp"
@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintTop_toBottomOf="@+id/createEventTitle">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -402,7 +402,7 @@
             </FrameLayout>
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/createEventButton"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/submitButtonColor"
