@@ -403,9 +403,13 @@
 
             <Button
                 android:id="@+id/button"
-                android:layout_width="match_parent"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="Button" />
+                android:backgroundTint="@color/submitButtonColor"
+                android:paddingHorizontal="65dp"
+                android:text="Create"
+                android:translationX="100dp"
+                app:cornerRadius="6dp" />
 
         </LinearLayout>
     </ScrollView>
