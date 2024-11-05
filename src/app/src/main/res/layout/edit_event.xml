@@ -7,7 +7,7 @@
     android:background="@color/appBackground">
 
     <TextView
-        android:id="@+id/createEventTitle"
+        android:id="@+id/editEventTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="84dp"
@@ -15,19 +15,19 @@
         android:layout_marginEnd="84dp"
         android:layout_marginBottom="15dp"
         android:fontFamily="sans-serif"
-        android:text="Create An Event"
+        android:text="Edit Event"
         android:textColor="@color/black"
         android:textSize="34sp"
         android:textStyle="bold"
         android:translationY="-10dp"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.379" />
 
     <ScrollView
-        android:id="@+id/scrollView2"
+        android:id="@+id/scrollView3"
         style="@android:style/Widget.DeviceDefault.Light.ScrollView"
         android:layout_width="match_parent"
         android:layout_height="600dp"
@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/createEventTitle">
+        app:layout_constraintTop_toBottomOf="@+id/editEventTitle">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,7 +44,7 @@
             android:orientation="vertical">
 
             <FrameLayout
-                android:id="@+id/addEventPosterFrame"
+                android:id="@+id/editEventPosterFrame"
                 android:layout_width="match_parent"
                 android:layout_height="150dp">
 
@@ -67,12 +67,12 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/eventNameFrame"
+                android:id="@+id/editEventNameFrame"
                 android:layout_width="match_parent"
                 android:layout_height="71dp">
 
                 <TextView
-                    android:id="@+id/eventNameHeader"
+                    android:id="@+id/editEventNameHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Event Name*"
@@ -81,7 +81,7 @@
                     android:translationX="30dp" />
 
                 <EditText
-                    android:id="@+id/eventNameInput"
+                    android:id="@+id/editEventNameInput"
                     android:layout_width="338dp"
                     android:layout_height="34dp"
                     android:background="@drawable/edit_text_box"
@@ -92,12 +92,12 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/eventCapacityFrame"
+                android:id="@+id/editEventCapacityFrame"
                 android:layout_width="match_parent"
                 android:layout_height="72dp">
 
                 <TextView
-                    android:id="@+id/eventCapacityHeader"
+                    android:id="@+id/editEventCapacityHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Event Capacity*"
@@ -106,7 +106,7 @@
                     android:translationX="30dp" />
 
                 <EditText
-                    android:id="@+id/eventCapInput"
+                    android:id="@+id/editEventCapInput"
                     android:layout_width="150dp"
                     android:layout_height="34dp"
                     android:background="@drawable/edit_text_box"
@@ -117,12 +117,12 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/waitingListFrame"
+                android:id="@+id/editWaitingListFrame"
                 android:layout_width="match_parent"
                 android:layout_height="68dp">
 
                 <TextView
-                    android:id="@+id/waitingListCapHeader"
+                    android:id="@+id/editWaitingListCapHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Waiting List Capacity"
@@ -131,7 +131,7 @@
                     android:translationX="30dp" />
 
                 <EditText
-                    android:id="@+id/waitingCapInput"
+                    android:id="@+id/editWaitingCapInput"
                     android:layout_width="150dp"
                     android:layout_height="34dp"
                     android:background="@drawable/edit_text_box"
@@ -142,12 +142,12 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/eventDetailsFrame"
+                android:id="@+id/editEventDetailsFrame"
                 android:layout_width="match_parent"
                 android:layout_height="115dp">
 
                 <TextView
-                    android:id="@+id/eventDetHeader"
+                    android:id="@+id/editEventDetHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Event Details"
@@ -156,7 +156,7 @@
                     android:translationX="30dp" />
 
                 <EditText
-                    android:id="@+id/eventDetInput"
+                    android:id="@+id/editEventDetInput"
                     android:layout_width="340dp"
                     android:layout_height="72dp"
                     android:background="@drawable/edit_text_box"
@@ -177,12 +177,12 @@
                 android:translationX="25dp" />
 
             <FrameLayout
-                android:id="@+id/geoLocationFrame"
+                android:id="@+id/editGeoLocationFrame"
                 android:layout_width="match_parent"
                 android:layout_height="80dp">
 
                 <Switch
-                    android:id="@+id/enableGeoSwitch"
+                    android:id="@+id/editGeoSwitch"
                     android:layout_width="348dp"
                     android:layout_height="39dp"
                     android:text="Geo Location"
@@ -206,12 +206,12 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/startDateFrame"
+                android:id="@+id/editStartDateFrame"
                 android:layout_width="match_parent"
                 android:layout_height="133dp">
 
                 <TextView
-                    android:id="@+id/eventStartHeader"
+                    android:id="@+id/editEventStartHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Event Start Date*"
@@ -220,7 +220,7 @@
                     android:translationY="30dp" />
 
                 <EditText
-                    android:id="@+id/eventStartInput"
+                    android:id="@+id/editEventStartInput"
                     android:layout_width="303dp"
                     android:layout_height="34dp"
                     android:background="@drawable/edit_text_box"
@@ -232,12 +232,12 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/endDateFrame"
+                android:id="@+id/editEndDateFrame"
                 android:layout_width="match_parent"
                 android:layout_height="133dp">
 
                 <TextView
-                    android:id="@+id/eventEndHeader"
+                    android:id="@+id/editEventEndHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Event End Date*"
@@ -245,7 +245,7 @@
                     android:translationX="30dp" />
 
                 <EditText
-                    android:id="@+id/eventEndInput"
+                    android:id="@+id/editEventEndInput"
                     android:layout_width="303dp"
                     android:layout_height="34dp"
                     android:background="@drawable/edit_text_box"
@@ -265,12 +265,12 @@
                 android:translationY="-20dp" />
 
             <FrameLayout
-                android:id="@+id/timeSelectFrame"
+                android:id="@+id/editTimeSelectFrame"
                 android:layout_width="match_parent"
                 android:layout_height="400dp">
 
                 <TextView
-                    android:id="@+id/selectStartTimeHeader"
+                    android:id="@+id/editSelectStartTimeHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Select a Start Time*"
@@ -278,7 +278,7 @@
                     android:translationX="130dp" />
 
                 <TimePicker
-                    android:id="@+id/startTimePicker"
+                    android:id="@+id/editStartTimePicker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:scaleX="0.8"
@@ -294,7 +294,7 @@
                     android:translationY="200dp" />
 
                 <TextView
-                    android:id="@+id/selectEndTimeHeader"
+                    android:id="@+id/editSelectEndTimeHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Select an End Time*"
@@ -303,7 +303,7 @@
                     android:translationY="225dp" />
 
                 <TimePicker
-                    android:id="@+id/endTimePicker"
+                    android:id="@+id/editEndTimePicker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:scaleX="0.8"
@@ -323,12 +323,12 @@
                 android:translationY="5dp" />
 
             <FrameLayout
-                android:id="@+id/weeklyFrame"
+                android:id="@+id/editWeeklyFrame"
                 android:layout_width="match_parent"
                 android:layout_height="100dp">
 
                 <Switch
-                    android:id="@+id/setWeeklySwitch"
+                    android:id="@+id/editWeeklySwitch"
                     android:layout_width="330dp"
                     android:layout_height="39dp"
                     android:text="Weekly"
@@ -350,12 +350,12 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/regStartFrame"
+                android:id="@+id/editRegStartFrame"
                 android:layout_width="match_parent"
                 android:layout_height="100dp">
 
                 <TextView
-                    android:id="@+id/regOpensHeader"
+                    android:id="@+id/editRegOpensHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Registration Opens*"
@@ -364,7 +364,7 @@
                     android:translationY="10dp" />
 
                 <EditText
-                    android:id="@+id/regOpenInput"
+                    android:id="@+id/editRegOpenInput"
                     android:layout_width="303dp"
                     android:layout_height="34dp"
                     android:background="@drawable/edit_text_box"
@@ -377,12 +377,12 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/regEndFrame"
+                android:id="@+id/editRegEndFrame"
                 android:layout_width="match_parent"
                 android:layout_height="100dp">
 
                 <TextView
-                    android:id="@+id/regEndHeader"
+                    android:id="@+id/editRegEndHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Registration Ends*"
@@ -390,7 +390,7 @@
                     android:translationX="30dp" />
 
                 <EditText
-                    android:id="@+id/regEndInput"
+                    android:id="@+id/editRegEndInput"
                     android:layout_width="303dp"
                     android:layout_height="34dp"
                     android:background="@drawable/edit_text_box"
@@ -402,14 +402,17 @@
             </FrameLayout>
 
             <Button
-                android:id="@+id/createEventButton"
+                android:id="@+id/editEventButton"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/submitButtonColor"
                 android:paddingHorizontal="65dp"
-                android:text="Create"
+                android:text="Save"
+                android:textAlignment="center"
+                android:textSize="15sp"
                 android:translationX="100dp"
-                app:cornerRadius="6dp" />
+                app:cornerRadius="6dp"
+                app:iconPadding="0dp" />
 
         </LinearLayout>
     </ScrollView>
