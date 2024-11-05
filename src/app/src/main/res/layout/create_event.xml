@@ -225,7 +225,7 @@
                     android:background="@drawable/edit_text_box"
                     android:backgroundTintMode="add"
                     android:drawableTint="#00865353"
-                    android:hint="DD/MM/YYYY"
+                    android:hint=" DD/MM/YYYY"
                     android:translationX="30dp"
                     android:translationY="60dp" />
             </FrameLayout>
@@ -249,9 +249,85 @@
                     android:background="@drawable/edit_text_box"
                     android:backgroundTintMode="add"
                     android:drawableTint="#00865353"
-                    android:hint="DD/MM/YYYY"
+                    android:hint=" DD/MM/YYYY"
                     android:translationX="30dp"
                     android:translationY="30dp" />
+            </FrameLayout>
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="350dp"
+                android:layout_height="11dp"
+                android:background="@drawable/cookeddivider"
+                android:translationX="25dp"
+                android:translationY="-20dp" />
+
+            <FrameLayout
+                android:id="@+id/timeSelectFrame"
+                android:layout_width="match_parent"
+                android:layout_height="400dp">
+
+                <TextView
+                    android:id="@+id/selectStartTimeHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select a Start Time*"
+                    android:translationX="130dp" />
+
+                <TimePicker
+                    android:id="@+id/startTimePicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
+                    android:timePickerMode="spinner"
+                    android:translationX="65dp" />
+
+                <View
+                    android:id="@+id/timeDivider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    android:translationY="200dp" />
+
+                <TextView
+                    android:id="@+id/selectEndTimeHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select an End Time*"
+                    android:translationX="130dp"
+                    android:translationY="225dp" />
+
+                <TimePicker
+                    android:id="@+id/endTimePicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
+                    android:timePickerMode="spinner"
+                    android:translationX="65dp"
+                    android:translationY="225dp" />
+
+            </FrameLayout>
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="350dp"
+                android:layout_height="11dp"
+                android:background="@drawable/cookeddivider"
+                android:translationX="25dp"
+                android:translationY="5dp" />
+
+            <FrameLayout
+                android:id="@+id/weeklyFrame"
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+
+                <Switch
+                    android:id="@+id/switch2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Switch" />
             </FrameLayout>
 
         </LinearLayout>
