@@ -58,7 +58,7 @@ public class AdministratorBrowseUsersFragment extends Fragment {
     }
 
 
-    private void showDeletePage(final int position) {
+    public void showDeletePage(final int position) {
         LayoutInflater inflater= LayoutInflater.from(requireContext());
         View dialogView = inflater.inflate(R.layout.delete_user_dialog, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
@@ -72,7 +72,14 @@ public class AdministratorBrowseUsersFragment extends Fragment {
         cancelButton.setOnClickListener(view -> dialog.dismiss());
         removeButton.setOnClickListener(view -> {
             User user = userDataList.get(position);
-            User.deleteUser(user,position);
+            user.deleteUser(unused -> {
+                userDataList.remove(position);
+                userArrayAdapter.notifyDataSetChanged();
+                dialog.dismiss();
+                Log.d("DeleteUser","Successfully removed user");},
+                    e -> {
+                Log.w("DeleteUser","Failed to delete user");
+            });
             dialog.dismiss();
         });
         dialog.show();
