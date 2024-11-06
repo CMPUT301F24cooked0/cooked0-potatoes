@@ -28,45 +28,29 @@ import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 public class AdministratorBrowseUsersFragment extends Fragment {
     ListView userList;
     ArrayList<User> userDataList;
     ArrayAdapter<User> userArrayAdapter;
 
-    private FirebaseFirestore db;
-    private CollectionReference userRef;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.administrator_browse_users, container, false);
-        db = FirebaseFirestore.getInstance();
-        userRef = db.collection("Users");
 
         userList = view.findViewById(R.id.administrator_browse_users_recyclerview);
         userDataList = new ArrayList<>();
         userArrayAdapter = new UserArrayAdapter(requireContext(), userDataList);
         userList.setAdapter(userArrayAdapter);
 
-        userRef.addSnapshotListener((querySnapshots, error) -> {
-            userDataList.clear();
-            for (QueryDocumentSnapshot doc : querySnapshots) {
-                String name = doc.getString("name");
-                String email = doc.getString("email");
-                Long phoneNumber -doc.getLong("phoneNumber");
-                User user = new User(Name, email, phoneNumber);
-                userDataList.add(user);
-            }
-            userArrayAdapter.notifyDataSetChanged();
-        });
+        User.fetchUsers(users -> {
+                    userDataList.clear();
+                    userDataList.addAll(users);
+                    userArrayAdapter.notifyDataSetChanged();
+                },
+                error->Log.w("Firestore","Error Fetching Users",error)
+        );
 
         userList.setOnItemClickListener(((adapterView, view1, position, id) -> showDeletePage(position)));
         return view;
@@ -93,12 +77,5 @@ public class AdministratorBrowseUsersFragment extends Fragment {
     }
 
 
-    private void deleteUser(final User user, final int position) {
-        userRef.document(user.getName()).delete().addOnSuccessListener(aVoid -> {
-            Log.d("Firestore", "User Deleted");
-            userDataList.remove(position);
-            userArrayAdapter.notifyDataSetChanged();
-        }).addOnFailureListener(e -> Log.w("Firestore", "Error Removing User"));
-    }
 }
 

@@ -2,6 +2,11 @@ package com.example.myapplication;
 
 import android.graphics.Bitmap;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.util.ArrayList;
+
 public class User {
     private String name;
     private String email;
@@ -139,5 +144,25 @@ public class User {
 
     public boolean getReceivesOrgAdmNotifications() {
         return this.receivesOrgAdmNotifications;
+    }
+
+    public void deleteuser(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener){
+        userRef.document(this.name).delete()
+                .addOnSuccessListener(onSuccessListener)
+                .addonFailureListnere(onFailureListener);
+    }
+
+    public static void fetchUsers(OnSuccessListener<ArrayList<User>> onSuccessListener,OnFailureListener onFailureListener){
+        userRef.get().addOnSuccessListener((queryDocumentSnapshots -> {
+            ArrayList<User> users=new ArrayList<>();
+            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                String name = doc.getString("name");
+                String email = doc.getString("email");
+                Long phoneNumber -doc.getLong("phoneNumber");
+                User user = new User(Name, email, phoneNumber);
+                users.add(user);
+            }
+            onSuccessListener.onSuccess(users);
+        }).addOnFailureListener(onFailureListener);
     }
 }
