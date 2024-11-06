@@ -20,6 +20,7 @@
         android:textSize="34sp"
         android:textStyle="bold"
         android:translationY="-10dp"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/scrollView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -48,21 +49,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="150dp">
 
-                <ImageView
-                    android:id="@+id/eventPoster"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/eventPosterCrop"
                     android:layout_width="231dp"
                     android:layout_height="130dp"
-                    android:translationX="90dp"
-                    tools:srcCompat="@drawable/noeventimage" />
+                    android:layout_gravity="center"
+                    app:cardCornerRadius="10dp">
+
+                    <ImageView
+                        android:id="@+id/eventPosterPlaceholder"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        tools:srcCompat="@drawable/noeventimage" />
+                </androidx.cardview.widget.CardView>
 
                 <ImageView
                     android:id="@+id/cameraIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="#A03232"
-                    android:translationX="300dp"
+                    android:translationX="330dp"
                     android:translationY="120dp"
                     app:srcCompat="@drawable/cameraicon" />
+
 
             </FrameLayout>
 
