@@ -29,6 +29,7 @@ public class Event {
         this.setCapacity(capacity);
     }
 
+
     public void invalidateQRCode() {
         this.qrCode.setText(null);
         // TODO update database

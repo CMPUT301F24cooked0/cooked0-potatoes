@@ -42,7 +42,7 @@
             android:layout_width="349dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-condensed-medium"
-            android:text="<Facility Name>"
+            android:text="Facility Name"
             android:textColor="@color/black"
             android:textSize="25sp"
             android:translationX="40dp"

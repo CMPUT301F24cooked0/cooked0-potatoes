@@ -7,8 +7,8 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="409dp"
-        android:layout_height="729dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="1dp">
@@ -17,7 +17,7 @@
             android:id="@+id/eventNamePlaceholder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="<Event Name>"
+            android:text="&lt;Event Name&gt;"
             android:textAlignment="center"
             android:textColor="@color/defaultButtonColor"
             android:textSize="20sp"
@@ -27,9 +27,9 @@
             android:id="@+id/eventDescPlaceholder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="<Event Description>"
-            android:maxLines = "2"
-            android:maxLength = "93"
+            android:text="&lt;Event Description&gt;"
+            android:maxLines="2"
+            android:maxLength="93"
             android:ellipsize="end" />
 
         <androidx.cardview.widget.CardView
@@ -51,10 +51,9 @@
             android:id="@+id/editEventLink"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingRight = "90dp"
+            android:paddingRight="90dp"
             android:text="@string/edit_event_str"
             android:textAlignment="textEnd" />
-
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
