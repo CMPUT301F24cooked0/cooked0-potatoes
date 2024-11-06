@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appBackground">
+
+    <FrameLayout
+        android:id="@+id/welcomeFacilityFrame"
+        android:layout_width="match_parent"
+        android:layout_height="129dp"
+        android:background="#F6F8FA"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
+
+        <ImageView
+            android:id="@+id/starIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="0.6"
+            android:scaleY="0.6"
+            android:translationX="10dp"
+            android:translationY="15dp"
+            app:srcCompat="@android:drawable/star_off" />
+
+        <TextView
+            android:id="@+id/welcomeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:text="Welcome,"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:translationX="40dp"
+            android:translationY="15dp" />
+
+        <TextView
+            android:id="@+id/facilityNamePlaceholder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:text="<Facility Name>"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:translationX="40dp"
+            android:translationY="50dp" />
+
+        <TextView
+            android:id="@+id/editFacilityLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_facility_str"
+            android:textSize="14sp"
+            android:textColor="#20232C"
+            android:translationX="40dp"
+            android:translationY="100dp" />
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
