@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -57,7 +58,8 @@ public class AdministratorBrowseUsersFragment extends Fragment {
     }
 
 
-    private void showDeletePage(LayoutInflater inflater, final int position) {
+    private void showDeletePage(final int position) {
+        LayoutInflater inflater= LayoutInflater.from(requireContext());
         View dialogView = inflater.inflate(R.layout.delete_user_dialog, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setView(dialogView);
@@ -70,7 +72,7 @@ public class AdministratorBrowseUsersFragment extends Fragment {
         cancelButton.setOnClickListener(view -> dialog.dismiss());
         removeButton.setOnClickListener(view -> {
             User user = userDataList.get(position);
-            deleteUser(user, position);
+            User.deleteUser(user, position);
             dialog.dismiss();
         });
         dialog.show();

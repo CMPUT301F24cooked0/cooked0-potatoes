@@ -146,11 +146,6 @@ public class User {
         return this.receivesOrgAdmNotifications;
     }
 
-    public void deleteuser(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener){
-        userRef.document(this.name).delete()
-                .addOnSuccessListener(onSuccessListener)
-                .addonFailureListnere(onFailureListener);
-    }
 
     public static void fetchUsers(OnSuccessListener<ArrayList<User>> onSuccessListener,OnFailureListener onFailureListener){
         userRef.get().addOnSuccessListener((queryDocumentSnapshots -> {
@@ -164,5 +159,10 @@ public class User {
             }
             onSuccessListener.onSuccess(users);
         }).addOnFailureListener(onFailureListener);
+    }
+    public void deleteuser(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener){
+        userRef.document(this.name).delete()
+                .addOnSuccessListener(onSuccessListener)
+                .addonFailureListnere(onFailureListener);
     }
 }
