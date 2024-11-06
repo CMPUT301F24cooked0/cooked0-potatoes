@@ -8,6 +8,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.ArrayList;
 
 public class User {
+    //private static final FirebaseFirestore db=FirebaseFirestore.getInstance();
+    //protected static final CollectionReference userRef=db.collection("Users"); FIXME name of user collection in firestore
     private String name;
     private String email;
     private Long phoneNumber;
@@ -42,6 +44,13 @@ public class User {
         this(name, email, phoneNumber);
         this.setProfilePicture(profilePicture);
     }
+
+    public void deleteuser(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener){
+        userRef.document(this.name).delete()
+                .addOnSuccessListener(onSuccessListener)
+                .addonFailureListener(onFailureListener);
+    }
+
 
     public void setName(String name) throws Exception {
         if (name == null) {
@@ -160,9 +169,5 @@ public class User {
             onSuccessListener.onSuccess(users);
         }).addOnFailureListener(onFailureListener);
     }
-    public void deleteuser(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener){
-        userRef.document(this.name).delete()
-                .addOnSuccessListener(onSuccessListener)
-                .addonFailureListnere(onFailureListener);
-    }
+
 }

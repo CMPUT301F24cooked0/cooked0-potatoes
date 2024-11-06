@@ -72,7 +72,7 @@ public class AdministratorBrowseUsersFragment extends Fragment {
         cancelButton.setOnClickListener(view -> dialog.dismiss());
         removeButton.setOnClickListener(view -> {
             User user = userDataList.get(position);
-            User.deleteUser(user, position);
+            User.deleteUser(user,position);
             dialog.dismiss();
         });
         dialog.show();
