@@ -14,8 +14,9 @@ public class Event {
     private Bitmap eventPoster;
     private QRCode qrCode;
     private final EntrantPool entrantPool;
+    //TODO add event description
 
-    public Event(String name, Date date, Bitmap eventPoster) throws Exception {
+    public Event(String name, Date date, Bitmap eventPoster) throws Exception { //TODO add event description
         this.setName(name);
         this.setDate(date);
         this.setEventPoster(eventPoster);
