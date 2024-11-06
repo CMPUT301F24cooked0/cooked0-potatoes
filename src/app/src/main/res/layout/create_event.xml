@@ -50,17 +50,17 @@
 
                 <ImageView
                     android:id="@+id/eventPoster"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:translationX="130dp"
-                    tools:srcCompat="@tools:sample/avatars" />
+                    android:layout_width="231dp"
+                    android:layout_height="130dp"
+                    android:translationX="90dp"
+                    tools:srcCompat="@drawable/noeventimage" />
 
                 <ImageView
                     android:id="@+id/cameraIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="#A03232"
-                    android:translationX="260dp"
+                    android:translationX="300dp"
                     android:translationY="120dp"
                     app:srcCompat="@drawable/cameraicon" />
 
