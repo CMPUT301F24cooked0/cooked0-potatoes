@@ -13,15 +13,17 @@ import java.util.Date;
 
 public class FacilityUnitTest {
     @Test
-    public void constructorTest() {
+    public void constructorTest() throws Exception {
+        User user = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", location);
+        Facility facility = new Facility("name", location, user);
     }
 
     @Test
     public void addEventTest() throws Exception {
+        User user = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", location);
+        Facility facility = new Facility("name", location, user);
         Event event = new EventMock("name", new Date(), null);
         assertEquals(facility.getEvents().size(), 0);
         facility.addEvent(event);
@@ -31,8 +33,9 @@ public class FacilityUnitTest {
 
     @Test
     public void addDuplicateEventTest() throws Exception {
+        User user = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", location);
+        Facility facility = new Facility("name", location, user);
         Event event = new EventMock("name", new Date(), null);
         facility.addEvent(event);
         assertThrows(EventAlreadyExistsAtFacility.class, () -> {facility.addEvent(event);});
@@ -40,8 +43,9 @@ public class FacilityUnitTest {
 
     @Test
     public void deleteEventNotInFacilityTest() throws Exception {
+        User user = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", location);
+        Facility facility = new Facility("name", location, user);
         Event event = new EventMock("name", new Date(), null);
         facility.deleteEvent(event);
         assertEquals(facility.getEvents().size(), 0);
@@ -49,8 +53,9 @@ public class FacilityUnitTest {
 
     @Test
     public void deleteEventInFacilityTest() throws Exception {
+        User user = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", location);
+        Facility facility = new Facility("name", location, user);
         Event event = new EventMock("name", new Date(), null);
         facility.addEvent(event);
         facility.deleteEvent(event);
@@ -59,8 +64,9 @@ public class FacilityUnitTest {
 
     @Test
     public void deleteAllEventsTest() throws Exception {
+        User user = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", location);
+        Facility facility = new Facility("name", location, user);
         Event event = new EventMock("name", new Date(), null);
         facility.addEvent(event);
         facility.deleteAllEvents();
