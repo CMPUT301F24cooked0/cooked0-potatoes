@@ -15,59 +15,44 @@ public class EntrantStatusUnitTest {
     FirebaseFirestore db = Mockito.mock(FirebaseFirestore.class);
 
     @Test
-    public void firstConstructorTest() throws Exception {
+    public void firstConstructorTest() {
         // test that constructor doesn't cause errors
-        User user = new User("name", "email@email.ca", db);
-        LatLng facilityLocation = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", facilityLocation, user, db);
-        Event event = new EventMock("name", new Date(),  null, facility, db);
-        EntrantPool entrantPool = new EntrantPool(event, db);
-        User entrant = null;
+        User user = null;
         try {
-            entrant = new User("name", "email@test.ca", db);
+            user = new User("name", "email@test.ca");
         }
         catch (Exception exception) {
             fail();
         }
         LatLng location = new LatLng(69.420, 42.69);
-        EntrantStatus entrantStatus = new EntrantStatus(entrant, location, entrantPool, db);
+        EntrantStatus entrantStatus = new EntrantStatus(user, location);
     }
 
     @Test
-    public void secondConstructorTest() throws Exception {
-        User user = new User("name", "email@email.ca", db);
-        LatLng facilityLocation = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", facilityLocation, user, db);
-        Event event = new EventMock("name", new Date(),  null, facility, db);
-        EntrantPool entrantPool = new EntrantPool(event, db);
-        User entrant = null;
+    public void secondConstructorTest() {
+        User user = null;
         try {
-            entrant = new User("name", "email@test.ca", db);
+            user = new User("name", "email@test.ca");
         }
         catch (Exception exception) {
             fail();
         }
         LatLng location = new LatLng(69.420, 42.69);
         Status status = Status.none;
-        EntrantStatus entrantStatus = new EntrantStatus(entrant, location, entrantPool, status, db);
+        EntrantStatus entrantStatus = new EntrantStatus(user, location, status);
     }
 
     @Test
-    public void gettersAndSettersTest() throws Exception {
-        User user = new User("name", "email@email.ca", db);
-        LatLng facilityLocation = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", facilityLocation, user, db);
-        Event event = new EventMock("name", new Date(),  null, facility, db);
-        EntrantPool entrantPool = new EntrantPool(event, db);
-        User entrant = null;
+    public void gettersAndSettersTest() {
+        User user = null;
         try {
-            entrant = new User("name", "email@test.ca", db);
+            user = new User("name", "email@test.ca");
         }
         catch (Exception exception) {
             fail();
         }
         LatLng location = new LatLng(69.420, 42.69);
-        EntrantStatus entrantStatus = new EntrantStatus(entrant, location, entrantPool, db);
+        EntrantStatus entrantStatus = new EntrantStatus(user, location);
 
         // test getters
         User outputUser = entrantStatus.getEntrant();
@@ -86,21 +71,16 @@ public class EntrantStatusUnitTest {
     NotificationSender notificationSenderMock;
 
     @Test
-    public void sendNotificationTest() throws Exception {
-        User user = new User("name", "email@email.ca", db);
-        LatLng facilityLocation = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", facilityLocation, user, db);
-        Event event = new EventMock("name", new Date(),  null, facility, db);
-        EntrantPool entrantPool = new EntrantPool(event, db);
-        User entrant = null;
+    public void sendNotificationTest() {
+        User user = null;
         try {
-            entrant = new User("name", "email@test.ca", db);
+            user = new User("name", "email@test.ca");
         }
         catch (Exception exception) {
             fail();
         }
         LatLng location = new LatLng(69.420, 42.69);
-        EntrantStatus entrantStatus = new EntrantStatus(entrant, location, entrantPool, db);
+        EntrantStatus entrantStatus = new EntrantStatus(user, location);
 
         entrantStatus.sendNotification("notification");
         // TODO test that NotificationSender.sendNotification was called
