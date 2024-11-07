@@ -5,6 +5,7 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,6 +31,19 @@ public class FacilityEditFragment extends AppCompatActivity {
         facilityNameInput.setText(existingFacility.getName()); // autofill existing facility name
         String address = latLngtoAddress(existingFacility.getLocation()); // convert LatLng to address
         facilityAddressInput.setText(address); // autofill existing facility address
+        editButton.setOnClickListener(view -> {
+            // get facility name and address from input fields
+            String facilityName = facilityNameInput.getText().toString();
+            String facilityAddressStr = facilityAddressInput.getText().toString();
+            if (facilityName.isEmpty() || facilityAddressStr.isEmpty()) {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+
+
+        });
+
     }
     public String latLngtoAddress(LatLng location) {
         Geocoder geocode = new Geocoder(this, Locale.getDefault());
