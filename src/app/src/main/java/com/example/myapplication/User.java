@@ -27,10 +27,10 @@ public class User {
     private final CollectionReference facilityCol;
     private HashMap<String, Object> userData;
 
-    public User(String uniqueID, FirebaseFirestore db) throws RuntimeException {
+    public User(String uniqueID) throws RuntimeException {
         // this constructor generates the user from an existing user in the database based on deviceID
         this.uniqueID = uniqueID;
-        this.db = db;
+        this.db = FirebaseFirestore.getInstance();
         this.userRef = db.collection("users").document(this.getUniqueID());
         this.facilityCol = this.userRef.collection("facility");
         DocumentReference facilityRef = this.facilityCol.document(); // TODO import facility from database, if there is one
@@ -103,10 +103,10 @@ public class User {
         });
     }
 
-    public User(String name, String email, FirebaseFirestore db) throws Exception {
+    public User(String name, String email) throws Exception {
         this.uniqueID = UUID.randomUUID().toString();
         this.userData = new HashMap<>();
-        this.db = db;
+        this.db = FirebaseFirestore.getInstance();
         this.userRef = db.collection("users").document(this.getUniqueID()); // create new user
         this.facilityCol = this.userRef.collection("facility");
         this.setName(name); // it is important that name is set before profile picture
@@ -120,18 +120,18 @@ public class User {
         this.setReceivesOrgAdmNotifications(true);
     }
 
-    public User(String name, String email, Long phoneNumber, FirebaseFirestore db) throws Exception {
-        this(name, email, db);
+    public User(String name, String email, Long phoneNumber) throws Exception {
+        this(name, email);
         this.setPhoneNumber(phoneNumber);
     }
 
-    public User(String name, String email, Bitmap profilePicture, FirebaseFirestore db) throws Exception {
-        this(name, email, db);
+    public User(String name, String email, Bitmap profilePicture) throws Exception {
+        this(name, email);
         this.setProfilePicture(profilePicture);
     }
 
-    public User(String name, String email, Long phoneNumber, Bitmap profilePicture, FirebaseFirestore db) throws Exception {
-        this(name, email, phoneNumber, db);
+    public User(String name, String email, Long phoneNumber, Bitmap profilePicture) throws Exception {
+        this(name, email, phoneNumber);
         this.setProfilePicture(profilePicture);
     }
 

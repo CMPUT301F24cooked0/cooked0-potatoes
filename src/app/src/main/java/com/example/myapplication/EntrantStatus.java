@@ -17,23 +17,24 @@ public class EntrantStatus {
     private HashMap<String, Object> entrantData;
 
 
-    public EntrantStatus(User entrant, LatLng joinedFrom, EntrantPool entrantPool, FirebaseFirestore db) {
+    public EntrantStatus(User entrant, LatLng joinedFrom, EntrantPool entrantPool) {
         this.entrant = entrant;
         this.joinedFrom = joinedFrom;
         this.entrantPool = entrantPool;
         this.status = Status.none; // starting status is none (no draw has occurred yet)
         // TODO update database
-        this.db = db;
+        db = FirebaseFirestore.getInstance();
         this.entrantRef = entrantPool.getEntrantsPoolCol().document();
         this.entrantId = entrantRef.getId();
-        this.entrantData.put("entrant", this.entrant);
-        this.entrantData.put("joinedFrom", this.joinedFrom);
-        this.entrantData.put("status", this.status);
+        entrantData.put("entrant", this.entrant);
+        entrantData.put("joinedFrom", this.joinedFrom);
+        entrantData.put("status", this.status);
         this.entrantRef.set(entrantData);
+
     }
 
-    public EntrantStatus(User entrant, LatLng joinedFrom, EntrantPool entrantPool, Status status, FirebaseFirestore db) {
-        this(entrant, joinedFrom, entrantPool, db);
+    public EntrantStatus(User entrant, LatLng joinedFrom, EntrantPool entrantPool, Status status) {
+        this(entrant, joinedFrom, entrantPool);
         this.status = status; // this constructor allows setting a different starting status
     }
 
