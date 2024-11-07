@@ -47,7 +47,6 @@ public class Event {
 
     public void invalidateQRCode() {
         this.qrCode.setText(null);
-        // TODO update database
         eventData.put("qrCode", this.qrCode.getText());
         this.eventRef.update(eventData); // update database after invalidating QR code
 
