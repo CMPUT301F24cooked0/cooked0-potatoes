@@ -32,7 +32,7 @@ public class User {
         this.uniqueID = uniqueID;
         this.db = FirebaseFirestore.getInstance();
         this.userRef = db.collection("users").document(this.getUniqueID());
-        this.facilityCol = this.userRef.collection("facility");
+        this.facilityCol = this.userRef.collection("facility"); // FIXME how to connect user to their facility, if any
         this.userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) throws RuntimeException {
@@ -211,7 +211,7 @@ public class User {
     }
 
     public void setFacility(Facility facility) {
-        this.facility = facility;
+        this.facility = facility; // TODO make database aware of user's facility
     }
 
     public void setReceivesOrgAdmNotifications(boolean receivesOrgAdmNotifications){
