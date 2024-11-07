@@ -5,6 +5,7 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,12 +32,14 @@ public class FacilityCreationFragment extends AppCompatActivity {
             String facilityName = facilityNameInput.getText().toString();
             String facilityAddressStr = facilityAddressInput.getText().toString();
             if (facilityName.isEmpty() || facilityAddressStr.isEmpty()) {
-                throw new RuntimeException("Facility name and address cannot be empty");
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                return;
             }
             // convert address to LatLng
             LatLng facilityAddress = getAddress(facilityAddressStr);
             if (facilityAddress == null) {
-                throw new RuntimeException("Invalid address");
+                Toast.makeText(this, "Invalid address", Toast.LENGTH_SHORT).show();
+                return;
             }
             Facility facility = new Facility(facilityName, facilityAddress);
 
