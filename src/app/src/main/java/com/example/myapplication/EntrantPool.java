@@ -20,8 +20,8 @@ public class EntrantPool {
         this.entrants = new ArrayList<EntrantStatus>();
         // TODO update database
         this.event = event;
-        db = FirebaseFirestore.getInstance();
-        eventRef = event.getEventRef();
+        this.db = FirebaseFirestore.getInstance();
+        this.eventRef = event.getEventRef();
         this.entrantsPoolCol = eventRef.collection("entrants");
 
     }
