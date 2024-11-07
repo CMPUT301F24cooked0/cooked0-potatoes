@@ -16,12 +16,12 @@ public class EntrantPool {
     private DocumentReference eventRef;
     private CollectionReference entrantsPoolCol;
 
-    public EntrantPool(Event event) {
+    public EntrantPool(Event event, FirebaseFirestore db) {
         this.entrants = new ArrayList<EntrantStatus>();
         // TODO update database
         this.event = event;
-        db = FirebaseFirestore.getInstance();
-        eventRef = event.getEventRef();
+        this.db = db;
+        this.eventRef = event.getEventRef();
         this.entrantsPoolCol = eventRef.collection("entrants");
 
     }

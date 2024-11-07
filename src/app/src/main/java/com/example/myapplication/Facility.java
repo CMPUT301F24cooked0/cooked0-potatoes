@@ -17,20 +17,20 @@ public class Facility {
     private DocumentReference facilityRef;
     private CollectionReference eventsCol;
 
-    public Facility(String name, LatLng location, User user) {
+    public Facility(String name, LatLng location, User user, FirebaseFirestore db) {
         this.name = name;
         this.location = location;
         this.user = user;
         this.events = new ArrayList<Event>();
         // update database after creating facility
-        db = FirebaseFirestore.getInstance();
+        this.db = db;
         DocumentReference userRef = user.getUserRef();
-        facilityRef = userRef.collection("facility").document();
-        eventsCol = facilityRef.collection("events");
+        this.facilityRef = userRef.collection("facility").document();
+        this.eventsCol = facilityRef.collection("events");
         HashMap<String, Object> facilityData = new HashMap<>();
         facilityData.put("name", name);
         facilityData.put("location", location);
-        facilityRef.set(facilityData);
+        this.facilityRef.set(facilityData);
     }
 
     public void addEvent(Event event) {

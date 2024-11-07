@@ -25,8 +25,8 @@ public class Event {
     private final String eventId;
     private HashMap<String, Object> eventData;
 
-    public Event(String name, Date date, Bitmap eventPoster, Facility facility) throws Exception {
-        this.db = FirebaseFirestore.getInstance();
+    public Event(String name, Date date, Bitmap eventPoster, Facility facility, FirebaseFirestore db) throws Exception {
+        this.db = db;
         this.facility = facility;
         this.facilityRef = facility.getFacilityRef();
         this.eventRef = facilityRef.collection("events").document();
@@ -39,8 +39,8 @@ public class Event {
         this.setCapacity(null);
     }
 
-    public Event(String name, Date date, Bitmap eventPoster, Facility facility, Integer capacity) throws Exception {
-        this(name, date, eventPoster, facility);
+    public Event(String name, Date date, Bitmap eventPoster, Facility facility, Integer capacity, FirebaseFirestore db) throws Exception {
+        this(name, date, eventPoster, facility, db);
         this.setCapacity(capacity);
     }
 
