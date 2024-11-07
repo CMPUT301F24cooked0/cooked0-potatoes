@@ -35,7 +35,7 @@ public class Event {
         this.setDate(date);
         this.setEventPoster(eventPoster);
         this.setQrCode(new QRCode()); // TODO auto-generate text for QR code?
-        this.entrantPool = new EntrantPool(this);
+        this.entrantPool = new EntrantPool(this, db);
         this.setCapacity(null);
     }
 
