@@ -20,7 +20,7 @@ public class DatabaseManager { // static class
     public void createUser(User user) {
         String userID = user.getUniqueID();
         HashMap<String, Object> userData = new HashMap<>();
-        userData.put("isAdmin", false);
+        userData.put("isAdmin", user.isAdmin());
         userData.put("name", user.getName());
         userData.put("email", user.getEmail());
         userData.put("phoneNumber", user.getPhoneNumber());
