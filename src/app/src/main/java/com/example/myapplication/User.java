@@ -19,7 +19,7 @@ public class User {
     private String email;
     private Long phoneNumber;
     private Bitmap profilePicture;
-    private final boolean isAdmin;
+    private boolean isAdmin;
     private Facility facility;
     private boolean receivesOrgAdmNotifications;
 
@@ -51,6 +51,21 @@ public class User {
         this(name, email, phoneNumber);
         this.setProfilePicture(profilePicture);
         new DatabaseManager().updateUser(this);
+    }
+
+    /**
+     * only use this constructor in DatabaseManager to instantiate a user from the data in the database
+     * @param name
+     * @param email
+     * @param phoneNumber
+     * @param profilePicture
+     * @param isAdmin
+     * @param receivesOrgAdmNotifications
+     */
+    public User(String name, String email, Long phoneNumber, Bitmap profilePicture, boolean isAdmin, boolean receivesOrgAdmNotifications) throws Exception {
+        this(name, email, phoneNumber, profilePicture);
+        this.isAdmin = isAdmin;
+        this.setReceivesOrgAdmNotifications(receivesOrgAdmNotifications);
     }
 
     public String getUniqueID() {

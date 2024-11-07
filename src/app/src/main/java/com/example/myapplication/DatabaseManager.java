@@ -98,9 +98,7 @@ public class DatabaseManager { // static class
                 boolean receivesOrgAdmNotifications = (boolean) notificationTemp;
 
                 try {
-                    user[0] = new User(name, email, phoneNumber, profilePicture);
-                    // FIXME pass isAdmin?
-                    // FIXME pass notification preference?
+                    user[0] = new User(name, email, phoneNumber, profilePicture, isAdmin, receivesOrgAdmNotifications);
                 } catch (Exception e) {
                     user[0] = null;
                     throw new RuntimeException(e);
