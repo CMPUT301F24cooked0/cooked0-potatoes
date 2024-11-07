@@ -19,6 +19,7 @@ public class FacilityCreationFragment extends AppCompatActivity {
     EditText facilityNameInput;
     EditText facilityAddressInput;
     Button createFacilityButton;
+    User facilityOwner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,6 +28,7 @@ public class FacilityCreationFragment extends AppCompatActivity {
         facilityNameInput = findViewById(R.id.addFacilityName);
         facilityAddressInput = findViewById(R.id.addFacilityAddress);
         createFacilityButton = findViewById(R.id.createFacilityButton);
+        facilityOwner = (User) getIntent().getSerializableExtra("user");
         createFacilityButton.setOnClickListener(view -> {
             // get facility name and address from input fields
             String facilityName = facilityNameInput.getText().toString();
@@ -41,7 +43,7 @@ public class FacilityCreationFragment extends AppCompatActivity {
                 Toast.makeText(this, "Invalid address", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Facility facility = new Facility(facilityName, facilityAddress);
+            Facility facility = new Facility(facilityName, facilityAddress, facilityOwner);
 
         });
     }
