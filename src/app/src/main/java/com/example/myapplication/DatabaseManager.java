@@ -191,4 +191,16 @@ public class DatabaseManager { // static class
 
         return facility[0];
     }
+
+    public DocumentReference createEvent(Facility facility, Event event) {
+
+    }
+
+    public void updateEvent(Event event) {
+
+    }
+
+    public Event getEvent(String eventID) {
+
+    }
 }
