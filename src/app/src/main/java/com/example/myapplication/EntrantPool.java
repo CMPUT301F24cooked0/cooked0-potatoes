@@ -53,7 +53,7 @@ public class EntrantPool {
             throw new EntrantAlreadyInPool("entrant cannot be added to pool that they are already in");
         }
         // joinedFrom can be null though
-        EntrantStatus entrantStatus = new EntrantStatus(entrant, joinedFrom, this, db);
+        EntrantStatus entrantStatus = new EntrantStatus(entrant, joinedFrom, this);
         this.entrants.add(entrantStatus);
     }
 
