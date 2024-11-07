@@ -2,12 +2,14 @@ package com.example.myapplication;
 
 import android.graphics.Bitmap;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DatabaseManager { // static class
@@ -137,6 +139,44 @@ public class DatabaseManager { // static class
     }
 
     public Facility getFacility(String facilityID) {
+        DocumentReference facilityRef = this.db.collection("facility").document(facilityID); // FIXME not sure this will work
+        CollectionReference eventCol = facilityRef.collection("events");
+        DocumentReference eventRef = eventCol.document(); // FIXME there's multiple events, not just one, need to get all documents in collection
+        Event event = this.getEvent(eventRef.getId()); // FIXME again, need to get all events, not just one
+        ArrayList<Event> events = new ArrayList<Event>();
+        final Facility[] facility = new Facility[1];
 
+        facilityRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                HashMap<String, Object> facilityData = (HashMap<String, Object>) documentSnapshot.getData();
+                if (facilityData == null) {
+                    throw new FacilityDoesNotExist("this facility does not exist in the database");
+                }
+
+                // get facility data from document
+
+                Object nameTemp = facilityData.get("name");
+                if (nameTemp == null) {
+                    throw new FacilityDoesNotExist("this facility was missing the name field");
+                }
+                String name = (String) nameTemp;
+
+                Object locationTemp = facilityData.get("location");
+                if (locationTemp == null) {
+                    throw new FacilityDoesNotExist("this facility was missing the location field");
+                }
+                LatLng location = (LatLng) locationTemp;
+
+                try {
+                    facility[0] = new Facility(name, location, facilityRef, events);
+                } catch (Exception e) {
+                    facility[0] = null;
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        return facility[0];
     }
 }
