@@ -74,7 +74,7 @@ public class Facility {
         return this.events;
     }
 
-    public DocumentReference getFacilityRef() {
+    public DocumentReference getFacilityReference() {
         return this.facilityRef; // return reference to facility in database
     }
 
