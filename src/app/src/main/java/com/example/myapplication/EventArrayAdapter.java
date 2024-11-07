@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.media.Image;
 import android.view.LayoutInflater;
@@ -27,13 +28,13 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         }
         ImageView eventPoster=convertView.findViewById(R.id.event_poster);
         TextView eventName=convertView.findViewById(R.id.event_name);
-        TextView eventDescription=convertView.findViewById(R.id.event_description);
+        //TextView eventDescription=convertView.findViewById(R.id.event_description);
 
         if(event.getEventPoster()!=null){
             eventPoster.setImageBitmap(event.getEventPoster());
         }
         eventName.setText(event.getName());
-        eventDescription.setText(event.getDescription()); //TODO add a description in the event class
+        //eventDescription.setText(event.getDescription()); TODO add a description in the event class or show date and capacity
         return convertView;
     }
 

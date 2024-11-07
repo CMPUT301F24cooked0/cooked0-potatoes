@@ -3,11 +3,15 @@ package com.example.myapplication;
 import android.graphics.Bitmap;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseException;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Event {
+    private String eventId;
     private String name;
     private Date date;
     private Integer capacity;
@@ -16,7 +20,8 @@ public class Event {
     private final EntrantPool entrantPool;
     //TODO add event description
 
-    public Event(String name, Date date, Bitmap eventPoster) throws Exception { //TODO add event description
+    public Event(String eventId, String name, Date date, Bitmap eventPoster) throws Exception { //TODO add event description
+        this.seteventId(eventId);
         this.setName(name);
         this.setDate(date);
         this.setEventPoster(eventPoster);
@@ -25,8 +30,8 @@ public class Event {
         this.setCapacity(null);
     }
 
-    public Event(String name, Date date, Bitmap eventPoster, Integer capacity) throws Exception {
-        this(name, date, eventPoster);
+    public Event(String eventId, String name, Date date, Bitmap eventPoster, Integer capacity) throws Exception {
+        this(eventId,name, date, eventPoster);
         this.setCapacity(capacity);
     }
 
@@ -35,6 +40,9 @@ public class Event {
         // TODO update database
     }
 
+    public void seteventId(String eventId){
+        this.eventId=eventId;
+    }
     public void setName(String name) throws Exception {
         if (name == null) {
             throw new Exception("cannot set event name to null");
@@ -130,4 +138,16 @@ public class Event {
     public ArrayList<EntrantStatus> getEntrantStatuses() {
         return this.entrantPool.getEntrantStatuses();
     }
+
+    public void deleteEvent(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener){
+        if(eventId!=null && !eventId.isEmpty()){
+            FirebaseFirestore.getinstance().collection("Events").document(eventId).delete()
+                    .addOnSuccessListener(onSuccessListener)
+                    .addOnFailureListener(onFailureListener);
+        }
+        else{
+            onFailureListener.onFailure(new Exception("Cannot Delete Event"));
+        }
+    }
+
 }

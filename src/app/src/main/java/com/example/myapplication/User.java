@@ -45,10 +45,10 @@ public class User {
         this.setProfilePicture(profilePicture);
     }
 
-    public void deleteuser(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener){
+    public void deleteUser(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener){
         userRef.document(this.name).delete()
                 .addOnSuccessListener(onSuccessListener)
-                .addonFailureListener(onFailureListener);
+                .addOnFailureListener(onFailureListener);
     }
 
 
