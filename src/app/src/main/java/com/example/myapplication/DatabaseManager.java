@@ -9,6 +9,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -51,7 +52,7 @@ public class DatabaseManager { // static class
         userData.put("receivesOrgAdmNotifications", user.getReceivesOrgAdmNotifications());
         DocumentReference userRef = user.getUserReference();
         userRef.update(userData);
-        this.updateFacility(user, user.getFacility());
+        this.updateFacility(user.getFacility());
     }
 
     public User getUser(String userID) {
@@ -135,7 +136,17 @@ public class DatabaseManager { // static class
     }
 
     public void updateFacility(Facility facility) {
-
+        if (facility == null) {
+            return;
+        }
+        HashMap<String, Object> facilityData = new HashMap<>();
+        facilityData.put("name", facility.getName());
+        facilityData.put("location", facility.getLocation());
+        DocumentReference facilityRef = facility.getFacilityReference();
+        facilityRef.update(facilityData);
+        for (Event event : facility.getEvents()) {
+            this.updateEvent(event);
+        }
     }
 
     public Facility getFacility(String facilityID) {
@@ -144,6 +155,7 @@ public class DatabaseManager { // static class
         DocumentReference eventRef = eventCol.document(); // FIXME there's multiple events, not just one, need to get all documents in collection
         Event event = this.getEvent(eventRef.getId()); // FIXME again, need to get all events, not just one
         ArrayList<Event> events = new ArrayList<Event>();
+        events.add(event); // FIXME do this for all events
         final Facility[] facility = new Facility[1];
 
         facilityRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
