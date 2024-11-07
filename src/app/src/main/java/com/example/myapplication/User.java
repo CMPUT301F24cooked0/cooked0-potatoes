@@ -2,40 +2,131 @@ package com.example.myapplication;
 
 import android.graphics.Bitmap;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class User {
+    private final String uniqueID;
     private String name;
     private String email;
     private Long phoneNumber;
     private Bitmap profilePicture;
-    private final boolean isAdmin;
+    private boolean isAdmin;
     private Facility facility;
     private boolean receivesOrgAdmNotifications;
-    private FirebaseFirestore db;
-    private DocumentReference userRef;
-    private CollectionReference facilityCol;
+    private final FirebaseFirestore db;
+    private final DocumentReference userRef;
+    private final CollectionReference facilityCol;
     private HashMap<String, Object> userData;
 
-    // TODO constructor that gets info from database
+    public User(String uniqueID) throws RuntimeException {
+        // this constructor generates the user from an existing user in the database based on deviceID
+        this.uniqueID = uniqueID;
+        this.db = FirebaseFirestore.getInstance();
+        this.userRef = db.collection("users").document(this.getUniqueID());
+        this.facilityCol = this.userRef.collection("facility");
+        this.userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) throws RuntimeException {
+                userData = (HashMap<String, Object>) documentSnapshot.getData();
+                if (userData == null) {
+                    throw new UserDoesNotExist("this user does not exist in the database");
+                }
+
+                // populate user data from document
+
+                Object isAdminTemp = userData.get("isAdmin");
+                if (isAdminTemp == null) {
+                    throw new UserDoesNotExist("this user was missing the isAdmin field");
+                }
+                isAdmin = (boolean) isAdminTemp;
+
+                Object nameTemp = userData.get("name");
+                if (nameTemp == null) {
+                    throw new UserDoesNotExist("this user was missing the name field");
+                }
+                try {
+                    setName((String) nameTemp);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                Object emailTemp = userData.get("email");
+                if (emailTemp == null) {
+                    throw new UserDoesNotExist("this user was missing the email field");
+                }
+                try {
+                    setEmail((String) emailTemp);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                Object phoneNumberTemp = userData.get("phoneNumber");
+                if (phoneNumberTemp == null) {
+                    throw new UserDoesNotExist("this user was missing the phoneNumber field");
+                }
+                try {
+                    setPhoneNumber((Long) phoneNumberTemp);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                Object profilePictureTemp = userData.get("profilePicture");
+                if (profilePictureTemp == null) {
+                    throw new UserDoesNotExist("this user was missing the profilePicture field");
+                }
+                try {
+                    setProfilePicture((Bitmap) profilePictureTemp);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                Object facilityTemp = userData.get("facility"); // FIXME
+                if (facilityTemp == null) {
+                    throw new UserDoesNotExist("this user was missing the facility field");
+                }
+                try {
+                    setFacility((Facility) facilityTemp);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                Object notificationTemp = userData.get("receivesOrgAdmNotifications");
+                if (notificationTemp == null) {
+                    throw new UserDoesNotExist("this user was missing the receivesOrgAdmNotifications field");
+                }
+                try {
+                    setReceivesOrgAdmNotifications((boolean) notificationTemp);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
 
     public User(String name, String email) throws Exception {
-        db = FirebaseFirestore.getInstance();
-        this.userRef = db.collection("users").document(); // create new user
+        this.uniqueID = UUID.randomUUID().toString();
+        this.userData = new HashMap<>();
+        this.db = FirebaseFirestore.getInstance();
+        this.userRef = db.collection("users").document(this.getUniqueID()); // create new user
         this.facilityCol = this.userRef.collection("facility");
         this.setName(name); // it is important that name is set before profile picture
         this.setEmail(email);
         this.setPhoneNumber(null);
         this.setProfilePicture(null); // FIXME profile picture may not be provided by user and must then be auto-generated
-        this.isAdmin = false; // TODO check DB
+        this.isAdmin = false; // TODO insert into database
+        userData.put("isAdmin", false);
+        this.userRef.update(userData);
         this.setFacility(null);
         this.setReceivesOrgAdmNotifications(true);
-
-
     }
 
     public User(String name, String email, Long phoneNumber) throws Exception {
@@ -51,6 +142,10 @@ public class User {
     public User(String name, String email, Long phoneNumber, Bitmap profilePicture) throws Exception {
         this(name, email, phoneNumber);
         this.setProfilePicture(profilePicture);
+    }
+
+    public String getUniqueID() {
+        return this.uniqueID;
     }
 
     public void setName(String name) throws Exception {
