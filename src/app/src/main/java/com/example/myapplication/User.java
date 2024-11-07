@@ -157,14 +157,19 @@ public class User {
 
 
     public static void fetchUsers(OnSuccessListener<ArrayList<User>> onSuccessListener,OnFailureListener onFailureListener){
-        userRef.get().addOnSuccessListener((queryDocumentSnapshots -> {
+        userRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             ArrayList<User> users=new ArrayList<>();
-            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+            for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
                 String name = doc.getString("name");
                 String email = doc.getString("email");
-                Long phoneNumber -doc.getLong("phoneNumber");
-                User user = new User(Name, email, phoneNumber);
-                users.add(user);
+                Long phoneNumber =doc.getLong("phoneNumber");
+
+                try {
+                    User user=new User(name,email,phoneNumber);
+                    users.add(user);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
             onSuccessListener.onSuccess(users);
         }).addOnFailureListener(onFailureListener);
