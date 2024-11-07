@@ -24,7 +24,7 @@ public class FacilityUnitTest {
         User user = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         Facility facility = new Facility("name", location, user);
-        Event event = new EventMock("name", new Date(), null);
+        Event event = new EventMock("name", new Date(),  null, facility);
         assertEquals(facility.getEvents().size(), 0);
         facility.addEvent(event);
         assertEquals(facility.getEvents().size(), 1);
@@ -36,7 +36,7 @@ public class FacilityUnitTest {
         User user = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         Facility facility = new Facility("name", location, user);
-        Event event = new EventMock("name", new Date(), null);
+        Event event = new EventMock("name", new Date(),  null, facility);
         facility.addEvent(event);
         assertThrows(EventAlreadyExistsAtFacility.class, () -> {facility.addEvent(event);});
     }
@@ -46,7 +46,7 @@ public class FacilityUnitTest {
         User user = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         Facility facility = new Facility("name", location, user);
-        Event event = new EventMock("name", new Date(), null);
+        Event event = new EventMock("name", new Date(),  null, facility);
         facility.deleteEvent(event);
         assertEquals(facility.getEvents().size(), 0);
     }
@@ -56,7 +56,7 @@ public class FacilityUnitTest {
         User user = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         Facility facility = new Facility("name", location, user);
-        Event event = new EventMock("name", new Date(), null);
+        Event event = new EventMock("name", new Date(),  null, facility);
         facility.addEvent(event);
         facility.deleteEvent(event);
         assertEquals(facility.getEvents().size(), 0);
@@ -67,7 +67,7 @@ public class FacilityUnitTest {
         User user = new User("name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         Facility facility = new Facility("name", location, user);
-        Event event = new EventMock("name", new Date(), null);
+        Event event = new EventMock("name", new Date(),  null, facility);
         facility.addEvent(event);
         facility.deleteAllEvents();
         assertEquals(facility.getEvents().size(), 0);
