@@ -30,7 +30,6 @@ public class FacilityEditFragment extends AppCompatActivity {
         facilityNameInput.setText(existingFacility.getName()); // autofill existing facility name
         String address = latLngtoAddress(existingFacility.getLocation()); // convert LatLng to address
         facilityAddressInput.setText(address); // autofill existing facility address
-
     }
     public String latLngtoAddress(LatLng location) {
         Geocoder geocode = new Geocoder(this, Locale.getDefault());
@@ -45,4 +44,5 @@ public class FacilityEditFragment extends AppCompatActivity {
         }
         return null;
     }
+
 }

@@ -44,6 +44,7 @@ public class FacilityCreationFragment extends AppCompatActivity {
                 return;
             }
             Facility facility = new Facility(facilityName, facilityAddress, facilityOwner);
+            facilityOwner.setFacility(facility);
 
         });
     }
