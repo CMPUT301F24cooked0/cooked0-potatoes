@@ -22,22 +22,21 @@ public class Event {
     private Facility facility;
     private DocumentReference facilityRef;
     private DocumentReference eventRef;
-    private String eventId;
+    private final String eventId;
     private HashMap<String, Object> eventData;
 
     public Event(String name, Date date, Bitmap eventPoster, Facility facility) throws Exception {
-        db = FirebaseFirestore.getInstance();
-        facilityRef = facility.getFacilityRef();
+        this.db = FirebaseFirestore.getInstance();
+        this.facility = facility;
+        this.facilityRef = facility.getFacilityRef();
         this.eventRef = facilityRef.collection("events").document();
         this.eventId = eventRef.getId();
         this.setName(name);
         this.setDate(date);
         this.setEventPoster(eventPoster);
-        this.qrCode = new QRCode(); // TODO auto-generate text for QR code?
-        this.setQrCode(qrCode);
+        this.setQrCode(new QRCode()); // TODO auto-generate text for QR code?
         this.entrantPool = new EntrantPool(this);
         this.setCapacity(null);
-
     }
 
     public Event(String name, Date date, Bitmap eventPoster, Facility facility, Integer capacity) throws Exception {
@@ -49,8 +48,6 @@ public class Event {
         this.qrCode.setText(null);
         eventData.put("qrCode", this.qrCode.getText());
         this.eventRef.update(eventData); // update database after invalidating QR code
-
-
     }
 
     public void setName(String name) throws Exception {
