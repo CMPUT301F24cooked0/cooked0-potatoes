@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "269314485067",
+    "project_id": "cooked-events",
+    "storage_bucket": "cooked-events.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:269314485067:android:95d18a00c1b28451ba16ce",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "fake_key"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
