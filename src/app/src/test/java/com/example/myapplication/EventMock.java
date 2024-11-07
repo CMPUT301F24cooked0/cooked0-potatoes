@@ -16,12 +16,12 @@ import java.util.Date;
  */
 class EventMock extends Event {
 
-    public EventMock(String name, Date date, Bitmap eventPoster, Facility facility, FirebaseFirestore db) throws Exception {
-        super(name, date, eventPoster, facility, db);
+    public EventMock(String name, Date date, Bitmap eventPoster) throws Exception {
+        super(name, date, eventPoster);
     }
 
-    public EventMock(String name, Date date, Bitmap eventPoster, Facility facility, Integer capacity, FirebaseFirestore db) throws Exception {
-        super(name, date, eventPoster, facility, capacity, db);
+    public EventMock(String name, Date date, Bitmap eventPoster, Integer capacity) throws Exception {
+        super(name, date, eventPoster, capacity);
     }
 
     @Override
