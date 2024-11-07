@@ -3,15 +3,27 @@ package com.example.myapplication;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
 public class EntrantPool {
     private ArrayList<EntrantStatus> entrants;
+    private Event event;
+    private FirebaseFirestore db;
+    private DocumentReference eventRef;
+    private CollectionReference entrantsPoolCol;
 
-    public EntrantPool() {
+    public EntrantPool(Event event) {
         this.entrants = new ArrayList<EntrantStatus>();
         // TODO update database
+        this.event = event;
+        db = FirebaseFirestore.getInstance();
+        eventRef = event.getEventRef();
+        this.entrantsPoolCol = eventRef.collection("entrants");
+
     }
 
     /**
@@ -41,9 +53,8 @@ public class EntrantPool {
             throw new EntrantAlreadyInPool("entrant cannot be added to pool that they are already in");
         }
         // joinedFrom can be null though
-        EntrantStatus entrantStatus = new EntrantStatus(entrant, joinedFrom);
+        EntrantStatus entrantStatus = new EntrantStatus(entrant, joinedFrom, this);
         this.entrants.add(entrantStatus);
-        // TODO update database
     }
 
     public void removeEntrant(User entrant) {
@@ -55,7 +66,7 @@ public class EntrantPool {
             return; // no entrant to remove
         }
         this.entrants.remove(entrantStatus);
-        // TODO update database
+        this.entrantsPoolCol.document(entrantStatus.getEntrantId()).delete(); // delete from entrants pool collection
     }
 
     public void setEntrantStatus(User entrant, Status status) {
@@ -67,7 +78,7 @@ public class EntrantPool {
             return; // no entrant to change status of
         }
         entrantStatus.setStatus(status);
-        // TODO update database
+        this.entrantsPoolCol.document(entrantStatus.getEntrantId()).update("status", status); // update status in database for entrant
     }
 
     public ArrayList<User> getEntrants() {
@@ -88,5 +99,9 @@ public class EntrantPool {
         // don't forget to update their statuses when drawing!
         return new ArrayList<User>(); // temporary
         // TODO update database
+    }
+
+    public CollectionReference getEntrantsPoolCol() {
+        return entrantsPoolCol; // return reference to entrants pool collection in database
     }
 }
