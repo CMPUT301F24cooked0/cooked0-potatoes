@@ -16,7 +16,6 @@ public class Facility {
     private FirebaseFirestore db;
     private DocumentReference facilityRef;
     private CollectionReference eventsCol;
-    private DocumentReference userRef;
 
     public Facility(String name, LatLng location, User user) {
         this.name = name;
@@ -25,14 +24,13 @@ public class Facility {
         this.events = new ArrayList<Event>();
         // update database after creating facility
         db = FirebaseFirestore.getInstance();
-        userRef = user.getUserRef();
+        DocumentReference userRef = user.getUserRef();
         facilityRef = userRef.collection("facility").document();
         eventsCol = facilityRef.collection("events");
         HashMap<String, Object> facilityData = new HashMap<>();
         facilityData.put("name", name);
         facilityData.put("location", location);
         facilityRef.set(facilityData);
-
     }
 
     public void addEvent(Event event) {
@@ -44,8 +42,7 @@ public class Facility {
             throw new EventAlreadyExistsAtFacility("this event already exists at this facility and cannot be added again");
         }
         this.events.add(event);
-
-
+        eventsCol.document(event.getEventId()); // add event to database
     }
 
     public void deleteEvent(Event event) {
@@ -77,5 +74,12 @@ public class Facility {
     public DocumentReference getFacilityRef() {
         return this.facilityRef; // return reference to facility in database
     }
-}
 
+    public String getName() {
+        return this.name;
+    }
+
+    public LatLng getLocation() {
+        return this.location;
+    }
+}
