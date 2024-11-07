@@ -32,7 +32,8 @@ public class User {
         this.uniqueID = uniqueID;
         this.db = FirebaseFirestore.getInstance();
         this.userRef = db.collection("users").document(this.getUniqueID());
-        this.facilityCol = this.userRef.collection("facility"); // FIXME how to connect user to their facility, if any
+        this.facilityCol = this.userRef.collection("facility");
+        DocumentReference facilityRef = this.facilityCol.document(); // TODO import facility from database, if there is one
         this.userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) throws RuntimeException {
@@ -85,16 +86,6 @@ public class User {
                 }
                 try {
                     setProfilePicture((Bitmap) profilePictureTemp);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
-                Object facilityTemp = userData.get("facility"); // FIXME
-                if (facilityTemp == null) {
-                    throw new UserDoesNotExist("this user was missing the facility field");
-                }
-                try {
-                    setFacility((Facility) facilityTemp);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
