@@ -17,9 +17,9 @@ public class DatabaseManager { // static class
         this.db = FirebaseFirestore.getInstance();
     }
 
-    public void createUser(User user) {
+    public DocumentReference createUser(User user) {
         if (user == null) {
-            return;
+            return null;
         }
         String userID = user.getUniqueID();
         HashMap<String, Object> userData = new HashMap<>();
@@ -32,21 +32,22 @@ public class DatabaseManager { // static class
         DocumentReference userRef = this.db.collection("users").document(userID);
         userRef.set(userData);
         CollectionReference facilityCol = userRef.collection("facility");
-        this.createFacility(user, user.getFacility());
+        DocumentReference facilityRef = this.createFacility(user, user.getFacility());
+
+        return userRef;
     }
 
     public void updateUser(User user) {
         if (user == null) {
             return;
         }
-        String userID = user.getUniqueID();
         HashMap<String, Object> userData = new HashMap<>();
         userData.put("name", user.getName());
         userData.put("email", user.getEmail());
         userData.put("phoneNumber", user.getPhoneNumber());
         userData.put("profilePicture", user.getProfilePicture());
         userData.put("receivesOrgAdmNotifications", user.getReceivesOrgAdmNotifications());
-        DocumentReference userRef = this.db.collection("users").document(userID);
+        DocumentReference userRef = user.getUserReference();
         userRef.update(userData);
         this.updateFacility(user, user.getFacility());
     }
@@ -54,7 +55,8 @@ public class DatabaseManager { // static class
     public User getUser(String userID) {
         DocumentReference userRef = this.db.collection("users").document(userID);
         CollectionReference facilityCol = userRef.collection("facility");
-        DocumentReference facilityRef = facilityCol.document(); // FIXME import facility from database if there is one?
+        DocumentReference facilityRef = facilityCol.document();
+        Facility facility = this.getFacility(facilityRef.getId());
         final User[] user = new User[1];
 
         userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -104,7 +106,7 @@ public class DatabaseManager { // static class
                 boolean receivesOrgAdmNotifications = (boolean) notificationTemp;
 
                 try {
-                    user[0] = new User(name, email, phoneNumber, profilePicture, isAdmin, receivesOrgAdmNotifications);
+                    user[0] = new User(name, email, phoneNumber, profilePicture, isAdmin, receivesOrgAdmNotifications, userRef, facility);
                 } catch (Exception e) {
                     user[0] = null;
                     throw new RuntimeException(e);
@@ -115,21 +117,22 @@ public class DatabaseManager { // static class
         return user[0];
     }
 
-    public void createFacility(User user, Facility facility) {
+    public DocumentReference createFacility(User user, Facility facility) {
         if (user == null || facility == null) {
-            return;
+            return null;
         }
-        String userID = user.getUniqueID();
-        DocumentReference userRef = this.db.collection("users").document(userID);
+        DocumentReference userRef = user.getUserReference();
         DocumentReference facilityRef = userRef.collection("facility").document();
         HashMap<String, Object> facilityData = new HashMap<>();
         facilityData.put("name", facility.getName());
         facilityData.put("location", facility.getLocation());
         facilityRef.set(facilityData);
         CollectionReference eventCol = facilityRef.collection("events");
+
+        return facilityRef;
     }
 
-    public void updateFacility(User user, Facility facility) {
+    public void updateFacility(Facility facility) {
 
     }
 

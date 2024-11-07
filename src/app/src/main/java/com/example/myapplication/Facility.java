@@ -5,32 +5,39 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.w3c.dom.Document;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Facility {
     private final String name;
     private final LatLng location;
-    private User user;
     private ArrayList<Event> events;
-    private FirebaseFirestore db;
     private DocumentReference facilityRef;
-    private CollectionReference eventsCol;
 
-    public Facility(String name, LatLng location, User user) {
+    private Facility(String name, LatLng location) {
         this.name = name;
         this.location = location;
-        this.user = user;
         this.events = new ArrayList<Event>();
-        // update database after creating facility
-        this.db = FirebaseFirestore.getInstance();
-        DocumentReference userRef = user.getUserRef();
-        this.facilityRef = userRef.collection("facility").document();
-        this.eventsCol = facilityRef.collection("events");
-        HashMap<String, Object> facilityData = new HashMap<>();
-        this.facilityData.put("name", name);
-        this.facilityData.put("location", location);
-        facilityRef.set(facilityData);
+    }
+
+    public Facility(String name, LatLng location, User user) {
+        this(name, location);
+        this.facilityRef = new DatabaseManager().createFacility(user, this);
+    }
+
+    /**
+     * only use this constructor in DatabaseManager to instantiate a facility from the data in the database
+     * @param name
+     * @param location
+     * @param facilityRef
+     * @param events
+     */
+    public Facility(String name, LatLng location, DocumentReference facilityRef, ArrayList<Event> events) {
+        this(name, location);
+        this.facilityRef = facilityRef;
+        this.events = events;
     }
 
     public void addEvent(Event event) {
