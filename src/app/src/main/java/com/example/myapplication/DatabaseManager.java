@@ -21,8 +21,27 @@ public class DatabaseManager { // static class
         userData.put("email", user.getEmail());
         userData.put("phoneNumber", user.getPhoneNumber());
         userData.put("profilePicture", user.getProfilePicture());
+        userData.put("receivesOrgAdmNotifications", user.getReceivesOrgAdmNotifications());
+        // FIXME insert facility? how?
         DocumentReference userRef = this.db.collection("users").document(userID);
         userRef.set(userData);
         CollectionReference facilityCol = userRef.collection("facility");
+    }
+
+    public void updateUser(User user) {
+        String userID = user.getUniqueID();
+        HashMap<String, Object> userData = new HashMap<>();
+        userData.put("name", user.getName());
+        userData.put("email", user.getEmail());
+        userData.put("phoneNumber", user.getPhoneNumber());
+        userData.put("profilePicture", user.getProfilePicture());
+        userData.put("receivesOrgAdmNotifications", user.getReceivesOrgAdmNotifications());
+        // FIXME update facility? how?
+        DocumentReference userRef = this.db.collection("users").document(userID);
+        userRef.update(userData);
+    }
+
+    public User getUser(String userID) {
+
     }
 }
