@@ -18,6 +18,9 @@ public class DatabaseManager { // static class
     }
 
     public void createUser(User user) {
+        if (user == null) {
+            return;
+        }
         String userID = user.getUniqueID();
         HashMap<String, Object> userData = new HashMap<>();
         userData.put("isAdmin", user.isAdmin());
@@ -26,13 +29,16 @@ public class DatabaseManager { // static class
         userData.put("phoneNumber", user.getPhoneNumber());
         userData.put("profilePicture", user.getProfilePicture());
         userData.put("receivesOrgAdmNotifications", user.getReceivesOrgAdmNotifications());
-        // FIXME insert facility? how?
         DocumentReference userRef = this.db.collection("users").document(userID);
         userRef.set(userData);
         CollectionReference facilityCol = userRef.collection("facility");
+        this.createFacility(user, user.getFacility());
     }
 
     public void updateUser(User user) {
+        if (user == null) {
+            return;
+        }
         String userID = user.getUniqueID();
         HashMap<String, Object> userData = new HashMap<>();
         userData.put("name", user.getName());
@@ -40,9 +46,9 @@ public class DatabaseManager { // static class
         userData.put("phoneNumber", user.getPhoneNumber());
         userData.put("profilePicture", user.getProfilePicture());
         userData.put("receivesOrgAdmNotifications", user.getReceivesOrgAdmNotifications());
-        // FIXME update facility? how?
         DocumentReference userRef = this.db.collection("users").document(userID);
         userRef.update(userData);
+        this.updateFacility(user, user.getFacility());
     }
 
     public User getUser(String userID) {
@@ -107,5 +113,27 @@ public class DatabaseManager { // static class
         });
 
         return user[0];
+    }
+
+    public void createFacility(User user, Facility facility) {
+        if (user == null || facility == null) {
+            return;
+        }
+        String userID = user.getUniqueID();
+        DocumentReference userRef = this.db.collection("users").document(userID);
+        DocumentReference facilityRef = userRef.collection("facility").document();
+        HashMap<String, Object> facilityData = new HashMap<>();
+        facilityData.put("name", facility.getName());
+        facilityData.put("location", facility.getLocation());
+        facilityRef.set(facilityData);
+        CollectionReference eventCol = facilityRef.collection("events");
+    }
+
+    public void updateFacility(User user, Facility facility) {
+
+    }
+
+    public Facility getFacility(String facilityID) {
+
     }
 }
