@@ -1,15 +1,17 @@
 package com.example.myapplication;
 
+import androidx.fragment.app.Fragment;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
-public class Facility {
+public class FacilityFragment extends Fragment {
     private final String name;
     private final LatLng location;
     private ArrayList<Event> events;
 
-    public Facility(String name, LatLng location) {
+    public FacilityFragment(String name, LatLng location) {
         this.name = name;
         this.location = location;
         this.events = new ArrayList<Event>();

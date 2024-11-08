@@ -8,7 +8,7 @@ public class User {
     private Long phoneNumber;
     private Bitmap profilePicture;
     private final boolean isAdmin;
-    private Facility facility;
+    private FacilityFragment facility;
     private boolean receivesOrgAdmNotifications;
 
     // TODO constructor that gets info from database
@@ -95,7 +95,7 @@ public class User {
         this.setProfilePicture(null); // deletes and generates from user's name
     }
 
-    public void setFacility(Facility facility) {
+    public void setFacility(FacilityFragment facility) {
         this.facility = facility;
         // TODO update database
     }
@@ -125,7 +125,7 @@ public class User {
         return this.profilePicture;
     }
 
-    public Facility getFacility(){
+    public FacilityFragment getFacility(){
         return this.facility;
     }
 

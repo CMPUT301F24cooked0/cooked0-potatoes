@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:padding="15dp"
-    tools:context=".SignUpActivity">
+    tools:context=".SignUpFragment">
 
    <TextView
        android:layout_width="wrap_content"

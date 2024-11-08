@@ -3,8 +3,6 @@ package com.example.myapplication;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
-import android.graphics.Bitmap;
-
 import com.google.android.gms.maps.model.LatLng;
 
 import org.junit.Test;
@@ -15,13 +13,13 @@ public class FacilityUnitTest {
     @Test
     public void constructorTest() {
         LatLng location = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", location);
+        FacilityFragment facility = new FacilityFragment("name", location);
     }
 
     @Test
     public void addEventTest() throws Exception {
         LatLng location = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", location);
+        FacilityFragment facility = new FacilityFragment("name", location);
         Event event = new EventMock("name", new Date(), null);
         assertEquals(facility.getEvents().size(), 0);
         facility.addEvent(event);
@@ -32,7 +30,7 @@ public class FacilityUnitTest {
     @Test
     public void addDuplicateEventTest() throws Exception {
         LatLng location = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", location);
+        FacilityFragment facility = new FacilityFragment("name", location);
         Event event = new EventMock("name", new Date(), null);
         facility.addEvent(event);
         assertThrows(EventAlreadyExistsAtFacility.class, () -> {facility.addEvent(event);});
@@ -41,7 +39,7 @@ public class FacilityUnitTest {
     @Test
     public void deleteEventNotInFacilityTest() throws Exception {
         LatLng location = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", location);
+        FacilityFragment facility = new FacilityFragment("name", location);
         Event event = new EventMock("name", new Date(), null);
         facility.deleteEvent(event);
         assertEquals(facility.getEvents().size(), 0);
@@ -50,7 +48,7 @@ public class FacilityUnitTest {
     @Test
     public void deleteEventInFacilityTest() throws Exception {
         LatLng location = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", location);
+        FacilityFragment facility = new FacilityFragment("name", location);
         Event event = new EventMock("name", new Date(), null);
         facility.addEvent(event);
         facility.deleteEvent(event);
@@ -60,7 +58,7 @@ public class FacilityUnitTest {
     @Test
     public void deleteAllEventsTest() throws Exception {
         LatLng location = new LatLng(69.420, 42.69);
-        Facility facility = new Facility("name", location);
+        FacilityFragment facility = new FacilityFragment("name", location);
         Event event = new EventMock("name", new Date(), null);
         facility.addEvent(event);
         facility.deleteAllEvents();
