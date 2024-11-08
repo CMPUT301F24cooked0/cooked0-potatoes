@@ -31,6 +31,7 @@ public class AdministratorBrowseEventsFragment extends Fragment {
         eventListView.setOnItemClickListener((parent,view1,position,id)->{
             Event clickedEvent=eventList.get(position);
             Intent intent=new Intent(getContext(),AdministratorEventDetails.class);
+            intent.putExtra("event",clickedEvent);
             startActivity(intent);
         });
         return view;
