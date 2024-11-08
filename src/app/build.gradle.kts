@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.qr.generator)
     implementation(libs.play.services.maps)
     implementation("androidx.fragment:fragment-testing:1.8.5")
     testImplementation(libs.junit)
