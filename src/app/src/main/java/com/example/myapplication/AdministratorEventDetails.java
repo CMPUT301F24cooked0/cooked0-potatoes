@@ -24,7 +24,7 @@ public class AdministratorEventDetails extends AppCompatActivity {
         TextView eventName=findViewById(R.id.event_name);
         Button removeEventButton=findViewById(R.id.remove_event_button);
         Button removeQRButton=findViewById(R.id.remove_qr_button);
-        Button returnButton=findViewById(R.id.return_button);
+        Button returnButton=findViewById(R.id.event_detail_return_button);
 
         if(event!=null){
             if(event.getEventPoster()!=null){

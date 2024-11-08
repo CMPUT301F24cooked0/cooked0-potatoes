@@ -1,6 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+    <ImageView
+        android:id="@+id/event_detail_poster"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/event_poster"/>
+    <TextView
+        android:id="@+id/event_detail_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:paddingTop="15dp"/>
+    <Button
+        android:id="@+id/remove_event_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Remove Event"
+        android:layout_marginTop="15dp"
+        android:backgroundTint="#DA313C"/>
+    <Button
+        android:id="@+id/remove_qr_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Remove QR Code Data"
+        android:layout_marginTop="5dp"
+        android:backgroundTint="#DA313C"/>
+    <Button
+        android:id="@+id/event_detail_return_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Return"
+        android:layout_marginTop="5dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
