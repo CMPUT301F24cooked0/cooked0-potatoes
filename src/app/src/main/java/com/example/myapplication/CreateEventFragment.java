@@ -27,7 +27,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class CreateEventFragment extends Fragment {
-    // TODO Add Event Creation functionality
     private EditText eventName, eventDate, eventCapacity, eventDetails, eventStart, eventEnd;
     private Button createEventButton;
     private ImageView eventPoster;
@@ -48,6 +47,7 @@ public class CreateEventFragment extends Fragment {
         eventStart = view.findViewById(R.id.eventStartInput);
         eventEnd =view.findViewById(R.id.eventEndInput);
         eventPoster = view.findViewById(R.id.eventPosterPlaceholder);
+        // TODO get facility from previous activity
 
 
         createEventButton = view.findViewById(R.id.createEventButton);
@@ -94,6 +94,7 @@ public class CreateEventFragment extends Fragment {
         Bitmap eventPosterBitmap = ((BitmapDrawable) eventPoster.getDrawable()).getBitmap();
 
         Event event = createEvent(name, start, end, capacity, details, facilityId, eventPoster.getDrawingCache());
+        // TODO update facility array with event
 
         if (event != null) {
             // For now, just log the event or handle further operations

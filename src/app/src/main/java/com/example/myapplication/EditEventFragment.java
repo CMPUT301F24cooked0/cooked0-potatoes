@@ -36,6 +36,7 @@ public class EditEventFragment extends Fragment {
 
         eventNameEditText = view.findViewById(R.id.editEventNameInput);
         eventCapacityEditText = view.findViewById(R.id.editEventCapInput);
+        // TODO get event from previous activity
         //dateButton = view.findViewById(R.id.editEventStartInput);
         saveButton = view.findViewById(R.id.editEventButton);
 

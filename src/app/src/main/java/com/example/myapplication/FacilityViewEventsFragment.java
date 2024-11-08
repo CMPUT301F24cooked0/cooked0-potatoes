@@ -33,12 +33,25 @@ public class FacilityViewEventsFragment extends AppCompatActivity {
         eventAdapter = new EventArrayAdapter(this, facility.getEvents());
         eventList.setAdapter(eventAdapter);
         facilityName.setText(facility.getName());
-        // TODO Link with edit facility page and edit event page
         addEventButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, CreateEventFragment.class);
             intent.putExtra("facility", facility);
             startActivity(intent);
         });
+        // TODO Link with edit facility page
+//        facilityEditFrame.setOnClickListener(v -> {
+//            Intent intent = new Intent(this, EditFacilityFragment.class);
+//            intent.putExtra("facility", facility);
+//            startActivity(intent);
+//        });
+        // TODO Link with edit event page
+        eventList.setOnItemClickListener((parent, view, position, id) -> {
+            Intent intent = new Intent(this, EditEventFragment.class);
+            intent.putExtra("event", facility.getEvents().get(position));
+            startActivity(intent);
+        });
+
+        }
 
     }
 }
