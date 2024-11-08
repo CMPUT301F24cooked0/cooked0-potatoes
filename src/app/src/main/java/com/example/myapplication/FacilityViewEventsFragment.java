@@ -30,5 +30,7 @@ public class FacilityViewEventsFragment extends AppCompatActivity {
         facilityName.setText(facility.getName());
         // TODO Link with edit facility page and edit event page
 
+
+
     }
 }

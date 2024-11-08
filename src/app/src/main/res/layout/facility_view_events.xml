@@ -92,5 +92,17 @@
 
     </ListView>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="400dp"
+        android:clickable="true"
+        android:translationX="150dp"
+        app:backgroundTint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/eventList"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
