@@ -30,6 +30,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         ImageView eventPoster = view.findViewById(R.id.eventPosterPlaceholder);
         eventTitle.setText(event.getName());
         eventPoster.setImageBitmap(event.getEventPoster());
+        // eventDesc.setText(event.getDescription());
         return view;
 
 
