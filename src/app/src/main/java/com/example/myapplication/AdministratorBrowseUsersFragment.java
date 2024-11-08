@@ -3,31 +3,21 @@ package com.example.myapplication;
 
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.icu.text.Transliterator;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-
 import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.List;
 
 
 public class AdministratorBrowseUsersFragment extends Fragment {
@@ -60,7 +50,7 @@ public class AdministratorBrowseUsersFragment extends Fragment {
 
     private void showDeletePage(final int position) {
         LayoutInflater inflater= LayoutInflater.from(requireContext());
-        View dialogView = inflater.inflate(R.layout.delete_user_dialog, null);
+        View dialogView = inflater.inflate(R.layout.delete_dialog, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setView(dialogView);
         TextView dialogTitle = dialogView.findViewById(R.id.dialog_title);
