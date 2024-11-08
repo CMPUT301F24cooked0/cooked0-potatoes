@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
@@ -67,7 +68,9 @@ public class AdministratorBrowseUsersFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setView(dialogView);
         TextView dialogTitle = dialogView.findViewById(R.id.dialog_title);
+        TextView dialogMessage=dialogView.findViewById(R.id.dialog_message);
         dialogTitle.setText("Remove User");
+        dialogMessage.setText("Are you sure you want to remove this user?");
         Button cancelButton = dialogView.findViewById(R.id.dialog_cancel_button);
         Button removeButton = dialogView.findViewById(R.id.dialog_remove_button);
         AlertDialog dialog = builder.create();
@@ -79,9 +82,11 @@ public class AdministratorBrowseUsersFragment extends Fragment {
                 userDataList.remove(position);
                 userArrayAdapter.notifyDataSetChanged();
                 dialog.dismiss();
-                Log.d("DeleteUser","Successfully removed user");},
+                Log.d("DeleteUser","Successfully removed user");
+                        Toast.makeText(requireContext(),"Succesfully removed user",Toast.LENGTH_SHORT).show();},
                     e -> {
                 Log.w("DeleteUser","Failed to delete user");
+                Toast.makeText(requireContext(),"Failed to delete user",Toast.LENGTH_SHORT).show();
             });
             dialog.dismiss();
         });
