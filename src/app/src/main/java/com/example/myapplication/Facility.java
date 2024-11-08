@@ -21,7 +21,7 @@ public class Facility {
     private DocumentReference facilityRef;
 
     /**
-     * Private base constructor to consolidate code used by other constructors
+     * Base constructor to consolidate code used by other constructors
      * @param name
      * @param location
      */

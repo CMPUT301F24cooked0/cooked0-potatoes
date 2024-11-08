@@ -24,11 +24,19 @@ public class Event {
     private final EntrantPool entrantPool;
     private DocumentReference eventRef;
 
+    /***
+     * Base constructor to consolidate code used by other constructors
+     * @param name
+     * @param date
+     * @param eventPoster
+     * @throws Exception
+     */
     public Event(String name, Date date, Bitmap eventPoster, Facility facility) throws Exception {
         db = FirebaseFirestore.getInstance();
         facilityRef = facility.getFacilityRef();
         this.eventRef = facilityRef.collection("events").document();
         this.eventId = eventRef.getId();
+
         this.setName(name);
         this.setDate(date);
         this.setEventPoster(eventPoster);
@@ -39,6 +47,10 @@ public class Event {
 
     }
 
+    /**
+     * create an event with a capacity
+     * @param capacity
+    */
     public Event(String name, Date date, Bitmap eventPoster, Facility facility, Integer capacity) throws Exception {
         this(name, date, eventPoster, facility);
         this.setCapacity(capacity);
