@@ -86,8 +86,5 @@ public class EditEventFragment extends Fragment {
 
         // Set the poster (update this as per your logic for changing the poster, e.g., via an image picker)
         event.setEventPoster(eventPoster);
-
-        // TODO: Update Firebase with new details
-        Toast.makeText(getActivity(), "Event updated successfully", Toast.LENGTH_SHORT).show();
     }
 }
