@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Facility {
-    private final String name;
-    private final LatLng location;
+    private String name;
+    private LatLng location;
     private ArrayList<Event> events;
     private DocumentReference facilityRef;
 
@@ -85,4 +85,13 @@ public class Facility {
     public LatLng getLocation() {
         return this.location;
     }
+    public void setName(String name) {
+        this.name = name;
+        // TODO update database
+    }
+    public void setLocation(LatLng location) {
+        this.location = location;
+        // TODO update database
+    }
+
 }
