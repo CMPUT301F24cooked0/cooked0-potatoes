@@ -24,6 +24,16 @@ public class User {
     private boolean receivesOrgAdmNotifications;
     private DocumentReference userRef;
 
+    /**
+     * Simplest constructor for the User class
+     * This constructor **creates a new user** and adds it to the database
+     * Profile picture will automatically be generated based on user's name
+     * User will not be admin by default
+     * everything else is set to null
+     * @param name
+     * @param email
+     * @throws Exception
+     */
     public User(String name, String email) throws Exception {
         this.uniqueID = UUID.randomUUID().toString();
         this.setName(name); // it is important that name is set before profile picture
@@ -36,18 +46,42 @@ public class User {
         this.userRef = new DatabaseManager().createUser(this);
     }
 
+    /**
+     * This constructor is the same as the simplest one, but allows defining a phone number as well
+     * @param name
+     * @param email
+     * @param phoneNumber
+     * @throws Exception
+     */
     public User(String name, String email, Long phoneNumber) throws Exception {
         this(name, email);
         this.setPhoneNumber(phoneNumber);
         new DatabaseManager().updateUser(this);
     }
 
+    /**
+     * This constructor is the same as the simplest one, but allows defining a profile picture as well
+     * @param name
+     * @param email
+     * @param profilePicture
+     * @throws Exception
+     */
     public User(String name, String email, Bitmap profilePicture) throws Exception {
         this(name, email);
         this.setProfilePicture(profilePicture);
         new DatabaseManager().updateUser(this);
     }
 
+    /**
+     * This constructor essentially a combination of:
+     * - the one that allows a phone number and
+     * - the one that allows a profile picture
+     * @param name
+     * @param email
+     * @param phoneNumber
+     * @param profilePicture
+     * @throws Exception
+     */
     public User(String name, String email, Long phoneNumber, Bitmap profilePicture) throws Exception {
         this(name, email, phoneNumber);
         this.setProfilePicture(profilePicture);
@@ -71,10 +105,19 @@ public class User {
         this.facility = facility;
     }
 
+    /**
+     * Get this user's unique device ID
+     * @return
+     */
     public String getUniqueID() {
         return this.uniqueID;
     }
 
+    /**
+     * Set this user's name, throws exception on null or empty name
+     * @param name
+     * @throws Exception
+     */
     public void setName(String name) throws Exception {
         if (name == null) {
             throw new Exception("cannot set name to null");
@@ -86,6 +129,11 @@ public class User {
         new DatabaseManager().updateUser(this);
     }
 
+    /**
+     * Set this user's email, throws exception or null, empty or invalid email
+     * @param email
+     * @throws Exception
+     */
     public void setEmail(String email) throws Exception {
         if (email == null) {
             throw new Exception("cannot set email to null");
@@ -100,6 +148,11 @@ public class User {
         new DatabaseManager().updateUser(this);
     }
 
+    /**
+     * Set this user's phone number, throws exception on null or invalid phone number
+     * @param phoneNumber
+     * @throws Exception
+     */
     public void setPhoneNumber(Long phoneNumber) throws Exception {
         if (phoneNumber != null) {
             if (phoneNumber <= 0) {
@@ -118,6 +171,10 @@ public class User {
         new DatabaseManager().updateUser(this);
     }
 
+    /**
+     * set this user's profile picture, generates a profile picture if it's null
+     * @param profilePicture
+     */
     public void setProfilePicture(Bitmap profilePicture) {
         if (profilePicture == null) {
             // this is ok,
@@ -128,56 +185,106 @@ public class User {
         new DatabaseManager().updateUser(this);
     }
 
+    /**
+     * delete this user's profile picture (resets it to the automatically generated one)
+     */
     public void deleteProfilePicture() {
         this.setProfilePicture(null); // deletes and generates from user's name
     }
 
+    /**
+     * set this user's facility (they are now an organizer)
+     * @param facility
+     */
     public void setFacility(Facility facility) {
         this.facility = facility;
     }
 
+    /**
+     * set this user's notification preference
+     * @param receivesOrgAdmNotifications
+     */
     public void setReceivesOrgAdmNotifications(boolean receivesOrgAdmNotifications){
         this.receivesOrgAdmNotifications = receivesOrgAdmNotifications;
         new DatabaseManager().updateUser(this);
     }
 
+    /**
+     * delete this user's facility (user is no longer an organizer)
+     */
     public void deleteFacility() {
         this.setFacility(null);
         new DatabaseManager().updateUser(this);
     }
 
+    /**
+     * get this user's name
+     * @return
+     */
     public String getName(){
         return this.name;
     }
 
+    /**
+     * get this user's email
+     * @return
+     */
     public String getEmail(){
         return this.email;
     }
 
+    /**
+     * get this user's phone number
+     * @return
+     */
     public Long getPhoneNumber(){
         return this.phoneNumber;
     }
 
+    /**
+     * get this user's profile picture
+     * @return
+     */
     public Bitmap getProfilePicture(){
         return this.profilePicture;
     }
 
+    /**
+     * get this user's facility (null iff user is not an organizer)
+     * @return
+     */
     public Facility getFacility(){
         return this.facility;
     }
 
+    /**
+     * get whether this user is an admin or not
+     * @return
+     */
     public boolean isAdmin(){
         return this.isAdmin;
     }
 
+    /**
+     * get whether this user is an organizer or not
+     * @return
+     */
     public boolean isOrganizer(){
         return (this.facility != null); // user is an organizer if they have a facility
     }
 
+    /**
+     * get the user's notification preference
+     * @return
+     */
     public boolean getReceivesOrgAdmNotifications() {
         return this.receivesOrgAdmNotifications;
     }
 
+    /**
+     * get the DocumentReference to the user in the database
+     * @return
+     */
     public DocumentReference getUserReference() {
         return this.userRef;
     }

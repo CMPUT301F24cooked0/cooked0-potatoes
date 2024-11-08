@@ -16,6 +16,10 @@ public class EntrantPool {
     private DocumentReference eventRef;
     private CollectionReference entrantsPoolCol;
 
+    /**
+     * EntrantPool constructor, no users in the pool by default
+     * @param event
+     */
     public EntrantPool(Event event) {
         this.entrants = new ArrayList<EntrantStatus>();
         // TODO update database
@@ -44,6 +48,12 @@ public class EntrantPool {
         return null;
     }
 
+    /**
+     * add an entrant to the pool with default status "none"
+     * @param entrant
+     * @param joinedFrom
+     * @throws EntrantAlreadyInPool
+     */
     public void addEntrant(User entrant, LatLng joinedFrom) throws EntrantAlreadyInPool {
         if (entrant == null) {
             return;
@@ -57,6 +67,10 @@ public class EntrantPool {
         this.entrants.add(entrantStatus);
     }
 
+    /**
+     * remove an entrant from the pool
+     * @param entrant
+     */
     public void removeEntrant(User entrant) {
         if (entrant == null) {
             return; // nothing to do here
@@ -69,6 +83,11 @@ public class EntrantPool {
         this.entrantsPoolCol.document(entrantStatus.getEntrantId()).delete(); // delete from entrants pool collection
     }
 
+    /**
+     * set an entrant's status, if they are not in the pool, nothing happens
+     * @param entrant
+     * @param status
+     */
     public void setEntrantStatus(User entrant, Status status) {
         if (entrant == null) {
             return;
@@ -81,6 +100,10 @@ public class EntrantPool {
         this.entrantsPoolCol.document(entrantStatus.getEntrantId()).update("status", status); // update status in database for entrant
     }
 
+    /**
+     * get a list of the entrants in the pool
+     * @return
+     */
     public ArrayList<User> getEntrants() {
         ArrayList<User> entrants = new ArrayList<User>();
         // add entrants from each entrant status into list
@@ -90,10 +113,19 @@ public class EntrantPool {
         return entrants;
     }
 
+    /**
+     * get a list of the EntrantStatuses in the pool
+     * @return
+     */
     public ArrayList<EntrantStatus> getEntrantStatuses() {
         return this.entrants;
     }
 
+    /**
+     * draw a number of entrants from the pool and return that list
+     * @param howMany
+     * @return
+     */
     public ArrayList<User> drawEntrants(int howMany) {
         // TODO implement this method
         // don't forget to update their statuses when drawing!
@@ -101,6 +133,10 @@ public class EntrantPool {
         // TODO update database
     }
 
+    /**
+     * get a DocumentReference to this EntrantPool in the database
+     * @return
+     */
     public CollectionReference getEntrantsPoolCol() {
         return entrantsPoolCol; // return reference to entrants pool collection in database
     }

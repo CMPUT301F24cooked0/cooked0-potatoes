@@ -18,12 +18,7 @@ public class Event {
     private Bitmap eventPoster;
     private QRCode qrCode;
     private final EntrantPool entrantPool;
-    private FirebaseFirestore db;
-    private Facility facility;
-    private DocumentReference facilityRef;
     private DocumentReference eventRef;
-    private String eventId;
-    private HashMap<String, Object> eventData;
 
     public Event(String name, Date date, Bitmap eventPoster, Facility facility) throws Exception {
         db = FirebaseFirestore.getInstance();
@@ -45,14 +40,21 @@ public class Event {
         this.setCapacity(capacity);
     }
 
+    /**
+     * invalidate the current QR code for this event. This sets the QR code text to null and updates the database
+     * which means that any future scans of the QR code will point to nothing, since it is no longer in the database
+     */
     public void invalidateQRCode() {
         this.qrCode.setText(null);
         eventData.put("qrCode", this.qrCode.getText());
         this.eventRef.update(eventData); // update database after invalidating QR code
-
-
     }
 
+    /**
+     * set this event's name, throws an exception if the name is null or empty
+     * @param name
+     * @throws Exception
+     */
     public void setName(String name) throws Exception {
         if (name == null) {
             throw new Exception("cannot set event name to null");
@@ -65,6 +67,11 @@ public class Event {
         this.eventRef.update(eventData); // update database after setting name
     }
 
+    /**
+     * set this event's date, throws an exception if the date is null or in the past
+     * @param date
+     * @throws Exception
+     */
     public void setDate(Date date) throws Exception {
         if (date == null) {
             throw new Exception("cannot set event date to null");
@@ -78,6 +85,12 @@ public class Event {
         this.eventRef.update(eventData); // update database after setting date
     }
 
+    /**
+     * set this event's capacity, throws an exception if the capacity is 0 or negative
+     * A capacity of null is valid, and means that the event has no capacity
+     * @param capacity
+     * @throws Exception
+     */
     public void setCapacity(Integer capacity) throws Exception {
         if (capacity != null) {
             if (capacity <= 0) {
@@ -91,6 +104,11 @@ public class Event {
         this.eventRef.update(eventData); // update database after setting capacity
     }
 
+    /**
+     * set this event's poster, throws an exception if the poster is null, or if image dimensions are too small or too large
+     * @param eventPoster
+     * @throws Exception
+     */
     public void setEventPoster(Bitmap eventPoster) throws Exception {
         if (eventPoster == null) {
             throw new Exception("event poster cannot be null");
@@ -106,6 +124,11 @@ public class Event {
         this.eventRef.update(eventData); // update database after setting event poster
     }
 
+    /**
+     * set this event's QR code, throws an exception if null
+     * @param qrCode
+     * @throws Exception
+     */
     public void setQrCode(QRCode qrCode) throws Exception {
         if (qrCode == null) {
             throw new Exception("QR code cannot be null");
@@ -118,44 +141,84 @@ public class Event {
         this.eventRef.update(eventData); // update database after setting QR code
     }
 
+    /**
+     * add an entrant to this event
+     * @param entrant
+     * @param joinedFrom
+     * @throws EntrantAlreadyInPool
+     */
     public void addEntrant(User entrant, LatLng joinedFrom) throws EntrantAlreadyInPool {
         this.entrantPool.addEntrant(entrant, joinedFrom); // entrantPool does validation for us
     }
 
+    /**
+     * remove an entrant from this event
+     * @param entrant
+     */
     public void removeEntrant(User entrant) {
         this.entrantPool.removeEntrant(entrant); // entrantPool does validation for us
     }
 
+    /**
+     * get this event's name
+     * @return
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * get this event's date
+     * @return
+     */
     public Date getDate() {
         return this.date;
     }
 
+    /**
+     * get this event's capacity
+     * @return
+     */
     public Integer getCapacity() {
         return this.capacity;
     }
 
+    /**
+     * get this event's poster
+     * @return
+     */
     public Bitmap getEventPoster() {
         return this.eventPoster;
     }
 
+    /**
+     * get this event's QR code
+     * @return
+     */
     public QRCode getQrCode() {
         return this.qrCode;
     }
 
+    /**
+     * get a list of this event's entrants
+     * @return
+     */
     public ArrayList<User> getEntrants() {
         return this.entrantPool.getEntrants();
     }
 
+    /**
+     * get a list of this event's entrantStatuses
+     * @return
+     */
     public ArrayList<EntrantStatus> getEntrantStatuses() {
         return this.entrantPool.getEntrantStatuses();
     }
-    public String getEventId() {
-        return this.eventId; // return event id in database
-    }
+
+    /**
+     * get aDocumentReference to this event in the database
+     * @return
+     */
     public DocumentReference getEventRef() {
         return this.eventRef; // return reference to event in database
     }

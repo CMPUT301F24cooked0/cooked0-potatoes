@@ -16,12 +16,23 @@ public class Facility {
     private ArrayList<Event> events;
     private DocumentReference facilityRef;
 
+    /**
+     * Private base constructor to consolidate code used by other constructors
+     * @param name
+     * @param location
+     */
     private Facility(String name, LatLng location) {
         this.name = name;
         this.location = location;
         this.events = new ArrayList<Event>();
     }
 
+    /**
+     * Simplest public constructor, which **creates a new facility** ond adds it to the database
+     * @param name
+     * @param location
+     * @param user
+     */
     public Facility(String name, LatLng location, User user) {
         this(name, location);
         this.facilityRef = new DatabaseManager().createFacility(user, this);
@@ -42,7 +53,11 @@ public class Facility {
         }
     }
 
-    public void addEvent(Event event) {
+    /**
+     * adds an event to this facility. throws an exception if the event already exists at this facility
+     * @param event
+     */
+    public void addEvent(Event event) throws EventAlreadyExistsAtFacility {
         if (event == null) {
             return;
         }
@@ -54,6 +69,10 @@ public class Facility {
         new DatabaseManager().updateFacility(this);
     }
 
+    /**
+     * deletes an event from this facility. does nothing if the event is not in this facility
+     * @param event
+     */
     public void deleteEvent(Event event) {
         if (event == null) {
             return; // nothing to delete
@@ -65,23 +84,42 @@ public class Facility {
         new DatabaseManager().updateFacility(this);
     }
 
+    /**
+     * deletes all events from this facility
+     */
     public void deleteAllEvents() {
         this.events.clear(); // clear events list
         new DatabaseManager().updateFacility(this);
     }
 
+    /**
+     * get the list of events at this facility
+     * @return
+     */
     public ArrayList<Event> getEvents() {
         return this.events;
     }
 
+    /**
+     * get the DocumentReference for this facility in the database
+     * @return
+     */
     public DocumentReference getFacilityReference() {
         return this.facilityRef; // return reference to facility in database
     }
 
+    /**
+     * get this facility's name
+     * @return
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * get this facility's location
+     * @return
+     */
     public LatLng getLocation() {
         return this.location;
     }
