@@ -40,8 +40,9 @@ public class Event implements Serializable {
 
     /**
      * create an event with a capacity
+     *
      * @param capacity
-    */
+     */
     public Event(String name, Date date, Bitmap eventPoster, Integer capacity) throws Exception {
         this(name, date, eventPoster);
         this.setCapacity(capacity);
@@ -58,6 +59,7 @@ public class Event implements Serializable {
 
     /**
      * set this event's name, throws an exception if the name is null or empty
+     *
      * @param name
      * @throws Exception
      */
@@ -74,6 +76,7 @@ public class Event implements Serializable {
 
     /**
      * set this event's date, throws an exception if the date is null or in the past
+     *
      * @param date
      * @throws Exception
      */
@@ -92,6 +95,7 @@ public class Event implements Serializable {
     /**
      * set this event's capacity, throws an exception if the capacity is 0 or negative
      * A capacity of null is valid, and means that the event has no capacity
+     *
      * @param capacity
      * @throws Exception
      */
@@ -109,6 +113,7 @@ public class Event implements Serializable {
 
     /**
      * set this event's poster, throws an exception if the poster is null, or if image dimensions are too small or too large
+     *
      * @param eventPoster
      * @throws Exception
      */
@@ -128,6 +133,7 @@ public class Event implements Serializable {
 
     /**
      * set this event's QR code, throws an exception if null
+     *
      * @param qrCode
      * @throws Exception
      */
@@ -144,6 +150,7 @@ public class Event implements Serializable {
 
     /**
      * add an entrant to this event
+     *
      * @param entrant
      * @param joinedFrom
      * @throws EntrantAlreadyInPool
@@ -154,6 +161,7 @@ public class Event implements Serializable {
 
     /**
      * remove an entrant from this event
+     *
      * @param entrant
      */
     public void removeEntrant(User entrant) {
@@ -162,6 +170,7 @@ public class Event implements Serializable {
 
     /**
      * get this event's name
+     *
      * @return
      */
     public String getName() {
@@ -170,6 +179,7 @@ public class Event implements Serializable {
 
     /**
      * get this event's date
+     *
      * @return
      */
     public Date getDate() {
@@ -178,6 +188,7 @@ public class Event implements Serializable {
 
     /**
      * get this event's capacity
+     *
      * @return
      */
     public Integer getCapacity() {
@@ -186,6 +197,7 @@ public class Event implements Serializable {
 
     /**
      * get this event's poster
+     *
      * @return
      */
     public Bitmap getEventPoster() {
@@ -194,6 +206,7 @@ public class Event implements Serializable {
 
     /**
      * get this event's QR code
+     *
      * @return
      */
     public QRCode getQrCode() {
@@ -202,6 +215,7 @@ public class Event implements Serializable {
 
     /**
      * get a list of this event's entrants
+     *
      * @return
      */
     public ArrayList<User> getEntrants() {
@@ -210,6 +224,7 @@ public class Event implements Serializable {
 
     /**
      * get a list of this event's entrantStatuses
+     *
      * @return
      */
     public ArrayList<EntrantStatus> getEntrantStatuses() {
@@ -221,14 +236,14 @@ public class Event implements Serializable {
      * @param onSuccessListener
      * @param onFailureListener
      */
-    public void deleteEvent(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener){
-        if(eventId!=null && !eventId.isEmpty()){
+    public void deleteEvent(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+        if (eventId != null && !eventId.isEmpty()) {
             FirebaseFirestore.getinstance().collection("Events").document(eventId).delete()
                     .addOnSuccessListener(onSuccessListener)
                     .addOnFailureListener(onFailureListener);
-        }
-        else{
+        } else {
             onFailureListener.onFailure(new Exception("Cannot Delete Event"));
         }
 
     }
+}
