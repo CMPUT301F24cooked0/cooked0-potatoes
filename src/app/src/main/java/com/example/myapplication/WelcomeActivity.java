@@ -11,6 +11,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+/**
+ * This class represents the launch screen of the app for brand new users
+ * @author Daniyal Abbass
+ */
 public class WelcomeActivity extends AppCompatActivity {
 
     private Button btn;
