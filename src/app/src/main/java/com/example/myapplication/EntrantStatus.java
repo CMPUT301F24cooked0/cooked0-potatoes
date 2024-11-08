@@ -6,6 +6,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 
+/*
+This class is responsible for getting and setting an entrants status. It also allows organizers
+to send notifications to entrants.
+ */
 public class EntrantStatus {
     private final User entrant;
     private final LatLng joinedFrom;

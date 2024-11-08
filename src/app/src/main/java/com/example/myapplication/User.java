@@ -13,6 +13,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.UUID;
 
+/*
+This class is creates a user object. It checks user info as well as the roll of the user.
+It also tracks if the user has created a facility or if they have any events.
+Additional functionalities including managing notification preferences and storage of information
+provided by the user
+ */
 public class User {
     private final String uniqueID;
     private String name;

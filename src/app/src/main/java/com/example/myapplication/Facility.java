@@ -10,6 +10,10 @@ import org.w3c.dom.Document;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/*
+This class is responsible for making a facility object. It sets facility details as well as
+retrieves them. The class is also responsible for adding and removing events created by organizers.
+ */
 public class Facility {
     private String name;
     private LatLng location;
@@ -131,5 +135,4 @@ public class Facility {
         this.location = location;
         // TODO update database
     }
-
 }

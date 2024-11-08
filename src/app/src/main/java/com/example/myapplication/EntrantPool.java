@@ -9,6 +9,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/*This class is responsible for adding and removing an entrant who has joined the waiting list
+as well as check their status to see if they are in the database.
+ */
 public class EntrantPool {
     private ArrayList<EntrantStatus> entrants;
     private Event event;

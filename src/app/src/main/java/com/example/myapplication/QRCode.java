@@ -2,6 +2,10 @@ package com.example.myapplication;
 
 import android.media.Image;
 
+/*
+This class is responsible for creating a QR code and setting its text. It also returns the
+generated QR code image.
+ */
 public class QRCode {
     private String text;
 

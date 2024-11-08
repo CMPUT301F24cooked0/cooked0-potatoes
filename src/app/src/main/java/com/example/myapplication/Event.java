@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+/*
+This class is responsible for creating an event object using user input. It sets information about
+the event and also gets information about the event.
+ */
 public class Event {
     private String name;
     private Date date;
