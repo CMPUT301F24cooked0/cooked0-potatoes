@@ -8,8 +8,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.ArrayList;
 
 public class User {
-    //private static final FirebaseFirestore db=FirebaseFirestore.getInstance();
-    //protected static final CollectionReference userRef=db.collection("Users"); FIXME name of user collection in firestore
+    private static final FirebaseFirestore db=FirebaseFirestore.getInstance();
+    protected static final CollectionReference userRef=db.collection("Users");
     private String name;
     private String email;
     private Long phoneNumber;
@@ -45,6 +45,11 @@ public class User {
         this.setProfilePicture(profilePicture);
     }
 
+    /***
+     * Method to delete user from database and is called in AdministratorBrowseUsersFragment when admin confirms the deletion of the user.
+     * @param onSuccessListener
+     * @param onFailureListener
+     */
     public void deleteUser(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener){
         userRef.document(this.name).delete()
                 .addOnSuccessListener(onSuccessListener)
@@ -155,16 +160,25 @@ public class User {
         return this.receivesOrgAdmNotifications;
     }
 
-
+    /***
+     * Method that gets users data from the database and to be called in the AdministratorBrowseUsersFragment to populate the list.
+     * @param onSuccessListener
+     * @param onFailureListener
+     */
     public static void fetchUsers(OnSuccessListener<ArrayList<User>> onSuccessListener,OnFailureListener onFailureListener){
-        userRef.get().addOnSuccessListener((queryDocumentSnapshots -> {
+        userRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             ArrayList<User> users=new ArrayList<>();
-            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+            for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
                 String name = doc.getString("name");
                 String email = doc.getString("email");
-                Long phoneNumber -doc.getLong("phoneNumber");
-                User user = new User(Name, email, phoneNumber);
-                users.add(user);
+                Long phoneNumber =doc.getLong("phoneNumber");
+
+                try {
+                    User user=new User(name,email,phoneNumber);
+                    users.add(user);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
             onSuccessListener.onSuccess(users);
         }).addOnFailureListener(onFailureListener);
