@@ -63,7 +63,7 @@ public class AdministratorBrowseUsersFragment extends Fragment {
      */
     public void showDeletePage(final int position) {
         LayoutInflater inflater= LayoutInflater.from(requireContext());
-        View dialogView = inflater.inflate(R.layout.delete_user_dialog, null);
+        View dialogView = inflater.inflate(R.layout.delete_dialog,null);
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setView(dialogView);
         TextView dialogTitle = dialogView.findViewById(R.id.dialog_title);
