@@ -53,7 +53,7 @@ public class AdministratorEventDetails extends AppCompatActivity {
                                 finish();
                             },
                             e -> {
-                                Toast.makeText(this, "Failed to remove event", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this, "Failed to remove event", Toast.LENGTH_SHORT).show();
                             }
                     );
                 })
