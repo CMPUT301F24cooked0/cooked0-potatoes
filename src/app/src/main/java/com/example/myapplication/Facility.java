@@ -4,11 +4,21 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
+/*
+This class is responsible for making a facility object. It sets facility details as well as
+retrieves them. The class is also responsible for adding and removing events created by organizers.
+ */
 public class Facility {
-    private final String name;
-    private final LatLng location;
+    private String name;
+    private LatLng location;
     private ArrayList<Event> events;
 
+
+    /**
+     * Private base constructor to consolidate code used by other constructors
+     * @param name
+     * @param location
+     */
     public Facility(String name, LatLng location) {
         this.name = name;
         this.location = location;
@@ -16,6 +26,10 @@ public class Facility {
         // TODO update database
     }
 
+    /**
+     * adds an event to this facility. throws an exception if the event already exists at this facility
+     * @param event
+     */
     public void addEvent(Event event) {
         if (event == null) {
             return;
@@ -28,6 +42,10 @@ public class Facility {
         // TODO update database
     }
 
+    /**
+     * deletes an event from this facility. does nothing if the event is not in this facility
+     * @param event
+     */
     public void deleteEvent(Event event) {
         if (event == null) {
             return; // nothing to delete
@@ -39,12 +57,44 @@ public class Facility {
         // TODO update database
     }
 
+
+    /**
+     * deletes all events from this facility
+     */
     public void deleteAllEvents() {
         this.events.clear();
         // TODO update database
     }
 
+    /**
+     * get the list of events at this facility
+     * @return
+     */
     public ArrayList<Event> getEvents() {
         return this.events;
+    }
+
+    /**
+     * get this facility's name
+     * @return
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * get this facility's location
+     * @return
+     */
+    public LatLng getLocation() {
+        return this.location;
+    }
+    public void setName(String name) {
+        this.name = name;
+        // TODO update database
+    }
+    public void setLocation(LatLng location) {
+        this.location = location;
+        // TODO update database
     }
 }
