@@ -39,7 +39,13 @@ public class FacilityEditFragment extends AppCompatActivity {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
+            LatLng facilityAddress = getAddress(facilityAddressStr);
+            if (facilityAddress == null) {
+                Toast.makeText(this, "Invalid address", Toast.LENGTH_SHORT).show();
+                return;
+            }
             existingFacility.setName(facilityName);
+            existingFacility.setLocation(facilityAddress);
 
 
 
@@ -56,6 +62,19 @@ public class FacilityEditFragment extends AppCompatActivity {
                 return address.getAddressLine(0);
             }
         } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+    public LatLng getAddress(String address) {
+        Geocoder geocode1 = new Geocoder(this);
+        try {
+            List<Address> addresses = geocode1.getFromLocationName(address, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Address location = addresses.get(0);
+                return new LatLng(location.getLatitude(), location.getLongitude());
+
+        }    } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return null;
