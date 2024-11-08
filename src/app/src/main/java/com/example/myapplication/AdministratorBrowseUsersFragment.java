@@ -57,7 +57,10 @@ public class AdministratorBrowseUsersFragment extends Fragment {
         return view;
     }
 
-
+    /***
+     * Method to show the dialog page to confirm or cancel delete action.
+     * @param position
+     */
     public void showDeletePage(final int position) {
         LayoutInflater inflater= LayoutInflater.from(requireContext());
         View dialogView = inflater.inflate(R.layout.delete_user_dialog, null);

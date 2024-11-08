@@ -45,6 +45,11 @@ public class User {
         this.setProfilePicture(profilePicture);
     }
 
+    /***
+     * Method to delete user from database and is called in AdministratorBrowseUsersFragment when admin confirms the deletion of the user.
+     * @param onSuccessListener
+     * @param onFailureListener
+     */
     public void deleteUser(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener){
         userRef.document(this.name).delete()
                 .addOnSuccessListener(onSuccessListener)
@@ -155,7 +160,11 @@ public class User {
         return this.receivesOrgAdmNotifications;
     }
 
-
+    /***
+     * Method that gets users data from the database and to be called in the AdministratorBrowseUsersFragment to populate the list.
+     * @param onSuccessListener
+     * @param onFailureListener
+     */
     public static void fetchUsers(OnSuccessListener<ArrayList<User>> onSuccessListener,OnFailureListener onFailureListener){
         userRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             ArrayList<User> users=new ArrayList<>();
