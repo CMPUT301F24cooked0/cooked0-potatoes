@@ -3,6 +3,8 @@ package com.example.myapplication;
 import android.app.AlertDialog;
 import android.app.AppComponentFactory;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,8 +22,8 @@ public class AdministratorEventDetails extends AppCompatActivity {
 
         event=(Event) getIntent().getSerializableExtra("event");
 
-        ImageView eventPoster=findViewById(R.id.event_poster);
-        TextView eventName=findViewById(R.id.event_name);
+        ImageView eventPoster=findViewById(R.id.event_detail_poster);
+        TextView eventName=findViewById(R.id.event_detail_name);
         Button removeEventButton=findViewById(R.id.remove_event_button);
         Button removeQRButton=findViewById(R.id.remove_qr_button);
         Button returnButton=findViewById(R.id.event_detail_return_button);
@@ -43,20 +45,30 @@ public class AdministratorEventDetails extends AppCompatActivity {
     }
 
     private void showDeleteDialog(){
-        new AlertDialog.Builder(this)
-                .setTitle("Remove Event")
-                .setMessage("Are you sure you want to remove this event?")
-                .setPositiveButton("Confirm",(dialog, which) -> {
-                    event.deleteEvent(
-                            aVoid->{
-                                Toast.makeText(this,"Succesfully removed event",Toast.LENGTH_SHORT).show();
-                                finish();
-                            },
-                            e -> {
-                                Toast.makeText(this, "Failed to remove event", Toast.LENGTH_SHORT).show();
-                            }
-                    );
-                })
-                .setNegativeButton("Cancel",null).show();
+        LayoutInflater inflater= LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.delete_dialog, null);
+
+        TextView dialogTitle=dialogView.findViewById(R.id.dialog_title);
+        TextView dialogMessage=dialogView.findViewById(R.id.dialog_message);
+        Button cancelButton=dialogView.findViewById(R.id.dialog_cancel_button);
+        Button removeButton=dialogView.findViewById(R.id.dialog_remove_button);
+        dialogTitle.setText("Remove Event");
+        dialogMessage.setText("Are you sure you want to remove this event?");
+        AlertDialog dialog=new AlertDialog.Builder(this).setView(dialogView).create();
+
+        cancelButton.setOnClickListener(view -> dialog.dismiss());
+        removeButton.setOnClickListener(view -> {
+            event.deleteEvent(
+                    aVoid->{
+                        Toast.makeText(this,"Succesfully removed event",Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        finish();
+                    },e -> {
+                        Toast.makeText(this,"Failed to remove event",Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+            );
+        });
+        dialog.show();
     }
 }
