@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdministratorBrowseEvents extends Fragment {
+public class AdministratorBrowseEventsFragment extends Fragment {
     private ListView eventListView;
     private List<Event> eventList;
     private EventArrayAdapter eventArrayAdapter;
@@ -27,9 +28,11 @@ public class AdministratorBrowseEvents extends Fragment {
         eventArrayAdapter=new EventArrayAdapter(requireContext(),eventList);
         eventListView.setAdapter(eventArrayAdapter);
 
-        eventListView.setOnItemClickListener((parent,view,position.id)->{
+        eventListView.setOnItemClickListener((parent,view1,position,id)->{
             Event clickedEvent=eventList.get(position);
-
+            Intent intent=new Intent(getContext(),AdministratorEventDetails.class);
+            startActivity(intent);
         });
+        return view;
     }
 }
