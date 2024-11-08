@@ -39,6 +39,8 @@ public class FacilityEditFragment extends AppCompatActivity {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
+            existingFacility.setName(facilityName);
+
 
 
 
