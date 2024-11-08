@@ -19,7 +19,13 @@ public class Event {
     private QRCode qrCode;
     private final EntrantPool entrantPool;
 
-
+    /***
+     * Private base constructor to consolidate code used by other constructors
+     * @param name
+     * @param date
+     * @param eventPoster
+     * @throws Exception
+     */
     public Event(String name, Date date, Bitmap eventPoster) throws Exception {
         this.setName(name);
         this.setDate(date);
@@ -29,6 +35,10 @@ public class Event {
         this.setCapacity(null);
     }
 
+    /**
+     * create an event with a capacity
+     * @param capacity
+    */
     public Event(String name, Date date, Bitmap eventPoster, Integer capacity) throws Exception {
         this(name, date, eventPoster);
         this.setCapacity(capacity);
