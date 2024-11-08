@@ -1,22 +1,20 @@
 package com.example.myapplication;
 
 import android.graphics.Bitmap;
+import android.media.Image;
+
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 public class QRCode {
     private String text;
     private Bitmap image;
+    private int size;
 
     public QRCode(String text) {
         this.text = text;
-        try {
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            this.image = barcodeEncoder.encodeBitmap(this.text, BarcodeFormat.QR_CODE, 256, 256);
-        }
-        catch (Exception exception) {
-            this.text = null;
-        }
+        this.size = 400;
 
     }
 
@@ -32,13 +30,13 @@ public class QRCode {
         return this.text;
     }
 
-    public Bitmap getImage() {
+    public Bitmap getImage() throws WriterException {
         if (this.text == null) {
             return null;
         }
-        return this.image;
+        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+        image = barcodeEncoder.encodeBitmap(this.text, BarcodeFormat.QR_CODE, this.size, this.size);
+        return image;
 
-        // TODO implement QR code generation
-//        return null; // FIXME temporary since there is no implementation yet
     }
 }
