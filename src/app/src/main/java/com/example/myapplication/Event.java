@@ -3,7 +3,10 @@ package com.example.myapplication;
 import android.graphics.Bitmap;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -11,7 +14,7 @@ import java.util.Date;
 This class is responsible for creating an event object using user input. It sets information about
 the event and also gets information about the event.
  */
-public class Event {
+public class Event implements Serializable {
     private String name;
     private Date date;
     private Integer capacity;
@@ -213,4 +216,19 @@ public class Event {
         return this.entrantPool.getEntrantStatuses();
     }
 
-}
+    /***
+     * Method to delete an Event which is called from the eventdetails page
+     * @param onSuccessListener
+     * @param onFailureListener
+     */
+    public void deleteEvent(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener){
+        if(eventId!=null && !eventId.isEmpty()){
+            FirebaseFirestore.getinstance().collection("Events").document(eventId).delete()
+                    .addOnSuccessListener(onSuccessListener)
+                    .addOnFailureListener(onFailureListener);
+        }
+        else{
+            onFailureListener.onFailure(new Exception("Cannot Delete Event"));
+        }
+
+    }
