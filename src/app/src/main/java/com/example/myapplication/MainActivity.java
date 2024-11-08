@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+
         profileTextView = findViewById(R.id.prfile_text);
         profileImageView = findViewById(R.id.my_profile);
         signOut=findViewById(R.id.signout_button);
@@ -57,21 +58,21 @@ public class MainActivity extends AppCompatActivity {
             profileImageView.setImageBitmap(decodedByte);
         }
 
-        signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signOutUser();
-            }
-        });
-        editUserInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    signOut.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            signOutUser();
+        }
+    });
+    editUserInfo.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
 
-                Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
-                startActivity(intent);
+            Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
+            startActivity(intent);
 
-            }
-        });
+        }
+    });
 
     }
 

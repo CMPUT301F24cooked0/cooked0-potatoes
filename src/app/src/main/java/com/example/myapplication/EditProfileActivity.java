@@ -27,6 +27,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private ImageView profileImageView;
     private Button saveButton;
     private Bitmap selectedImageBitmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
