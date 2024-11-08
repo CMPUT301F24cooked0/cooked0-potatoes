@@ -20,7 +20,7 @@ public class Event {
     private final EntrantPool entrantPool;
 
     /***
-     * Private base constructor to consolidate code used by other constructors
+     * Base constructor to consolidate code used by other constructors
      * @param name
      * @param date
      * @param eventPoster
