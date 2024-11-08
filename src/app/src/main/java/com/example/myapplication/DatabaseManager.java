@@ -2,12 +2,15 @@ package com.example.myapplication;
 
 import android.graphics.Bitmap;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DatabaseManager { // static class
@@ -17,7 +20,10 @@ public class DatabaseManager { // static class
         this.db = FirebaseFirestore.getInstance();
     }
 
-    public void createUser(User user) {
+    public DocumentReference createUser(User user) {
+        if (user == null) {
+            return null;
+        }
         String userID = user.getUniqueID();
         HashMap<String, Object> userData = new HashMap<>();
         userData.put("isAdmin", user.isAdmin());
@@ -26,29 +32,34 @@ public class DatabaseManager { // static class
         userData.put("phoneNumber", user.getPhoneNumber());
         userData.put("profilePicture", user.getProfilePicture());
         userData.put("receivesOrgAdmNotifications", user.getReceivesOrgAdmNotifications());
-        // FIXME insert facility? how?
         DocumentReference userRef = this.db.collection("users").document(userID);
         userRef.set(userData);
         CollectionReference facilityCol = userRef.collection("facility");
+        DocumentReference facilityRef = this.createFacility(user, user.getFacility());
+
+        return userRef;
     }
 
     public void updateUser(User user) {
-        String userID = user.getUniqueID();
+        if (user == null) {
+            return;
+        }
         HashMap<String, Object> userData = new HashMap<>();
         userData.put("name", user.getName());
         userData.put("email", user.getEmail());
         userData.put("phoneNumber", user.getPhoneNumber());
         userData.put("profilePicture", user.getProfilePicture());
         userData.put("receivesOrgAdmNotifications", user.getReceivesOrgAdmNotifications());
-        // FIXME update facility? how?
-        DocumentReference userRef = this.db.collection("users").document(userID);
+        DocumentReference userRef = user.getUserReference();
         userRef.update(userData);
+        this.updateFacility(user.getFacility());
     }
 
     public User getUser(String userID) {
         DocumentReference userRef = this.db.collection("users").document(userID);
         CollectionReference facilityCol = userRef.collection("facility");
-        DocumentReference facilityRef = facilityCol.document(); // FIXME import facility from database if there is one?
+        DocumentReference facilityRef = facilityCol.document();
+        Facility facility = this.getFacility(facilityRef.getId());
         final User[] user = new User[1];
 
         userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -98,9 +109,7 @@ public class DatabaseManager { // static class
                 boolean receivesOrgAdmNotifications = (boolean) notificationTemp;
 
                 try {
-                    user[0] = new User(name, email, phoneNumber, profilePicture);
-                    // FIXME pass isAdmin?
-                    // FIXME pass notification preference?
+                    user[0] = new User(name, email, phoneNumber, profilePicture, isAdmin, receivesOrgAdmNotifications, userRef, facility);
                 } catch (Exception e) {
                     user[0] = null;
                     throw new RuntimeException(e);
@@ -109,5 +118,89 @@ public class DatabaseManager { // static class
         });
 
         return user[0];
+    }
+
+    public DocumentReference createFacility(User user, Facility facility) {
+        if (user == null || facility == null) {
+            return null;
+        }
+        DocumentReference userRef = user.getUserReference();
+        DocumentReference facilityRef = userRef.collection("facility").document();
+        HashMap<String, Object> facilityData = new HashMap<>();
+        facilityData.put("name", facility.getName());
+        facilityData.put("location", facility.getLocation());
+        facilityRef.set(facilityData);
+        CollectionReference eventCol = facilityRef.collection("events");
+
+        return facilityRef;
+    }
+
+    public void updateFacility(Facility facility) {
+        if (facility == null) {
+            return;
+        }
+        HashMap<String, Object> facilityData = new HashMap<>();
+        facilityData.put("name", facility.getName());
+        facilityData.put("location", facility.getLocation());
+        DocumentReference facilityRef = facility.getFacilityReference();
+        facilityRef.update(facilityData);
+        for (Event event : facility.getEvents()) {
+            this.updateEvent(event);
+        }
+    }
+
+    public Facility getFacility(String facilityID) {
+        DocumentReference facilityRef = this.db.collection("facility").document(facilityID); // FIXME not sure this will work
+        CollectionReference eventCol = facilityRef.collection("events");
+        DocumentReference eventRef = eventCol.document(); // FIXME there's multiple events, not just one, need to get all documents in collection
+        Event event = this.getEvent(eventRef.getId()); // FIXME again, need to get all events, not just one
+        ArrayList<Event> events = new ArrayList<Event>();
+        events.add(event); // FIXME do this for all events
+        final Facility[] facility = new Facility[1];
+
+        facilityRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                HashMap<String, Object> facilityData = (HashMap<String, Object>) documentSnapshot.getData();
+                if (facilityData == null) {
+                    throw new FacilityDoesNotExist("this facility does not exist in the database");
+                }
+
+                // get facility data from document
+
+                Object nameTemp = facilityData.get("name");
+                if (nameTemp == null) {
+                    throw new FacilityDoesNotExist("this facility was missing the name field");
+                }
+                String name = (String) nameTemp;
+
+                Object locationTemp = facilityData.get("location");
+                if (locationTemp == null) {
+                    throw new FacilityDoesNotExist("this facility was missing the location field");
+                }
+                LatLng location = (LatLng) locationTemp;
+
+                try {
+                    facility[0] = new Facility(name, location, facilityRef, events);
+                } catch (Exception e) {
+                    facility[0] = null;
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        return facility[0];
+    }
+
+    public DocumentReference createEvent(Facility facility, Event event) {
+
+    }
+
+    public void updateEvent(Event event) {
+
+    }
+
+    public Event getEvent(String eventID) {
+
     }
 }

@@ -5,32 +5,41 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.w3c.dom.Document;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Facility {
-    private final String name;
-    private final LatLng location;
-    private User user;
+    private String name;
+    private LatLng location;
     private ArrayList<Event> events;
-    private FirebaseFirestore db;
     private DocumentReference facilityRef;
-    private CollectionReference eventsCol;
 
-    public Facility(String name, LatLng location, User user) {
+    private Facility(String name, LatLng location) {
         this.name = name;
         this.location = location;
-        this.user = user;
         this.events = new ArrayList<Event>();
-        // update database after creating facility
-        this.db = FirebaseFirestore.getInstance();
-        DocumentReference userRef = user.getUserRef();
-        this.facilityRef = userRef.collection("facility").document();
-        this.eventsCol = facilityRef.collection("events");
-        HashMap<String, Object> facilityData = new HashMap<>();
-        this.facilityData.put("name", name);
-        this.facilityData.put("location", location);
-        facilityRef.set(facilityData);
+    }
+
+    public Facility(String name, LatLng location, User user) {
+        this(name, location);
+        this.facilityRef = new DatabaseManager().createFacility(user, this);
+    }
+
+    /**
+     * only use this constructor in DatabaseManager to instantiate a facility from the data in the database
+     * @param name
+     * @param location
+     * @param facilityRef
+     * @param events
+     */
+    public Facility(String name, LatLng location, DocumentReference facilityRef, ArrayList<Event> events) {
+        this(name, location);
+        this.facilityRef = facilityRef;
+        for (Event event : events) {
+            this.addEvent(event);
+        }
     }
 
     public void addEvent(Event event) {
@@ -42,7 +51,7 @@ public class Facility {
             throw new EventAlreadyExistsAtFacility("this event already exists at this facility and cannot be added again");
         }
         this.events.add(event);
-        eventsCol.document(event.getEventId()); // add event to database
+        new DatabaseManager().updateFacility(this);
     }
 
     public void deleteEvent(Event event) {
@@ -53,25 +62,19 @@ public class Facility {
             return; // event does not exist at this facility, nothing to delete
         }
         this.events.remove(event);
-        eventsCol.document(event.getEventId()).delete(); // delete event from database
+        new DatabaseManager().updateFacility(this);
     }
 
     public void deleteAllEvents() {
-        eventsCol.get().addOnCompleteListener(task -> { // get all events in facility
-            if (task.isSuccessful()) {
-                for (Event event : this.events) {
-                    eventsCol.document(event.getEventId()).delete(); // delete event from database
-                }
-            }
-        });
         this.events.clear(); // clear events list
+        new DatabaseManager().updateFacility(this);
     }
 
     public ArrayList<Event> getEvents() {
         return this.events;
     }
 
-    public DocumentReference getFacilityRef() {
+    public DocumentReference getFacilityReference() {
         return this.facilityRef; // return reference to facility in database
     }
 
@@ -82,4 +85,13 @@ public class Facility {
     public LatLng getLocation() {
         return this.location;
     }
+    public void setName(String name) {
+        this.name = name;
+        // TODO update database
+    }
+    public void setLocation(LatLng location) {
+        this.location = location;
+        // TODO update database
+    }
+
 }

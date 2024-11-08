@@ -19,9 +19,10 @@ public class User {
     private String email;
     private Long phoneNumber;
     private Bitmap profilePicture;
-    private final boolean isAdmin;
+    private boolean isAdmin;
     private Facility facility;
     private boolean receivesOrgAdmNotifications;
+    private DocumentReference userRef;
 
     public User(String name, String email) throws Exception {
         this.uniqueID = UUID.randomUUID().toString();
@@ -32,7 +33,7 @@ public class User {
         this.isAdmin = false;
         this.setFacility(null);
         this.setReceivesOrgAdmNotifications(true);
-        new DatabaseManager().createUser(this);
+        this.userRef = new DatabaseManager().createUser(this);
     }
 
     public User(String name, String email, Long phoneNumber) throws Exception {
@@ -51,6 +52,23 @@ public class User {
         this(name, email, phoneNumber);
         this.setProfilePicture(profilePicture);
         new DatabaseManager().updateUser(this);
+    }
+
+    /**
+     * only use this constructor in DatabaseManager to instantiate a user from the data in the database
+     * @param name
+     * @param email
+     * @param phoneNumber
+     * @param profilePicture
+     * @param isAdmin
+     * @param receivesOrgAdmNotifications
+     */
+    public User(String name, String email, Long phoneNumber, Bitmap profilePicture, boolean isAdmin, boolean receivesOrgAdmNotifications, DocumentReference userRef, Facility facility) throws Exception {
+        this(name, email, phoneNumber, profilePicture);
+        this.isAdmin = isAdmin;
+        this.setReceivesOrgAdmNotifications(receivesOrgAdmNotifications);
+        this.userRef = userRef;
+        this.facility = facility;
     }
 
     public String getUniqueID() {
@@ -115,7 +133,7 @@ public class User {
     }
 
     public void setFacility(Facility facility) {
-        this.facility = facility; // TODO make database aware of user's facility
+        this.facility = facility;
     }
 
     public void setReceivesOrgAdmNotifications(boolean receivesOrgAdmNotifications){
@@ -158,5 +176,9 @@ public class User {
 
     public boolean getReceivesOrgAdmNotifications() {
         return this.receivesOrgAdmNotifications;
+    }
+
+    public DocumentReference getUserReference() {
+        return this.userRef;
     }
 }
