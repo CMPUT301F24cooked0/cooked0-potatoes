@@ -4,10 +4,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.util.Date;
 
 public class EntrantStatusUnitTest {
+    FirebaseFirestore db = Mockito.mock(FirebaseFirestore.class);
+
     @Test
     public void firstConstructorTest() {
         // test that constructor doesn't cause errors

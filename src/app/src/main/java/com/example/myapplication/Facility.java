@@ -23,13 +23,13 @@ public class Facility {
         this.user = user;
         this.events = new ArrayList<Event>();
         // update database after creating facility
-        db = FirebaseFirestore.getInstance();
+        this.db = FirebaseFirestore.getInstance();
         DocumentReference userRef = user.getUserRef();
-        facilityRef = userRef.collection("facility").document();
-        eventsCol = facilityRef.collection("events");
+        this.facilityRef = userRef.collection("facility").document();
+        this.eventsCol = facilityRef.collection("events");
         HashMap<String, Object> facilityData = new HashMap<>();
-        facilityData.put("name", name);
-        facilityData.put("location", location);
+        this.facilityData.put("name", name);
+        this.facilityData.put("location", location);
         facilityRef.set(facilityData);
     }
 
