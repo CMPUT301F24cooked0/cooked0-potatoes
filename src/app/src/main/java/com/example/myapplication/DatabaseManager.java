@@ -148,7 +148,7 @@ public class DatabaseManager { // static class
         }
     }
 
-    public Facility getFacility(String facilityID) {
+    public Facility getFacility(User organizer) {
         DocumentReference facilityRef = this.db.collection("facility").document(facilityID); // FIXME not sure this will work
         CollectionReference eventCol = facilityRef.collection("events");
         DocumentReference eventRef = eventCol.document(); // FIXME there's multiple events, not just one, need to get all documents in collection
@@ -199,7 +199,43 @@ public class DatabaseManager { // static class
 
     }
 
-    public Event getEvent(String eventID) {
+    public ArrayList<Event> getEvents(Facility facility) {
+
+    }
+
+    public DocumentReference createEntrantPool(Event event, EntrantPool entrantPool) {
+
+    }
+
+    public void updateEntrantPool(EntrantPool entrantPool) {
+
+    }
+
+    public EntrantPool getEntrantPool(Event event) {
+
+    }
+
+    public DocumentReference createEntrantStatus(EntrantStatus entrantStatus) {
+
+    }
+
+    public void updateEntrantStatus(EntrantStatus entrantStatus) {
+
+    }
+
+    public ArrayList<EntrantStatus> getEntrantStatuses(EntrantPool entrantPool) {
+
+    }
+
+    public DocumentReference createQrCode(QRCode qrCode) {
+
+    }
+
+    public void updateQrCode(QRCode qrCode) {
+
+    }
+
+    public QRCode getQrCode(Event event) {
 
     }
 }
