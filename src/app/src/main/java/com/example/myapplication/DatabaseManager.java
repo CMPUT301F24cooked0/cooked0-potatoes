@@ -8,9 +8,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DatabaseManager { // static class
     private final FirebaseFirestore db;
@@ -56,8 +58,6 @@ public class DatabaseManager { // static class
 
     public User getUser(String userID) {
         DocumentReference userRef = this.db.collection("users").document(userID);
-        CollectionReference facilityCol = userRef.collection("facility");
-        DocumentReference facilityRef = facilityCol.document();
         final User[] user = new User[1];
 
         userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -150,20 +150,22 @@ public class DatabaseManager { // static class
     }
 
     public Facility getFacility(User organizer) {
-        DocumentReference facilityRef = this.db.collection("facility").document(facilityID); // FIXME not sure this will work
-        CollectionReference eventCol = facilityRef.collection("events");
-        DocumentReference eventRef = eventCol.document(); // FIXME there's multiple events, not just one, need to get all documents in collection
-        Event event = this.getEvent(eventRef.getId()); // FIXME again, need to get all events, not just one
-        ArrayList<Event> events = new ArrayList<Event>();
-        events.add(event); // FIXME do this for all events
+        DocumentReference userRef = organizer.getUserReference();
+        CollectionReference facilityCol = userRef.collection("facility");
         final Facility[] facility = new Facility[1];
-
-        facilityRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        facilityCol.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                HashMap<String, Object> facilityData = (HashMap<String, Object>) documentSnapshot.getData();
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+                DocumentReference facilityRef;
+                assert (documentSnapshots.size() <= 1); // user should have either 0 or 1 facility
+                if (documentSnapshots.isEmpty()) {
+                    return;
+                }
+                facilityRef = documentSnapshots.get(0).getReference();
+                HashMap<String, Object> facilityData = (HashMap<String, Object>) documentSnapshots.get(0).getData();
                 if (facilityData == null) {
-                    throw new FacilityDoesNotExist("this facility does not exist in the database");
+                    return;
                 }
 
                 // get facility data from document
@@ -181,13 +183,18 @@ public class DatabaseManager { // static class
                 LatLng location = (LatLng) locationTemp;
 
                 try {
-                    facility[0] = new Facility(name, location, facilityRef, events);
-                } catch (Exception e) {
+                    facility[0] = new Facility(name, location, facilityRef, new ArrayList<Event>());
+                }
+                catch (Exception e) {
                     facility[0] = null;
                     throw new RuntimeException(e);
                 }
             }
         });
+        ArrayList<Event> events = this.getEvents(facility[0]); // get facility's events
+        for (Event event : events) {
+            facility[0].addEvent(event);
+        }
 
         return facility[0];
     }
