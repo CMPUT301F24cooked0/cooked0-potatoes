@@ -225,18 +225,6 @@ public class DatabaseManager { // static class
 
     }
 
-    public DocumentReference createEntrantPool(Event event, EntrantPool entrantPool) {
-
-    }
-
-    public void updateEntrantPool(EntrantPool entrantPool) {
-
-    }
-
-    public EntrantPool getEntrantPool(Event event) {
-
-    }
-
     public DocumentReference createEntrantStatus(EntrantPool entrantPool, EntrantStatus entrantStatus) {
 
     }
