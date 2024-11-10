@@ -235,7 +235,7 @@ public class Event {
      * get aDocumentReference to this event in the database
      * @return
      */
-    public DocumentReference getEventRef() {
+    public DocumentReference getEventReference() {
         return this.eventRef; // return reference to event in database
     }
 }
