@@ -216,7 +216,7 @@ public class DatabaseManager { // static class
 
     }
 
-    public DocumentReference createEntrantStatus(EntrantStatus entrantStatus) {
+    public DocumentReference createEntrantStatus(EntrantPool entrantPool, EntrantStatus entrantStatus) {
 
     }
 
@@ -228,7 +228,7 @@ public class DatabaseManager { // static class
 
     }
 
-    public DocumentReference createQrCode(QRCode qrCode) {
+    public DocumentReference createQrCode(Event event, QRCode qrCode) {
 
     }
 
