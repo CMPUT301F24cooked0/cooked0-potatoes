@@ -33,9 +33,9 @@ public class DatabaseManager { // static class
         userData.put("phoneNumber", user.getPhoneNumber());
         userData.put("profilePicture", user.getProfilePicture());
         userData.put("receivesOrgAdmNotifications", user.getReceivesOrgAdmNotifications());
-        DocumentReference userRef = this.db.collection("users").document(userID);
+        DocumentReference userRef = this.db.collection(DatabaseCollectionNames.users.name()).document(userID);
         userRef.set(userData);
-        CollectionReference facilityCol = userRef.collection("facility");
+        CollectionReference facilityCol = userRef.collection(DatabaseCollectionNames.facilities.name());
         DocumentReference facilityRef = this.createFacility(user, user.getFacility());
 
         return userRef;
@@ -57,7 +57,7 @@ public class DatabaseManager { // static class
     }
 
     public User getUser(String userID) {
-        DocumentReference userRef = this.db.collection("users").document(userID);
+        DocumentReference userRef = this.db.collection(DatabaseCollectionNames.users.name()).document(userID);
         final User[] user = new User[1];
 
         userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -125,12 +125,12 @@ public class DatabaseManager { // static class
             return null;
         }
         DocumentReference userRef = user.getUserReference();
-        DocumentReference facilityRef = userRef.collection("facility").document();
+        DocumentReference facilityRef = userRef.collection(DatabaseCollectionNames.facilities.name()).document();
         HashMap<String, Object> facilityData = new HashMap<>();
         facilityData.put("name", facility.getName());
         facilityData.put("location", facility.getLocation());
         facilityRef.set(facilityData);
-        CollectionReference eventCol = facilityRef.collection("events");
+        CollectionReference eventCol = facilityRef.collection(DatabaseCollectionNames.events.name());
 
         return facilityRef;
     }
@@ -151,7 +151,7 @@ public class DatabaseManager { // static class
 
     public Facility getFacility(User organizer) {
         DocumentReference userRef = organizer.getUserReference();
-        CollectionReference facilityCol = userRef.collection("facility");
+        CollectionReference facilityCol = userRef.collection(DatabaseCollectionNames.facilities.name());
         final Facility[] facility = new Facility[1];
         facilityCol.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
