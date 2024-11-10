@@ -58,7 +58,6 @@ public class DatabaseManager { // static class
         DocumentReference userRef = this.db.collection("users").document(userID);
         CollectionReference facilityCol = userRef.collection("facility");
         DocumentReference facilityRef = facilityCol.document();
-        Facility facility = this.getFacility(facilityRef.getId());
         final User[] user = new User[1];
 
         userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -108,13 +107,15 @@ public class DatabaseManager { // static class
                 boolean receivesOrgAdmNotifications = (boolean) notificationTemp;
 
                 try {
-                    user[0] = new User(name, email, phoneNumber, profilePicture, isAdmin, receivesOrgAdmNotifications, userRef, facility);
+                    user[0] = new User(name, email, phoneNumber, profilePicture, isAdmin, receivesOrgAdmNotifications, userRef, null);
                 } catch (Exception e) {
                     user[0] = null;
                     throw new RuntimeException(e);
                 }
             }
         });
+        Facility facility = this.getFacility(user[0]); // get user's facility
+        user[0].setFacility(facility);
 
         return user[0];
     }
