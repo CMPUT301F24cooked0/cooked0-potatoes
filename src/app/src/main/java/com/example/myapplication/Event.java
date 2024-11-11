@@ -31,7 +31,7 @@ public class Event {
      * @param eventPoster
      * @throws Exception
      */
-    public Event(String name, Date date, Bitmap eventPoster, Facility facility) throws Exception {
+    public Event(String name, Date date, Bitmap eventPoster) throws Exception {
         db = FirebaseFirestore.getInstance();
         facilityRef = facility.getFacilityRef();
         this.eventRef = facilityRef.collection("events").document();
@@ -51,9 +51,20 @@ public class Event {
      * create an event with a capacity
      * @param capacity
     */
-    public Event(String name, Date date, Bitmap eventPoster, Facility facility, Integer capacity) throws Exception {
+    public Event(String name, Date date, Bitmap eventPoster, Integer capacity) throws Exception {
         this(name, date, eventPoster, facility);
         this.setCapacity(capacity);
+    }
+
+    /**
+     * only use this constructor in DatabaseManager to instantiate an Event from the data in the database
+     * @param name
+     * @param location
+     * @param facilityRef
+     * @param events
+     */
+    public Event(String name, Date date, Bitmap eventPoster, Integer capacity, QRCode qrCode, EntrantPool entrantPool, DocumentReference eventRef) {
+        // FIXME
     }
 
     /**

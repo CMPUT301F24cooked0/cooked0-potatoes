@@ -11,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -243,10 +244,82 @@ public class DatabaseManager { // static class
     }
 
     public ArrayList<Event> getEvents(Facility facility) {
+        DocumentReference facilityRef = facility.getFacilityReference();
+        CollectionReference eventCol = facilityRef.collection(DatabaseCollectionNames.events.name());
+        ArrayList<Event> events = new ArrayList<>();
+        eventCol.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+                ArrayList<DocumentReference> eventRefs = new ArrayList<>();
+                if (documentSnapshots.isEmpty()) {
+                    return;
+                }
+                HashMap<String, Object> eventData;
 
+                for (DocumentSnapshot documentSnapshot : documentSnapshots) { // for each event is the collection
+                    eventData = (HashMap<String, Object>) documentSnapshot.getData();
+                    if (eventData == null) {
+                        continue;
+                    }
+                    eventRefs.add(documentSnapshot.getReference());
+
+                    // get event data from document
+
+                    Object nameTemp = eventData.get(DatabaseEventFieldNames.name.name());
+                    if (nameTemp == null) {
+                        throw new EventDoesNotExist("this event was missing the name field");
+                    }
+                    String name = (String) nameTemp;
+
+                    Object dateTemp = eventData.get(DatabaseEventFieldNames.date.name());
+                    if (dateTemp == null) {
+                        throw new EventDoesNotExist("this event was missing the date field");
+                    }
+                    Date date = (Date) dateTemp;
+
+                    Object eventPosterTemp = eventData.get(DatabaseEventFieldNames.eventPoster.name());
+                    if (eventPosterTemp == null) {
+                        throw new EventDoesNotExist("this event was missing the eventPoster field");
+                    }
+                    Bitmap eventPoster = (Bitmap) eventPosterTemp;
+
+                    Object qrCodeTemp = eventData.get(DatabaseEventFieldNames.qrCode.name());
+                    if (qrCodeTemp == null) {
+                        throw new EventDoesNotExist("this event was missing the qrCode field");
+                    }
+                    QRCode qrCode = new QRCode((String) qrCodeTemp);
+
+                    Object capacityTemp = eventData.get(DatabaseEventFieldNames.capacity.name());
+                    if (capacityTemp == null) {
+                        throw new EventDoesNotExist("this event was missing the capacity field");
+                    }
+                    Integer capacity = (Integer) capacityTemp;
+
+                    try {
+                        events.add(new Event(name, date, eventPoster, capacity, qrCode, null, eventRefs.get(eventRefs.size()-1)));
+                    }
+                    catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
+        for (Event event : events) {
+            ArrayList<EntrantStatus> entrantStatuses = this.getEntrantStatuses(event);
+            EntrantPool entrantPool = new EntrantPool();
+            for (EntrantStatus entrantStatus : entrantStatuses) {
+                entrantPool.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom());
+                entrantPool.setEntrantStatus(entrantStatus.getEntrant(), entrantStatus.getStatus()); // TODO simplify this by adding method to EntrantPool?
+            }
+            // recreate event with EntrantPool which was previously missing
+            event = new Event(event.getName(), event.getDate(), event.getEventPoster(), event.getCapacity(), event.getQrCode(), entrantPool, event.getEventReference());
+        }
+
+        return events;
     }
 
-    public DocumentReference createEntrantStatus(EntrantPool entrantPool, EntrantStatus entrantStatus) {
+    public DocumentReference createEntrantStatus(Event event, EntrantStatus entrantStatus) {
 
     }
 
