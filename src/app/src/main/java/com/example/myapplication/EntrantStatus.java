@@ -13,12 +13,8 @@ to send notifications to entrants.
 public class EntrantStatus {
     private final User entrant;
     private final LatLng joinedFrom;
-    private final EntrantPool entrantPool;
     private Status status;
-    private FirebaseFirestore db;
-    private DocumentReference entrantRef;
-    private String entrantId;
-    private HashMap<String, Object> entrantData;
+    private DocumentReference entrantStatusRef;
 
     /**
      * Simplest constructor for an EntrantStatus.
@@ -27,7 +23,7 @@ public class EntrantStatus {
      * @param joinedFrom
      * @param entrantPool
      */
-    public EntrantStatus(User entrant, LatLng joinedFrom, EntrantPool entrantPool) {
+    public EntrantStatus(User entrant, LatLng joinedFrom) {
         this.entrant = entrant;
         this.joinedFrom = joinedFrom;
         this.entrantPool = entrantPool;
@@ -50,9 +46,14 @@ public class EntrantStatus {
      * @param entrantPool
      * @param status
      */
-    public EntrantStatus(User entrant, LatLng joinedFrom, EntrantPool entrantPool, Status status) {
+    public EntrantStatus(User entrant, LatLng joinedFrom, Status status) {
         this(entrant, joinedFrom, entrantPool);
         this.status = status; // this constructor allows setting a different starting status
+    }
+
+    public EntrantStatus(User entrant, LatLng joinedFrom, Status status, DocumentReference entrantStatusRef) {
+        this(entrant, joinedFrom, status);
+        this.entrantStatusRef = entrantStatusRef;
     }
 
     /**

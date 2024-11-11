@@ -1,7 +1,7 @@
 package com.example.myapplication;
 
 public enum DatabaseEntrantStatusFieldNames {
-    entrant,
+    entrantID,
     joinedFrom,
     status
 }

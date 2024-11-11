@@ -326,7 +326,7 @@ public class DatabaseManager { // static class
         DocumentReference eventRef = event.getEventReference();
         DocumentReference entrantStatusRef = eventRef.collection(DatabaseCollectionNames.entrantStatuses.name()).document();
         HashMap<String, Object> entrantStatusData = new HashMap<>();
-        entrantStatusData.put(DatabaseEntrantStatusFieldNames.entrant.name(), entrantStatus.getEntrant().getUniqueID());
+        entrantStatusData.put(DatabaseEntrantStatusFieldNames.entrantID.name(), entrantStatus.getEntrant().getUniqueID());
         entrantStatusData.put(DatabaseEntrantStatusFieldNames.joinedFrom.name(), entrantStatus.getJoinedFrom());
         entrantStatusData.put(DatabaseEntrantStatusFieldNames.status.name(), entrantStatus.getStatus());
         entrantStatusRef.set(entrantStatusData);
@@ -339,7 +339,7 @@ public class DatabaseManager { // static class
             return;
         }
         HashMap<String, Object> entrantStatusData = new HashMap<>();
-        entrantStatusData.put(DatabaseEntrantStatusFieldNames.entrant.name(), entrantStatus.getEntrant().getUniqueID());
+        entrantStatusData.put(DatabaseEntrantStatusFieldNames.entrantID.name(), entrantStatus.getEntrant().getUniqueID());
         entrantStatusData.put(DatabaseEntrantStatusFieldNames.joinedFrom.name(), entrantStatus.getJoinedFrom());
         entrantStatusData.put(DatabaseEntrantStatusFieldNames.status.name(), entrantStatus.getStatus());
         DocumentReference entrantStatusRef = entrantStatus.getEntrantStatusReference();
@@ -347,7 +347,58 @@ public class DatabaseManager { // static class
     }
 
     public ArrayList<EntrantStatus> getEntrantStatuses(Event event) {
+        DocumentReference eventRef = event.getEventReference();
+        CollectionReference entrantStatusCol = eventRef.collection(DatabaseCollectionNames.entrantStatuses.name());
+        ArrayList<EntrantStatus> entrantStatuses = new ArrayList<>();
+        entrantStatusCol.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+                ArrayList<DocumentReference> entrantStatusRefs = new ArrayList<>();
+                if (documentSnapshots.isEmpty()) {
+                    return;
+                }
+                HashMap<String, Object> entrantStatusData;
 
+                for (DocumentSnapshot documentSnapshot : documentSnapshots) { // for each entrantStatus in collection
+                    entrantStatusData = (HashMap<String, Object>) documentSnapshot.getData();
+                    if (entrantStatusData == null) {
+                        continue;
+                    }
+                    entrantStatusRefs.add(documentSnapshot.getReference());
+
+                    // get entrantStatus data from document
+
+                    Object entrantIDTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.entrantID.name());
+                    if (entrantIDTemp == null) {
+                        throw new EntrantStatusDoesNotExist("this entrantstatus was missing the entrantID field");
+                    }
+                    String entrantID = (String) entrantIDTemp;
+
+                    Object joinedFromTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.joinedFrom.name());
+                    if (joinedFromTemp == null) {
+                        throw new EntrantStatusDoesNotExist("this entrantstatus was missing the joinedFrom field");
+                    }
+                    LatLng joinedFrom = (LatLng) joinedFromTemp;
+
+                    Object statusTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.status.name());
+                    if (statusTemp == null) {
+                        throw new EntrantStatusDoesNotExist("this entrantstatus was missing the status field");
+                    }
+                    Status status = (Status) statusTemp;
+
+                    try {
+                        User entrant = null; // FIXME should I get user?...
+                        entrantStatuses.add(new EntrantStatus(entrant, joinedFrom, status, entrantStatusRefs.get(entrantStatusRefs.size()-1)));
+                    }
+                    catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
+
+        return entrantStatuses;
     }
 
     public DocumentReference createQrCode(Event event, QRCode qrCode) {
