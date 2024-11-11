@@ -100,10 +100,10 @@ public class EntrantStatus {
     }
 
     /**
-     * get a DocumentReference to the entrant (user) in the database
+     * get a DocumentReference to this EntrantStatus in the database
      * @return
      */
-    public String getEntrantId() {
-        return entrantId; // return document id of entrant in database
+    public DocumentReference getEntrantStatusReference() {
+        // FIXME
     }
 }

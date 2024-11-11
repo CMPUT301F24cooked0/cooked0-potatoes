@@ -335,7 +335,15 @@ public class DatabaseManager { // static class
     }
 
     public void updateEntrantStatus(EntrantStatus entrantStatus) {
-
+        if (entrantStatus == null) {
+            return;
+        }
+        HashMap<String, Object> entrantStatusData = new HashMap<>();
+        entrantStatusData.put(DatabaseEntrantStatusFieldNames.entrant.name(), entrantStatus.getEntrant().getUniqueID());
+        entrantStatusData.put(DatabaseEntrantStatusFieldNames.joinedFrom.name(), entrantStatus.getJoinedFrom());
+        entrantStatusData.put(DatabaseEntrantStatusFieldNames.status.name(), entrantStatus.getStatus());
+        DocumentReference entrantStatusRef = entrantStatus.getEntrantStatusReference();
+        entrantStatusRef.update(entrantStatusData);
     }
 
     public ArrayList<EntrantStatus> getEntrantStatuses(Event event) {
