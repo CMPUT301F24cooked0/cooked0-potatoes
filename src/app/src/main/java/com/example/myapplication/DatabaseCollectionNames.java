@@ -4,6 +4,5 @@ public enum DatabaseCollectionNames {
     users,
     facilities,
     events,
-    entrantPools,
     entrantStatuses;
 }

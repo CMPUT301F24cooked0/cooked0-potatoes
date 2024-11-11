@@ -221,7 +221,7 @@ public class DatabaseManager { // static class
         eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode());
         eventData.put(DatabaseEventFieldNames.capacity.name(), event.getCapacity());
         eventRef.set(eventData);
-        CollectionReference entrantPoolCol =  eventRef.collection(DatabaseCollectionNames.entrantPools.name());
+        CollectionReference entrantStatusCol =  eventRef.collection(DatabaseCollectionNames.entrantStatuses.name());
 
         return eventRef;
     }
@@ -320,7 +320,18 @@ public class DatabaseManager { // static class
     }
 
     public DocumentReference createEntrantStatus(Event event, EntrantStatus entrantStatus) {
+        if (event == null || entrantStatus == null) {
+            return null;
+        }
+        DocumentReference eventRef = event.getEventReference();
+        DocumentReference entrantStatusRef = eventRef.collection(DatabaseCollectionNames.entrantStatuses.name()).document();
+        HashMap<String, Object> entrantStatusData = new HashMap<>();
+        entrantStatusData.put(DatabaseEntrantStatusFieldNames.entrant.name(), entrantStatus.getEntrant().getUniqueID());
+        entrantStatusData.put(DatabaseEntrantStatusFieldNames.joinedFrom.name(), entrantStatus.getJoinedFrom());
+        entrantStatusData.put(DatabaseEntrantStatusFieldNames.status.name(), entrantStatus.getStatus());
+        entrantStatusRef.set(entrantStatusData);
 
+        return entrantStatusRef;
     }
 
     public void updateEntrantStatus(EntrantStatus entrantStatus) {
