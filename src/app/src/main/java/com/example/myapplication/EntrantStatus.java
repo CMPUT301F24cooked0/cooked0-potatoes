@@ -24,7 +24,6 @@ public class EntrantStatus {
         this.entrant = entrant;
         this.joinedFrom = joinedFrom;
         this.setStatus(Status.none); // starting status is none (no draw has occurred yet)
-        this.entrantStatusRef = new DatabaseManager().createEntrantStatus(event, this);
     }
 
     /**
@@ -37,7 +36,6 @@ public class EntrantStatus {
     public EntrantStatus(User entrant, LatLng joinedFrom, Status status, Event event) {
         this(entrant, joinedFrom, event);
         this.setStatus(status); // this constructor allows setting a different starting status
-        this.updateDatabase();
     }
 
     /**
@@ -54,10 +52,6 @@ public class EntrantStatus {
         this.entrantStatusRef = entrantStatusRef;
     }
 
-    private void updateDatabase() {
-        new DatabaseManager().updateEntrantStatus(this);
-    }
-
     /**
      * sets this entrant's status
      * @param status
@@ -67,7 +61,6 @@ public class EntrantStatus {
             return;
         }
         this.status = status;
-        this.updateDatabase();
     }
 
     /**
@@ -100,6 +93,10 @@ public class EntrantStatus {
      */
     public LatLng getJoinedFrom() {
         return this.joinedFrom;
+    }
+
+    public void setEntrantStatusReference(DocumentReference entrantStatusRef) {
+        this.entrantStatusRef = entrantStatusRef;
     }
 
     /**
