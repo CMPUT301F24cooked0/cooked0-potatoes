@@ -59,6 +59,7 @@ public class DatabaseManager { // static class
     public User getUser(String userID) {
         DocumentReference userRef = this.db.collection(DatabaseCollectionNames.users.name()).document(userID);
         final User[] user = new User[1];
+        user[0] = null;
 
         userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -114,6 +115,9 @@ public class DatabaseManager { // static class
                 }
             }
         });
+        if (user[0] == null) {
+            return null;
+        }
         Facility facility = this.getFacility(user[0]); // get user's facility
         user[0].setFacility(facility);
 
@@ -153,6 +157,7 @@ public class DatabaseManager { // static class
         DocumentReference userRef = organizer.getUserReference();
         CollectionReference facilityCol = userRef.collection(DatabaseCollectionNames.facilities.name());
         final Facility[] facility = new Facility[1];
+        facility[0] = null;
         facilityCol.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -191,6 +196,9 @@ public class DatabaseManager { // static class
                 }
             }
         });
+        if (facility[0] == null) {
+            return null;
+        }
         ArrayList<Event> events = this.getEvents(facility[0]); // get facility's events
         for (Event event : events) {
             facility[0].addEvent(event);
