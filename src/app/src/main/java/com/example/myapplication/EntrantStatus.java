@@ -2,9 +2,6 @@ package com.example.myapplication;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
 
 /*
 This class is responsible for getting and setting an entrants status. It also allows organizers
@@ -21,39 +18,44 @@ public class EntrantStatus {
      * Sets the entrant's status to "none", which means that no draw has occurred yet
      * @param entrant
      * @param joinedFrom
-     * @param entrantPool
+     * @param event
      */
-    public EntrantStatus(User entrant, LatLng joinedFrom) {
+    public EntrantStatus(User entrant, LatLng joinedFrom, Event event) {
         this.entrant = entrant;
         this.joinedFrom = joinedFrom;
-        this.entrantPool = entrantPool;
-        this.status = Status.none; // starting status is none (no draw has occurred yet)
-        // TODO update database
-        this.db = FirebaseFirestore.getInstance();
-        this.entrantRef = entrantPool.getEntrantsPoolCol().document();
-        this.entrantId = entrantRef.getId();
-        this.entrantData.put("entrant", this.entrant);
-        this.entrantData.put("joinedFrom", this.joinedFrom);
-        this.entrantData.put("status", this.status);
-        this.entrantRef.set(entrantData);
-
+        this.setStatus(Status.none); // starting status is none (no draw has occurred yet)
+        new DatabaseManager().createEntrantStatus(event, this);
     }
 
     /**
      * The same as the simplest constructor but allows setting a specific status
      * @param entrant
      * @param joinedFrom
-     * @param entrantPool
      * @param status
+     * @param event
      */
-    public EntrantStatus(User entrant, LatLng joinedFrom, Status status) {
-        this(entrant, joinedFrom, entrantPool);
-        this.status = status; // this constructor allows setting a different starting status
+    public EntrantStatus(User entrant, LatLng joinedFrom, Status status, Event event) {
+        this(entrant, joinedFrom, event);
+        this.setStatus(status); // this constructor allows setting a different starting status
+        this.updateDatabase();
     }
 
+    /**
+     * only use this constructor in DatabaseManager to instantiate an EntrantStatus from the data in the database
+     * @param entrant
+     * @param joinedFrom
+     * @param status
+     * @param entrantStatusRef
+     */
     public EntrantStatus(User entrant, LatLng joinedFrom, Status status, DocumentReference entrantStatusRef) {
-        this(entrant, joinedFrom, status);
+        this.entrant = entrant;
+        this.joinedFrom = joinedFrom;
+        this.setStatus(status);
         this.entrantStatusRef = entrantStatusRef;
+    }
+
+    private void updateDatabase() {
+        new DatabaseManager().updateEntrantStatus(this);
     }
 
     /**
@@ -61,11 +63,11 @@ public class EntrantStatus {
      * @param status
      */
     public void setStatus(Status status) {
-        if (status != null) {
-            this.status = status;
-            entrantData.put("status", this.status);
-            this.entrantRef.update(entrantData);
+        if (status == null) {
+            return;
         }
+        this.status = status;
+        this.updateDatabase();
     }
 
     /**
@@ -105,6 +107,6 @@ public class EntrantStatus {
      * @return
      */
     public DocumentReference getEntrantStatusReference() {
-        // FIXME
+        return this.entrantStatusRef;
     }
 }

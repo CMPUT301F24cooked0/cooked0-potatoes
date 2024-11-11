@@ -2,15 +2,8 @@ package com.example.myapplication;
 
 import android.graphics.Bitmap;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
 import java.util.UUID;
 
 /*
@@ -45,7 +38,7 @@ public class User {
         this.setName(name); // it is important that name is set before profile picture
         this.setEmail(email);
         this.setPhoneNumber(null);
-        this.setProfilePicture(null); // FIXME profile picture may not be provided by user and must then be auto-generated
+        this.setProfilePicture(null);
         this.isAdmin = false;
         this.setFacility(null);
         this.setReceivesOrgAdmNotifications(true);
@@ -62,7 +55,7 @@ public class User {
     public User(String name, String email, Long phoneNumber) throws Exception {
         this(name, email);
         this.setPhoneNumber(phoneNumber);
-        new DatabaseManager().updateUser(this);
+        this.updateDatabase();
     }
 
     /**
@@ -75,7 +68,7 @@ public class User {
     public User(String name, String email, Bitmap profilePicture) throws Exception {
         this(name, email);
         this.setProfilePicture(profilePicture);
-        new DatabaseManager().updateUser(this);
+        this.updateDatabase();
     }
 
     /**
@@ -91,7 +84,7 @@ public class User {
     public User(String name, String email, Long phoneNumber, Bitmap profilePicture) throws Exception {
         this(name, email, phoneNumber);
         this.setProfilePicture(profilePicture);
-        new DatabaseManager().updateUser(this);
+        this.updateDatabase();
     }
 
     /**
@@ -109,6 +102,10 @@ public class User {
         this.setReceivesOrgAdmNotifications(receivesOrgAdmNotifications);
         this.userRef = userRef;
         this.facility = facility;
+    }
+
+    private void updateDatabase() {
+        new DatabaseManager().updateUser(this);
     }
 
     /**
@@ -132,7 +129,7 @@ public class User {
             throw new Exception("name cannot be empty");
         }
         this.name = name;
-        new DatabaseManager().updateUser(this);
+        this.updateDatabase();
     }
 
     /**
@@ -151,16 +148,16 @@ public class User {
             throw new Exception("invalid email");
         }
         this.email = email;
-        new DatabaseManager().updateUser(this);
+        this.updateDatabase();
     }
 
     /**
-     * Set this user's phone number, throws exception on null or invalid phone number
+     * Set this user's phone number, throws exception on invalid phone number
      * @param phoneNumber
      * @throws Exception
      */
     public void setPhoneNumber(Long phoneNumber) throws Exception {
-        if (phoneNumber != null) {
+        if (phoneNumber != null) { // the following checks only apply to non-null phone numbers
             if (phoneNumber <= 0) {
                 throw new Exception("phone number cannot be a negative number");
             }
@@ -174,7 +171,7 @@ public class User {
         // phone number of null is ok since it is optional,
         // null indicates the user has not defined their phone number
         this.phoneNumber = phoneNumber;
-        new DatabaseManager().updateUser(this);
+        this.updateDatabase();
     }
 
     /**
@@ -188,7 +185,7 @@ public class User {
             // TODO generate profile picture based on user's name
         }
         this.profilePicture = profilePicture;
-        new DatabaseManager().updateUser(this);
+        this.updateDatabase();
     }
 
     /**
@@ -212,7 +209,7 @@ public class User {
      */
     public void setReceivesOrgAdmNotifications(boolean receivesOrgAdmNotifications){
         this.receivesOrgAdmNotifications = receivesOrgAdmNotifications;
-        new DatabaseManager().updateUser(this);
+        this.updateDatabase();
     }
 
     /**
@@ -220,7 +217,7 @@ public class User {
      */
     public void deleteFacility() {
         this.setFacility(null);
-        new DatabaseManager().updateUser(this);
+        this.updateDatabase();
     }
 
     /**

@@ -3,13 +3,10 @@ package com.example.myapplication;
 import android.graphics.Bitmap;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 /*
 This class is responsible for creating an event object using user input. It sets information about
@@ -31,40 +28,49 @@ public class Event {
      * @param eventPoster
      * @throws Exception
      */
-    public Event(String name, Date date, Bitmap eventPoster) throws Exception {
-        db = FirebaseFirestore.getInstance();
-        facilityRef = facility.getFacilityRef();
-        this.eventRef = facilityRef.collection("events").document();
-        this.eventId = eventRef.getId();
-
+    public Event(String name, Date date, Bitmap eventPoster, Facility facility) throws Exception {
         this.setName(name);
         this.setDate(date);
         this.setEventPoster(eventPoster);
         this.qrCode = new QRCode(); // TODO auto-generate text for QR code?
         this.setQrCode(qrCode);
-        this.entrantPool = new EntrantPool(this);
+        this.entrantPool = new EntrantPool();
         this.setCapacity(null);
-
+        new DatabaseManager().createEvent(facility, this);
     }
 
     /**
      * create an event with a capacity
      * @param capacity
     */
-    public Event(String name, Date date, Bitmap eventPoster, Integer capacity) throws Exception {
+    public Event(String name, Date date, Bitmap eventPoster, Facility facility, Integer capacity) throws Exception {
         this(name, date, eventPoster, facility);
         this.setCapacity(capacity);
+        this.updateDatabase();
     }
 
     /**
      * only use this constructor in DatabaseManager to instantiate an Event from the data in the database
      * @param name
-     * @param location
-     * @param facilityRef
-     * @param events
+     * @param date
+     * @param eventPoster
+     * @param capacity
+     * @param qrCode
+     * @param entrantPool
+     * @param eventRef
      */
-    public Event(String name, Date date, Bitmap eventPoster, Integer capacity, QRCode qrCode, EntrantPool entrantPool, DocumentReference eventRef) {
-        // FIXME
+    public Event(String name, Date date, Bitmap eventPoster, Integer capacity, QRCode qrCode, EntrantPool entrantPool, DocumentReference eventRef) throws Exception {
+        this.setName(name);
+        this.setDate(date);
+        this.setEventPoster(eventPoster);
+        this.setCapacity(capacity);
+        this.setQrCode(qrCode);
+        this.entrantPool = entrantPool;
+        this.eventRef = eventRef;
+    }
+
+    private void updateDatabase() {
+        new DatabaseManager().updateEvent(this);
     }
 
     /**
@@ -73,8 +79,7 @@ public class Event {
      */
     public void invalidateQRCode() {
         this.qrCode.setText(null);
-        eventData.put("qrCode", this.qrCode.getText());
-        this.eventRef.update(eventData); // update database after invalidating QR code
+        this.updateDatabase();
     }
 
     /**
@@ -90,8 +95,7 @@ public class Event {
             throw new Exception("cannot set event name to empty string");
         }
         this.name = name;
-        eventData.put("name", this.name);
-        this.eventRef.update(eventData); // update database after setting name
+        this.updateDatabase();
     }
 
     /**
@@ -108,8 +112,7 @@ public class Event {
             throw new Exception("cannot set event date in the past");
         }
         this.date = date;
-        eventData.put("date", this.date);
-        this.eventRef.update(eventData); // update database after setting date
+        this.updateDatabase();
     }
 
     /**
@@ -127,8 +130,7 @@ public class Event {
         // capacity == null is ok,
         // it implies that there is no limit or capacity applicable for this event
         this.capacity = capacity;
-        eventData.put("capacity", this.capacity);
-        this.eventRef.update(eventData); // update database after setting capacity
+        this.updateDatabase();
     }
 
     /**
@@ -141,14 +143,13 @@ public class Event {
             throw new Exception("event poster cannot be null");
         }
         if (eventPoster.getWidth() < 256 || eventPoster.getHeight() < 256) {
-            throw new Exception("event poster resolution too small");
+            throw new Exception("event poster resolution too small (must be at least 256x256)");
         }
         if (eventPoster.getWidth() > 8192 || eventPoster.getHeight() > 8192) {
-            throw new Exception("event poster resolution too large"); // TODO auto-scale down instead of throwing
+            throw new Exception("event poster resolution too large (must be less than 8192x8192)"); // TODO auto-scale down instead of throwing
         }
         this.eventPoster = eventPoster;
-        eventData.put("eventPoster", this.eventPoster);
-        this.eventRef.update(eventData); // update database after setting event poster
+        this.updateDatabase();
     }
 
     /**
@@ -164,8 +165,7 @@ public class Event {
         // that is the correct way to indicate that the event has no QRCode,
         // as calling methods will still work
         this.qrCode = qrCode;
-        eventData.put("qrCode", this.qrCode.getText());
-        this.eventRef.update(eventData); // update database after setting QR code
+        this.updateDatabase();
     }
 
     /**
@@ -176,6 +176,7 @@ public class Event {
      */
     public void addEntrant(User entrant, LatLng joinedFrom) throws EntrantAlreadyInPool {
         this.entrantPool.addEntrant(entrant, joinedFrom); // entrantPool does validation for us
+        this.updateDatabase();
     }
 
     /**
@@ -184,6 +185,17 @@ public class Event {
      */
     public void removeEntrant(User entrant) {
         this.entrantPool.removeEntrant(entrant); // entrantPool does validation for us
+        this.updateDatabase();
+    }
+
+    /**
+     * set an entrant's status
+     * @param entrant
+     * @param status
+     */
+    public void setEntrantStatus(User entrant, Status status) {
+        this.entrantPool.setEntrantStatus(entrant, status);
+        this.updateDatabase();
     }
 
     /**

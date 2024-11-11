@@ -1,14 +1,9 @@
 package com.example.myapplication;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import org.w3c.dom.Document;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /*
 This class is responsible for making a facility object. It sets facility details as well as
@@ -57,6 +52,10 @@ public class Facility {
         }
     }
 
+    private void updateDatabase() {
+        new DatabaseManager().updateFacility(this);
+    }
+
     /**
      * adds an event to this facility. throws an exception if the event already exists at this facility
      * @param event
@@ -70,7 +69,7 @@ public class Facility {
             throw new EventAlreadyExistsAtFacility("this event already exists at this facility and cannot be added again");
         }
         this.events.add(event);
-        new DatabaseManager().updateFacility(this);
+        this.updateDatabase();
     }
 
     /**
@@ -85,7 +84,7 @@ public class Facility {
             return; // event does not exist at this facility, nothing to delete
         }
         this.events.remove(event);
-        new DatabaseManager().updateFacility(this);
+        this.updateDatabase();
     }
 
     /**
@@ -93,7 +92,25 @@ public class Facility {
      */
     public void deleteAllEvents() {
         this.events.clear(); // clear events list
-        new DatabaseManager().updateFacility(this);
+        this.updateDatabase();
+    }
+
+    /**
+     * edit this facility's name
+     * @param name
+     */
+    public void setName(String name) {
+        this.name = name;
+        this.updateDatabase();
+    }
+
+    /**
+     * edit this facility's location
+     * @param location
+     */
+    public void setLocation(LatLng location) {
+        this.location = location;
+        this.updateDatabase();
     }
 
     /**
@@ -126,13 +143,5 @@ public class Facility {
      */
     public LatLng getLocation() {
         return this.location;
-    }
-    public void setName(String name) {
-        this.name = name;
-        // TODO update database
-    }
-    public void setLocation(LatLng location) {
-        this.location = location;
-        // TODO update database
     }
 }

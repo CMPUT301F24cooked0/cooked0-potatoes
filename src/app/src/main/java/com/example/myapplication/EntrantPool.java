@@ -3,9 +3,6 @@ package com.example.myapplication;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -14,23 +11,14 @@ as well as check their status to see if they are in the database.
  */
 public class EntrantPool {
     private ArrayList<EntrantStatus> entrants;
-    private Event event;
-    private FirebaseFirestore db;
-    private DocumentReference eventRef;
-    private CollectionReference entrantsPoolCol;
+    private Event event; // need to remember to create new EntrantStatuses
 
     /**
      * EntrantPool constructor, no users in the pool by default
-     * @param event
      */
     public EntrantPool(Event event) {
         this.entrants = new ArrayList<EntrantStatus>();
-        // TODO update database
         this.event = event;
-        this.db = FirebaseFirestore.getInstance();
-        this.eventRef = event.getEventRef();
-        this.entrantsPoolCol = eventRef.collection("entrants");
-
     }
 
     /**
@@ -66,7 +54,27 @@ public class EntrantPool {
             throw new EntrantAlreadyInPool("entrant cannot be added to pool that they are already in");
         }
         // joinedFrom can be null though
-        EntrantStatus entrantStatus = new EntrantStatus(entrant, joinedFrom, this);
+        EntrantStatus entrantStatus = new EntrantStatus(entrant, joinedFrom, this.event);
+        this.entrants.add(entrantStatus);
+    }
+
+    /**
+     * add an entrant to the pool with a different status than the default
+     * @param entrant
+     * @param joinedFrom
+     * @param status
+     * @throws EntrantAlreadyInPool
+     */
+    public void addEntrant(User entrant, LatLng joinedFrom, Status status) throws EntrantAlreadyInPool {
+        if (entrant == null) {
+            return;
+        }
+        if (findEntrant(entrant) != null) {
+            // entrant is already in this pool, they cannot be added again
+            throw new EntrantAlreadyInPool("entrant cannot be added to pool that they are already in");
+        }
+        // joinedFrom can be null though
+        EntrantStatus entrantStatus = new EntrantStatus(entrant, joinedFrom, status, this.event);
         this.entrants.add(entrantStatus);
     }
 
@@ -83,7 +91,6 @@ public class EntrantPool {
             return; // no entrant to remove
         }
         this.entrants.remove(entrantStatus);
-        this.entrantsPoolCol.document(entrantStatus.getEntrantId()).delete(); // delete from entrants pool collection
     }
 
     /**
@@ -100,7 +107,6 @@ public class EntrantPool {
             return; // no entrant to change status of
         }
         entrantStatus.setStatus(status);
-        this.entrantsPoolCol.document(entrantStatus.getEntrantId()).update("status", status); // update status in database for entrant
     }
 
     /**
@@ -133,14 +139,5 @@ public class EntrantPool {
         // TODO implement this method
         // don't forget to update their statuses when drawing!
         return new ArrayList<User>(); // temporary
-        // TODO update database
-    }
-
-    /**
-     * get a DocumentReference to this EntrantPool in the database
-     * @return
-     */
-    public CollectionReference getEntrantsPoolCol() {
-        return entrantsPoolCol; // return reference to entrants pool collection in database
     }
 }

@@ -57,7 +57,7 @@ public class DatabaseManager { // static class
         this.updateFacility(user.getFacility());
     }
 
-    public User getUser(String userID) {
+    public User getUser(String userID) throws Exception {
         DocumentReference userRef = this.db.collection(DatabaseCollectionNames.users.name()).document(userID);
         final User[] user = new User[1];
         user[0] = null;
@@ -154,7 +154,7 @@ public class DatabaseManager { // static class
         }
     }
 
-    public Facility getFacility(User organizer) {
+    public Facility getFacility(User organizer) throws Exception {
         DocumentReference userRef = organizer.getUserReference();
         CollectionReference facilityCol = userRef.collection(DatabaseCollectionNames.facilities.name());
         final Facility[] facility = new Facility[1];
@@ -243,7 +243,7 @@ public class DatabaseManager { // static class
         }
     }
 
-    public ArrayList<Event> getEvents(Facility facility) {
+    public ArrayList<Event> getEvents(Facility facility) throws Exception {
         DocumentReference facilityRef = facility.getFacilityReference();
         CollectionReference eventCol = facilityRef.collection(DatabaseCollectionNames.events.name());
         ArrayList<Event> events = new ArrayList<>();
@@ -307,10 +307,9 @@ public class DatabaseManager { // static class
         });
         for (Event event : events) {
             ArrayList<EntrantStatus> entrantStatuses = this.getEntrantStatuses(event);
-            EntrantPool entrantPool = new EntrantPool();
+            EntrantPool entrantPool = new EntrantPool(event);
             for (EntrantStatus entrantStatus : entrantStatuses) {
-                entrantPool.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom());
-                entrantPool.setEntrantStatus(entrantStatus.getEntrant(), entrantStatus.getStatus()); // TODO simplify this by adding method to EntrantPool?
+                entrantPool.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
             }
             // recreate event with EntrantPool which was previously missing
             event = new Event(event.getName(), event.getDate(), event.getEventPoster(), event.getCapacity(), event.getQrCode(), entrantPool, event.getEventReference());
