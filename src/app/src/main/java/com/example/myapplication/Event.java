@@ -36,7 +36,6 @@ public class Event {
         this.setQrCode(qrCode);
         this.entrantPool = new EntrantPool(this);
         this.setCapacity(null);
-        this.eventRef = new DatabaseManager().createEvent(facility, this);
     }
 
     /**
@@ -46,7 +45,6 @@ public class Event {
     public Event(String name, Date date, Bitmap eventPoster, Facility facility, Integer capacity) throws Exception {
         this(name, date, eventPoster, facility);
         this.setCapacity(capacity);
-        this.updateDatabase();
     }
 
     /**
@@ -69,17 +67,12 @@ public class Event {
         this.eventRef = eventRef;
     }
 
-    private void updateDatabase() {
-        new DatabaseManager().updateEvent(this);
-    }
-
     /**
      * invalidate the current QR code for this event. This sets the QR code text to null and updates the database
      * which means that any future scans of the QR code will point to nothing, since it is no longer in the database
      */
     public void invalidateQRCode() {
         this.qrCode.setText(null);
-        this.updateDatabase();
     }
 
     /**
@@ -95,7 +88,6 @@ public class Event {
             throw new Exception("cannot set event name to empty string");
         }
         this.name = name;
-        this.updateDatabase();
     }
 
     /**
@@ -112,7 +104,6 @@ public class Event {
             throw new Exception("cannot set event date in the past");
         }
         this.date = date;
-        this.updateDatabase();
     }
 
     /**
@@ -130,7 +121,6 @@ public class Event {
         // capacity == null is ok,
         // it implies that there is no limit or capacity applicable for this event
         this.capacity = capacity;
-        this.updateDatabase();
     }
 
     /**
@@ -149,7 +139,6 @@ public class Event {
             throw new Exception("event poster resolution too large (must be less than 8192x8192)"); // TODO auto-scale down instead of throwing
         }
         this.eventPoster = eventPoster;
-        this.updateDatabase();
     }
 
     /**
@@ -165,7 +154,6 @@ public class Event {
         // that is the correct way to indicate that the event has no QRCode,
         // as calling methods will still work
         this.qrCode = qrCode;
-        this.updateDatabase();
     }
 
     /**
@@ -176,7 +164,6 @@ public class Event {
      */
     public void addEntrant(User entrant, LatLng joinedFrom) throws EntrantAlreadyInPool {
         this.entrantPool.addEntrant(entrant, joinedFrom); // entrantPool does validation for us
-        this.updateDatabase();
     }
 
     /**
@@ -185,7 +172,6 @@ public class Event {
      */
     public void removeEntrant(User entrant) {
         this.entrantPool.removeEntrant(entrant); // entrantPool does validation for us
-        this.updateDatabase();
     }
 
     /**
@@ -195,7 +181,6 @@ public class Event {
      */
     public void setEntrantStatus(User entrant, Status status) {
         this.entrantPool.setEntrantStatus(entrant, status);
-        this.updateDatabase();
     }
 
     /**
@@ -252,6 +237,10 @@ public class Event {
      */
     public ArrayList<EntrantStatus> getEntrantStatuses() {
         return this.entrantPool.getEntrantStatuses();
+    }
+
+    public void setEventReference(DocumentReference eventRef) {
+        this.eventRef = eventRef;
     }
 
     /**
