@@ -35,7 +35,7 @@ public class User {
      * @param email
      * @throws Exception
      */
-    public User(String uniqueID, String name, String email) throws Exception {
+    public User(String uniqueID, String name, String email, DocumentReference userRef) throws Exception {
         this.uniqueID = uniqueID;
         this.setName(name); // it is important that name is set before profile picture
         this.setEmail(email);
@@ -44,7 +44,7 @@ public class User {
         this.isAdmin = false;
         this.setFacility(null);
         this.setReceivesOrgAdmNotifications(true);
-        this.userRef = new DatabaseManager().createUser(this);
+        this.userRef = userRef;
     }
 
     /**
@@ -54,10 +54,9 @@ public class User {
      * @param phoneNumber
      * @throws Exception
      */
-    public User(String uniqueID, String name, String email, Long phoneNumber) throws Exception {
-        this(uniqueID, name, email);
+    public User(String uniqueID, String name, String email, Long phoneNumber, DocumentReference userRef) throws Exception {
+        this(uniqueID, name, email, userRef);
         this.setPhoneNumber(phoneNumber);
-        this.updateDatabase();
     }
 
     /**
@@ -67,10 +66,9 @@ public class User {
      * @param profilePicture
      * @throws Exception
      */
-    public User(String uniqueID, String name, String email, Bitmap profilePicture) throws Exception {
-        this(uniqueID, name, email);
+    public User(String uniqueID, String name, String email, Bitmap profilePicture, DocumentReference userRef) throws Exception {
+        this(uniqueID, name, email, userRef);
         this.setProfilePicture(profilePicture);
-        this.updateDatabase();
     }
 
     /**
@@ -83,10 +81,9 @@ public class User {
      * @param profilePicture
      * @throws Exception
      */
-    public User(String uniqueID, String name, String email, Long phoneNumber, Bitmap profilePicture) throws Exception {
-        this(uniqueID, name, email, phoneNumber);
+    public User(String uniqueID, String name, String email, Long phoneNumber, Bitmap profilePicture, DocumentReference userRef) throws Exception {
+        this(uniqueID, name, email, phoneNumber, userRef);
         this.setProfilePicture(profilePicture);
-        this.updateDatabase();
     }
 
     /**
@@ -110,10 +107,6 @@ public class User {
         this.facility = facility;
     }
 
-    private void updateDatabase() {
-        new DatabaseManager().updateUser(this);
-    }
-
     /**
      * Get this user's unique device ID
      * @return
@@ -135,7 +128,6 @@ public class User {
             throw new Exception("name cannot be empty");
         }
         this.name = name;
-        this.updateDatabase();
     }
 
     /**
@@ -154,7 +146,6 @@ public class User {
             throw new Exception("invalid email");
         }
         this.email = email;
-        this.updateDatabase();
     }
 
     /**
@@ -177,7 +168,6 @@ public class User {
         // phone number of null is ok since it is optional,
         // null indicates the user has not defined their phone number
         this.phoneNumber = phoneNumber;
-        this.updateDatabase();
     }
 
     /**
@@ -191,7 +181,6 @@ public class User {
             // TODO generate profile picture based on user's name
         }
         this.profilePicture = profilePicture;
-        this.updateDatabase();
     }
 
     /**
@@ -215,7 +204,6 @@ public class User {
      */
     public void setReceivesOrgAdmNotifications(boolean receivesOrgAdmNotifications){
         this.receivesOrgAdmNotifications = receivesOrgAdmNotifications;
-        this.updateDatabase();
     }
 
     /**
@@ -223,7 +211,6 @@ public class User {
      */
     public void deleteFacility() {
         this.setFacility(null);
-        this.updateDatabase();
     }
 
     /**
