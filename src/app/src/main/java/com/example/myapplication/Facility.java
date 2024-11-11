@@ -34,7 +34,6 @@ public class Facility {
      */
     public Facility(String name, LatLng location, User user) {
         this(name, location);
-        this.facilityRef = new DatabaseManager().createFacility(user, this);
     }
 
     /**
@@ -52,10 +51,6 @@ public class Facility {
         }
     }
 
-    private void updateDatabase() {
-        new DatabaseManager().updateFacility(this);
-    }
-
     /**
      * adds an event to this facility. throws an exception if the event already exists at this facility
      * @param event
@@ -69,7 +64,6 @@ public class Facility {
             throw new EventAlreadyExistsAtFacility("this event already exists at this facility and cannot be added again");
         }
         this.events.add(event);
-        this.updateDatabase();
     }
 
     /**
@@ -84,7 +78,6 @@ public class Facility {
             return; // event does not exist at this facility, nothing to delete
         }
         this.events.remove(event);
-        this.updateDatabase();
     }
 
     /**
@@ -92,7 +85,6 @@ public class Facility {
      */
     public void deleteAllEvents() {
         this.events.clear(); // clear events list
-        this.updateDatabase();
     }
 
     /**
@@ -101,7 +93,6 @@ public class Facility {
      */
     public void setName(String name) {
         this.name = name;
-        this.updateDatabase();
     }
 
     /**
@@ -110,7 +101,6 @@ public class Facility {
      */
     public void setLocation(LatLng location) {
         this.location = location;
-        this.updateDatabase();
     }
 
     /**
@@ -119,6 +109,10 @@ public class Facility {
      */
     public ArrayList<Event> getEvents() {
         return this.events;
+    }
+
+    public void setFacilityReference(DocumentReference facilityRef) {
+        this.facilityRef = facilityRef;
     }
 
     /**
