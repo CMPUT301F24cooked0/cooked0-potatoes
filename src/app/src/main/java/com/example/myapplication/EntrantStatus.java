@@ -24,7 +24,7 @@ public class EntrantStatus {
         this.entrant = entrant;
         this.joinedFrom = joinedFrom;
         this.setStatus(Status.none); // starting status is none (no draw has occurred yet)
-        new DatabaseManager().createEntrantStatus(event, this);
+        this.entrantStatusRef = new DatabaseManager().createEntrantStatus(event, this);
     }
 
     /**

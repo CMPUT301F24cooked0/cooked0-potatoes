@@ -36,7 +36,7 @@ public class Event {
         this.setQrCode(qrCode);
         this.entrantPool = new EntrantPool(this);
         this.setCapacity(null);
-        new DatabaseManager().createEvent(facility, this);
+        this.eventRef = new DatabaseManager().createEvent(facility, this);
     }
 
     /**
