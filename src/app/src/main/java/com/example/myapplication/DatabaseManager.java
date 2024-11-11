@@ -218,7 +218,7 @@ public class DatabaseManager { // static class
         eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
         eventData.put(DatabaseEventFieldNames.date.name(), event.getDate());
         eventData.put(DatabaseEventFieldNames.eventPoster.name(), event.getEventPoster());
-        eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode());
+        eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode().getText());
         eventData.put(DatabaseEventFieldNames.capacity.name(), event.getCapacity());
         eventRef.set(eventData);
         CollectionReference entrantStatusCol =  eventRef.collection(DatabaseCollectionNames.entrantStatuses.name());
@@ -399,17 +399,5 @@ public class DatabaseManager { // static class
         });
 
         return entrantStatuses;
-    }
-
-    public DocumentReference createQrCode(Event event, QRCode qrCode) {
-
-    }
-
-    public void updateQrCode(QRCode qrCode) {
-
-    }
-
-    public QRCode getQrCode(Event event) {
-
     }
 }
