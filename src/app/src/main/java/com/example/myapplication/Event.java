@@ -34,7 +34,7 @@ public class Event {
         this.setEventPoster(eventPoster);
         this.qrCode = new QRCode(); // TODO auto-generate text for QR code?
         this.setQrCode(qrCode);
-        this.entrantPool = new EntrantPool();
+        this.entrantPool = new EntrantPool(this);
         this.setCapacity(null);
         new DatabaseManager().createEvent(facility, this);
     }
