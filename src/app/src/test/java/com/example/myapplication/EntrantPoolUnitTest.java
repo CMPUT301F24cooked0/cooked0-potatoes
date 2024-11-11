@@ -12,7 +12,7 @@ import java.util.Date;
 public class EntrantPoolUnitTest {
     @Test
     public void constructorTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         EntrantPool entrantPool = new EntrantPool(event);
@@ -20,11 +20,11 @@ public class EntrantPoolUnitTest {
 
     @Test
     public void addEntrantNotInPoolTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         EntrantPool entrantPool = new EntrantPool(event);
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         assertEquals(entrantPool.getEntrants().size(), 1);
@@ -33,11 +33,11 @@ public class EntrantPoolUnitTest {
 
     @Test
     public void addEntrantInPoolTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         EntrantPool entrantPool = new EntrantPool(event);
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         assertThrows(EntrantAlreadyInPool.class, () -> {entrantPool.addEntrant(entrant, location);});
@@ -45,22 +45,22 @@ public class EntrantPoolUnitTest {
 
     @Test
     public void removeEntrantNotInPoolTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         EntrantPool entrantPool = new EntrantPool(event);
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         entrantPool.removeEntrant(entrant);
         assertEquals(entrantPool.getEntrants().size(), 0);
     }
 
     @Test
     public void removeEntrantInPoolTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         EntrantPool entrantPool = new EntrantPool(event);
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         assertEquals(entrantPool.getEntrants().size(), 1);
@@ -71,11 +71,11 @@ public class EntrantPoolUnitTest {
 
     @Test
     public void setEntrantStatusTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         EntrantPool entrantPool = new EntrantPool(event);
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         entrantPool.setEntrantStatus(entrant, Status.notChosen);
@@ -84,18 +84,18 @@ public class EntrantPoolUnitTest {
 
     @Test
     public void setEntrantStatusNotInPoolTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         EntrantPool entrantPool = new EntrantPool(event);
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         entrantPool.setEntrantStatus(entrant, Status.notChosen);
         assertEquals(entrantPool.getEntrants().size(), 0);
     }
 
     @Test
     public void getEntrantsNoEntrantsTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         EntrantPool entrantPool = new EntrantPool(event);
@@ -104,11 +104,11 @@ public class EntrantPoolUnitTest {
 
     @Test
     public void getEntrantsTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         EntrantPool entrantPool = new EntrantPool(event);
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         assertEquals(entrantPool.getEntrants().size(), 1);
@@ -117,7 +117,7 @@ public class EntrantPoolUnitTest {
 
     @Test
     public void getEntrantStatusesNoEntrantsTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         EntrantPool entrantPool = new EntrantPool(event);
@@ -126,11 +126,11 @@ public class EntrantPoolUnitTest {
 
     @Test
     public void getEntrantStatusesTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         EntrantPool entrantPool = new EntrantPool(event);
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         assertEquals(entrantPool.getEntrantStatuses().size(), 1);
@@ -140,7 +140,7 @@ public class EntrantPoolUnitTest {
 
     @Test
     public void drawEntrantsNoEntrantsTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         EntrantPool entrantPool = new EntrantPool(event);

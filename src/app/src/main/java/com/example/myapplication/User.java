@@ -4,7 +4,9 @@ import android.graphics.Bitmap;
 
 import com.google.firebase.firestore.DocumentReference;
 
-import java.util.UUID;
+// import java.util.UUID;
+
+// UUID.randomUUID().toString(); -- a potential way to get a unique ID (untested)
 
 /*
 This class is creates a user object. It checks user info as well as the roll of the user.
@@ -13,7 +15,7 @@ Additional functionalities including managing notification preferences and stora
 provided by the user
  */
 public class User {
-    private final String uniqueID;
+    private String uniqueID;
     private String name;
     private String email;
     private Long phoneNumber;
@@ -22,13 +24,6 @@ public class User {
     private Facility facility;
     private boolean receivesOrgAdmNotifications;
     private DocumentReference userRef;
-
-    /**
-     * this has been separated out of the public constructors to allow testing without UUID
-     */
-    private User() {
-        this.uniqueID = UUID.randomUUID().toString();
-    }
 
     /**
      * Simplest constructor for the User class
@@ -40,8 +35,8 @@ public class User {
      * @param email
      * @throws Exception
      */
-    public User(String name, String email) throws Exception {
-        this();
+    public User(String uniqueID, String name, String email) throws Exception {
+        this.uniqueID = uniqueID;
         this.setName(name); // it is important that name is set before profile picture
         this.setEmail(email);
         this.setPhoneNumber(null);
@@ -59,8 +54,8 @@ public class User {
      * @param phoneNumber
      * @throws Exception
      */
-    public User(String name, String email, Long phoneNumber) throws Exception {
-        this(name, email);
+    public User(String uniqueID, String name, String email, Long phoneNumber) throws Exception {
+        this(uniqueID, name, email);
         this.setPhoneNumber(phoneNumber);
         this.updateDatabase();
     }
@@ -72,8 +67,8 @@ public class User {
      * @param profilePicture
      * @throws Exception
      */
-    public User(String name, String email, Bitmap profilePicture) throws Exception {
-        this(name, email);
+    public User(String uniqueID, String name, String email, Bitmap profilePicture) throws Exception {
+        this(uniqueID, name, email);
         this.setProfilePicture(profilePicture);
         this.updateDatabase();
     }
@@ -88,8 +83,8 @@ public class User {
      * @param profilePicture
      * @throws Exception
      */
-    public User(String name, String email, Long phoneNumber, Bitmap profilePicture) throws Exception {
-        this(name, email, phoneNumber);
+    public User(String uniqueID, String name, String email, Long phoneNumber, Bitmap profilePicture) throws Exception {
+        this(uniqueID, name, email, phoneNumber);
         this.setProfilePicture(profilePicture);
         this.updateDatabase();
     }

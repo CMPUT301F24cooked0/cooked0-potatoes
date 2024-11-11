@@ -14,7 +14,7 @@ public class EntrantStatusUnitTest {
     public void firstConstructorTest() throws Exception {
         // test that constructor doesn't cause errors
         LatLng location = new LatLng(69.420, 42.69);
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         EntrantStatus entrantStatus = new EntrantStatus(user, location, event);
@@ -22,7 +22,7 @@ public class EntrantStatusUnitTest {
 
     @Test
     public void secondConstructorTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         LatLng location = new LatLng(69.420, 42.69);
@@ -32,7 +32,7 @@ public class EntrantStatusUnitTest {
 
     @Test
     public void gettersAndSettersTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         LatLng location = new LatLng(69.420, 42.69);
@@ -54,7 +54,7 @@ public class EntrantStatusUnitTest {
 
     @Test
     public void sendNotificationTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         LatLng location = new LatLng(69.420, 42.69);

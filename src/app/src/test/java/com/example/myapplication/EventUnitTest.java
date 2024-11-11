@@ -20,21 +20,21 @@ import java.util.concurrent.TimeUnit;
 public class EventUnitTest {
     @Test
     public void firstConstructorTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
     }
 
     @Test
     public void secondConstructorTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility, 123);
     }
 
     @Test
     public void invalidateQRCodeTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         QRCode qrCode = new QRCode("text");
@@ -48,7 +48,7 @@ public class EventUnitTest {
 
     @Test
     public void setGetNameTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         String name = "newName";
@@ -59,7 +59,7 @@ public class EventUnitTest {
 
     @Test
     public void setGetDateTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         TimeUnit.MILLISECONDS.sleep(10); // to ensure the new Date object isn't actually the same
@@ -71,7 +71,7 @@ public class EventUnitTest {
 
     @Test
     public void setGetCapacityTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         Integer capacity = 123;
@@ -85,7 +85,7 @@ public class EventUnitTest {
     public void getSetEventPosterTest() throws Exception {
         // can't really test this, EventMock overwrites setter, and only null can be used in testing
         // in reality Event should not allow setting a null eventPoster, but we can't test it...
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         event.setEventPoster(null);
@@ -94,7 +94,7 @@ public class EventUnitTest {
 
     @Test
     public void setGetQrCodeTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
         QRCode qrCode = new QRCode("text");
@@ -106,10 +106,10 @@ public class EventUnitTest {
 
     @Test
     public void addEntrantTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng joinedFrom = new LatLng(42.69, 69.42);
         assertEquals(event.getEntrants().size(), 0);
         event.addEntrant(entrant, joinedFrom);
@@ -119,10 +119,10 @@ public class EventUnitTest {
 
     @Test
     public void addDuplicateEntrantTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng joinedFrom = new LatLng(42.69, 69.42);
         event.addEntrant(entrant, joinedFrom);
         assertThrows(EntrantAlreadyInPool.class, () -> {event.addEntrant(entrant, joinedFrom);});
@@ -131,10 +131,10 @@ public class EventUnitTest {
 
     @Test
     public void removeEntrantTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng joinedFrom = new LatLng(42.69, 69.42);
         assertEquals(event.getEntrants().size(), 0);
         event.addEntrant(entrant, joinedFrom);
@@ -146,10 +146,10 @@ public class EventUnitTest {
 
     @Test
     public void removeEntrantNotInTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         assertEquals(event.getEntrants().size(), 0);
         event.removeEntrant(entrant);
         assertEquals(event.getEntrants().size(), 0);
@@ -157,10 +157,10 @@ public class EventUnitTest {
 
     @Test
     public void getEntrantsTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng joinedFrom = new LatLng(42.69, 69.42);
         assertEquals(event.getEntrants().size(), 0);
         event.addEntrant(entrant, joinedFrom);
@@ -170,10 +170,10 @@ public class EventUnitTest {
 
     @Test
     public void getEntrantStatusesTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         Facility facility = new Facility("name", new LatLng(42.69, 69.42), user);
         Event event = new EventMock("name", new Date(), null, facility);
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng joinedFrom = new LatLng(42.69, 69.42);
         assertEquals(event.getEntrantStatuses().size(), 0);
         event.addEntrant(entrant, joinedFrom);

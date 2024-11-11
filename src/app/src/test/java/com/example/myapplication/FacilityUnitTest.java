@@ -12,14 +12,14 @@ import java.util.Date;
 public class FacilityUnitTest {
     @Test
     public void constructorTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         LatLng location = new LatLng(69.420, 42.69);
         Facility facility = new Facility("name", location, user);
     }
 
     @Test
     public void addEventTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         LatLng location = new LatLng(69.420, 42.69);
         Facility facility = new Facility("name", location, user);
         Event event = new EventMock("name", new Date(), null, facility);
@@ -31,7 +31,7 @@ public class FacilityUnitTest {
 
     @Test
     public void addDuplicateEventTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         LatLng location = new LatLng(69.420, 42.69);
         Facility facility = new Facility("name", location, user);
         Event event = new EventMock("name", new Date(), null, facility);
@@ -41,7 +41,7 @@ public class FacilityUnitTest {
 
     @Test
     public void deleteEventNotInFacilityTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         LatLng location = new LatLng(69.420, 42.69);
         Facility facility = new Facility("name", location, user);
         Event event = new EventMock("name", new Date(), null, facility);
@@ -51,7 +51,7 @@ public class FacilityUnitTest {
 
     @Test
     public void deleteEventInFacilityTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         LatLng location = new LatLng(69.420, 42.69);
         Facility facility = new Facility("name", location, user);
         Event event = new EventMock("name", new Date(), null, facility);
@@ -62,7 +62,7 @@ public class FacilityUnitTest {
 
     @Test
     public void deleteAllEventsTest() throws Exception {
-        User user = new User("name", "email@email.com");
+        User user = new User(null, "name", "email@email.com");
         LatLng location = new LatLng(69.420, 42.69);
         Facility facility = new Facility("name", location, user);
         Event event = new EventMock("name", new Date(), null, facility);
