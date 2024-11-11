@@ -24,6 +24,13 @@ public class User {
     private DocumentReference userRef;
 
     /**
+     * this has been separated out of the public constructors to allow testing without UUID
+     */
+    private User() {
+        this.uniqueID = UUID.randomUUID().toString();
+    }
+
+    /**
      * Simplest constructor for the User class
      * This constructor **creates a new user** and adds it to the database
      * Profile picture will automatically be generated based on user's name
@@ -34,7 +41,7 @@ public class User {
      * @throws Exception
      */
     public User(String name, String email) throws Exception {
-        this.uniqueID = UUID.randomUUID().toString();
+        this();
         this.setName(name); // it is important that name is set before profile picture
         this.setEmail(email);
         this.setPhoneNumber(null);
@@ -96,8 +103,12 @@ public class User {
      * @param isAdmin
      * @param receivesOrgAdmNotifications
      */
-    public User(String name, String email, Long phoneNumber, Bitmap profilePicture, boolean isAdmin, boolean receivesOrgAdmNotifications, DocumentReference userRef, Facility facility) throws Exception {
-        this(name, email, phoneNumber, profilePicture);
+    public User(String uniqueID, String name, String email, Long phoneNumber, Bitmap profilePicture, boolean isAdmin, boolean receivesOrgAdmNotifications, DocumentReference userRef, Facility facility) throws Exception {
+        this.uniqueID = uniqueID;
+        this.setName(name);
+        this.setEmail(email);
+        this.setPhoneNumber(phoneNumber);
+        this.setProfilePicture(profilePicture);
         this.isAdmin = isAdmin;
         this.setReceivesOrgAdmNotifications(receivesOrgAdmNotifications);
         this.userRef = userRef;

@@ -109,7 +109,7 @@ public class DatabaseManager { // static class
                 boolean receivesOrgAdmNotifications = (boolean) notificationTemp;
 
                 try {
-                    user[0] = new User(name, email, phoneNumber, profilePicture, isAdmin, receivesOrgAdmNotifications, userRef, null);
+                    user[0] = new User(userID, name, email, phoneNumber, profilePicture, isAdmin, receivesOrgAdmNotifications, userRef, null);
                 } catch (Exception e) {
                     user[0] = null;
                     throw new RuntimeException(e);
