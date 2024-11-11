@@ -254,7 +254,7 @@ public class DatabaseManager { // static class
 
     }
 
-    public ArrayList<EntrantStatus> getEntrantStatuses(EntrantPool entrantPool) {
+    public ArrayList<EntrantStatus> getEntrantStatuses(Event event) {
 
     }
 
