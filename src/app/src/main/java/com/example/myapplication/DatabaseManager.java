@@ -136,6 +136,7 @@ public class DatabaseManager { // static class
         facilityData.put(DatabaseFacilityFieldNames.location.name(), facility.getLocation());
         facilityRef.set(facilityData);
         CollectionReference eventCol = facilityRef.collection(DatabaseCollectionNames.events.name());
+        // TODO create events
 
         return facilityRef;
     }
@@ -222,6 +223,7 @@ public class DatabaseManager { // static class
         eventData.put(DatabaseEventFieldNames.capacity.name(), event.getCapacity());
         eventRef.set(eventData);
         CollectionReference entrantStatusCol =  eventRef.collection(DatabaseCollectionNames.entrantStatuses.name());
+        // TODO create entrantStatuses
 
         return eventRef;
     }
