@@ -35,7 +35,7 @@ public class User {
      * @param email
      * @throws Exception
      */
-    public User(String uniqueID, String name, String email, DocumentReference userRef) throws Exception {
+    public User(String uniqueID, String name, String email) throws Exception {
         this.uniqueID = uniqueID;
         this.setName(name); // it is important that name is set before profile picture
         this.setEmail(email);
@@ -44,7 +44,6 @@ public class User {
         this.isAdmin = false;
         this.setFacility(null);
         this.setReceivesOrgAdmNotifications(true);
-        this.userRef = userRef;
     }
 
     /**
@@ -54,8 +53,8 @@ public class User {
      * @param phoneNumber
      * @throws Exception
      */
-    public User(String uniqueID, String name, String email, Long phoneNumber, DocumentReference userRef) throws Exception {
-        this(uniqueID, name, email, userRef);
+    public User(String uniqueID, String name, String email, Long phoneNumber) throws Exception {
+        this(uniqueID, name, email);
         this.setPhoneNumber(phoneNumber);
     }
 
@@ -66,8 +65,8 @@ public class User {
      * @param profilePicture
      * @throws Exception
      */
-    public User(String uniqueID, String name, String email, Bitmap profilePicture, DocumentReference userRef) throws Exception {
-        this(uniqueID, name, email, userRef);
+    public User(String uniqueID, String name, String email, Bitmap profilePicture) throws Exception {
+        this(uniqueID, name, email);
         this.setProfilePicture(profilePicture);
     }
 
@@ -81,8 +80,8 @@ public class User {
      * @param profilePicture
      * @throws Exception
      */
-    public User(String uniqueID, String name, String email, Long phoneNumber, Bitmap profilePicture, DocumentReference userRef) throws Exception {
-        this(uniqueID, name, email, phoneNumber, userRef);
+    public User(String uniqueID, String name, String email, Long phoneNumber, Bitmap profilePicture) throws Exception {
+        this(uniqueID, name, email, phoneNumber);
         this.setProfilePicture(profilePicture);
     }
 
@@ -275,6 +274,10 @@ public class User {
      */
     public boolean getReceivesOrgAdmNotifications() {
         return this.receivesOrgAdmNotifications;
+    }
+
+    public void setUserReference(DocumentReference userRef) {
+        this.userRef = userRef;
     }
 
     /**
