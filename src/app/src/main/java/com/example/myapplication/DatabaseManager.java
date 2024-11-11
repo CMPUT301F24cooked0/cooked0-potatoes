@@ -218,7 +218,20 @@ public class DatabaseManager { // static class
     }
 
     public void updateEvent(Event event) {
-
+        if (event == null) {
+            return;
+        }
+        HashMap<String, Object> eventData = new HashMap<>();
+        eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
+        eventData.put(DatabaseEventFieldNames.date.name(), event.getDate());
+        eventData.put(DatabaseEventFieldNames.eventPoster.name(), event.getEventPoster());
+        eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode());
+        eventData.put(DatabaseEventFieldNames.capacity.name(), event.getCapacity());
+        DocumentReference eventRef = event.getEventReference();
+        eventRef.update(eventData);
+        for (EntrantStatus entrantStatus : event.getEntrantStatuses()) {
+            this.updateEntrantStatus(entrantStatus);
+        }
     }
 
     public ArrayList<Event> getEvents(Facility facility) {
