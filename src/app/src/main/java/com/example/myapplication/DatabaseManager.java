@@ -303,12 +303,14 @@ public class DatabaseManager { // static class
         });
         for (Event event : events) {
             ArrayList<EntrantStatus> entrantStatuses = this.getEntrantStatuses(event);
-            EntrantPool entrantPool = new EntrantPool(event);
+            EntrantPool entrantPool = new EntrantPool();
             for (EntrantStatus entrantStatus : entrantStatuses) {
                 entrantPool.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
             }
             // recreate event with EntrantPool which was previously missing
+            events.remove(event);
             event = new Event(event.getName(), event.getDate(), event.getEventPoster(), event.getCapacity(), event.getQrCode(), entrantPool, event.getEventReference());
+            events.add(event);
         }
 
         return events;

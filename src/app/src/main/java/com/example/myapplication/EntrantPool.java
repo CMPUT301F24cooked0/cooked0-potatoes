@@ -15,7 +15,7 @@ public class EntrantPool {
     /**
      * EntrantPool constructor, no users in the pool by default
      */
-    public EntrantPool(Event event) {
+    public EntrantPool() {
         this.entrants = new ArrayList<EntrantStatus>();
     }
 
