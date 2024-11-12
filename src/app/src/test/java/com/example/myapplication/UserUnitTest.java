@@ -81,7 +81,7 @@ public class UserUnitTest {
         User user = new User(null, "name", "email@email.ca");
         assertNull(user.getFacility());
         LatLng location = new LatLng(42.69, 69.42);
-        Facility facility = new Facility("name", location, user);
+        Facility facility = new Facility("name", location);
         user.setFacility(facility);
         assertEquals(user.getFacility(), facility);
     }
@@ -91,7 +91,7 @@ public class UserUnitTest {
         User user = new User(null, "name", "email@email.ca");
         assertNull(user.getFacility());
         LatLng location = new LatLng(42.69, 69.42);
-        Facility facility = new Facility("name", location, user);
+        Facility facility = new Facility("name", location);
         user.setFacility(facility);
         assertEquals(user.getFacility(), facility);
         user.deleteFacility();
@@ -117,7 +117,7 @@ public class UserUnitTest {
         User user = new User(null, "name", "email@email.ca");
         assertFalse(user.isOrganizer());
         LatLng location = new LatLng(42.69, 69.42);
-        Facility facility = new Facility("name", location, user);
+        Facility facility = new Facility("name", location);
         user.setFacility(facility);
         assertTrue(user.isOrganizer());
     }
