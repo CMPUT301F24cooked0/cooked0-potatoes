@@ -18,7 +18,6 @@ public class EntrantStatus {
      * Sets the entrant's status to "none", which means that no draw has occurred yet
      * @param entrant
      * @param joinedFrom
-     * @param event
      */
     public EntrantStatus(User entrant, LatLng joinedFrom) {
         this.entrant = entrant;
@@ -31,7 +30,6 @@ public class EntrantStatus {
      * @param entrant
      * @param joinedFrom
      * @param status
-     * @param event
      */
     public EntrantStatus(User entrant, LatLng joinedFrom, Status status) {
         this(entrant, joinedFrom);

@@ -11,14 +11,12 @@ as well as check their status to see if they are in the database.
  */
 public class EntrantPool {
     private ArrayList<EntrantStatus> entrants;
-    private Event event; // need to remember to create new EntrantStatuses
 
     /**
      * EntrantPool constructor, no users in the pool by default
      */
     public EntrantPool(Event event) {
         this.entrants = new ArrayList<EntrantStatus>();
-        this.event = event;
     }
 
     /**
@@ -54,7 +52,7 @@ public class EntrantPool {
             throw new EntrantAlreadyInPool("entrant cannot be added to pool that they are already in");
         }
         // joinedFrom can be null though
-        EntrantStatus entrantStatus = new EntrantStatus(entrant, joinedFrom, this.event);
+        EntrantStatus entrantStatus = new EntrantStatus(entrant, joinedFrom);
         this.entrants.add(entrantStatus);
     }
 
@@ -74,7 +72,7 @@ public class EntrantPool {
             throw new EntrantAlreadyInPool("entrant cannot be added to pool that they are already in");
         }
         // joinedFrom can be null though
-        EntrantStatus entrantStatus = new EntrantStatus(entrant, joinedFrom, status, this.event);
+        EntrantStatus entrantStatus = new EntrantStatus(entrant, joinedFrom, status);
         this.entrants.add(entrantStatus);
     }
 

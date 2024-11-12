@@ -19,7 +19,6 @@ public class Facility {
      * Simplest public constructor, which **creates a new facility** ond adds it to the database
      * @param name
      * @param location
-     * @param user
      */
     public Facility(String name, LatLng location) {
         this.name = name;
