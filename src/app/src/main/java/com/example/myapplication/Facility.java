@@ -16,24 +16,15 @@ public class Facility {
     private DocumentReference facilityRef;
 
     /**
-     * Base constructor to consolidate code used by other constructors
-     * @param name
-     * @param location
-     */
-    private Facility(String name, LatLng location) {
-        this.name = name;
-        this.location = location;
-        this.events = new ArrayList<Event>();
-    }
-
-    /**
      * Simplest public constructor, which **creates a new facility** ond adds it to the database
      * @param name
      * @param location
      * @param user
      */
-    public Facility(String name, LatLng location, User user) {
-        this(name, location);
+    public Facility(String name, LatLng location) {
+        this.name = name;
+        this.location = location;
+        this.events = new ArrayList<Event>();
     }
 
     /**

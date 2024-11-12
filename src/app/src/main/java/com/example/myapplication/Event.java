@@ -28,7 +28,7 @@ public class Event {
      * @param eventPoster
      * @throws Exception
      */
-    public Event(String name, Date date, Bitmap eventPoster, Facility facility) throws Exception {
+    public Event(String name, Date date, Bitmap eventPoster) throws Exception {
         this.setName(name);
         this.setDate(date);
         this.setEventPoster(eventPoster);
@@ -42,8 +42,8 @@ public class Event {
      * create an event with a capacity
      * @param capacity
     */
-    public Event(String name, Date date, Bitmap eventPoster, Facility facility, Integer capacity) throws Exception {
-        this(name, date, eventPoster, facility);
+    public Event(String name, Date date, Bitmap eventPoster, Integer capacity) throws Exception {
+        this(name, date, eventPoster);
         this.setCapacity(capacity);
     }
 

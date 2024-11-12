@@ -20,7 +20,7 @@ public class EntrantStatus {
      * @param joinedFrom
      * @param event
      */
-    public EntrantStatus(User entrant, LatLng joinedFrom, Event event) {
+    public EntrantStatus(User entrant, LatLng joinedFrom) {
         this.entrant = entrant;
         this.joinedFrom = joinedFrom;
         this.setStatus(Status.none); // starting status is none (no draw has occurred yet)
@@ -33,8 +33,8 @@ public class EntrantStatus {
      * @param status
      * @param event
      */
-    public EntrantStatus(User entrant, LatLng joinedFrom, Status status, Event event) {
-        this(entrant, joinedFrom, event);
+    public EntrantStatus(User entrant, LatLng joinedFrom, Status status) {
+        this(entrant, joinedFrom);
         this.setStatus(status); // this constructor allows setting a different starting status
     }
 
