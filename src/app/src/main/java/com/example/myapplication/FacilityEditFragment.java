@@ -19,6 +19,7 @@ public class FacilityEditFragment extends AppCompatActivity {
     EditText facilityAddressInput;
     Button editButton;
     Facility existingFacility;
+    DatabaseManager databaseManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,7 @@ public class FacilityEditFragment extends AppCompatActivity {
         facilityNameInput = findViewById(R.id.editFacilityName);
         facilityAddressInput = findViewById(R.id.editFacilityAddress);
         editButton = findViewById(R.id.editFacilityButton);
+        databaseManager = new DatabaseManager();
         existingFacility = (Facility) getIntent().getSerializableExtra("facility");
         facilityNameInput.setText(existingFacility.getName()); // autofill existing facility name
         String address = latLngtoAddress(existingFacility.getLocation()); // convert LatLng to address
@@ -40,12 +42,10 @@ public class FacilityEditFragment extends AppCompatActivity {
                 return;
             }
             LatLng facilityAddress = getAddress(facilityAddressStr);
-            if (facilityAddress == null) {
-                Toast.makeText(this, "Invalid address", Toast.LENGTH_SHORT).show();
-                return;
-            }
             existingFacility.setName(facilityName);
             existingFacility.setLocation(facilityAddress);
+            // update facility in database
+            databaseManager.updateFacility(existingFacility);
 
 
 
@@ -62,20 +62,24 @@ public class FacilityEditFragment extends AppCompatActivity {
                 return address.getAddressLine(0);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            Toast.makeText(this, "Error converting to string address", Toast.LENGTH_SHORT).show();
+            return null;
         }
         return null;
     }
     public LatLng getAddress(String address) {
-        Geocoder geocode1 = new Geocoder(this);
+        Geocoder geocoder = new Geocoder(this);
         try {
-            List<Address> addresses = geocode1.getFromLocationName(address, 1);
+            List<Address> addresses = geocoder.getFromLocationName(address, 1);
             if (addresses != null && !addresses.isEmpty()) {
                 Address location = addresses.get(0);
                 return new LatLng(location.getLatitude(), location.getLongitude());
-
-        }    } catch (Exception e) {
-            throw new RuntimeException(e);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error getting address", Toast.LENGTH_SHORT).show();
+            return null;
         }
         return null;
     }

@@ -47,7 +47,7 @@ public class FacilityCreationFragment extends AppCompatActivity {
             }
             Facility facility = new Facility(facilityName, facilityAddress);
             facilityOwner.setFacility(facility);
-            // add facility to database
+            // add facility to database and set facility document reference
             facility.setFacilityReference(databaseManager.createFacility(facilityOwner, facility));
 
 
@@ -63,7 +63,9 @@ public class FacilityCreationFragment extends AppCompatActivity {
                 return new LatLng(location.getLatitude(), location.getLongitude());
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            Toast.makeText(this, "Error getting address", Toast.LENGTH_SHORT).show();
+            return null;
         }
         return null;
     }
