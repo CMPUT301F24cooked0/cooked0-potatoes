@@ -20,6 +20,7 @@ public class FacilityCreationFragment extends AppCompatActivity {
     EditText facilityAddressInput;
     Button createFacilityButton;
     User facilityOwner;
+    DatabaseManager databaseManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,6 +29,7 @@ public class FacilityCreationFragment extends AppCompatActivity {
         facilityNameInput = findViewById(R.id.addFacilityName);
         facilityAddressInput = findViewById(R.id.addFacilityAddress);
         createFacilityButton = findViewById(R.id.createFacilityButton);
+        databaseManager = new DatabaseManager();
         facilityOwner = (User) getIntent().getSerializableExtra("user");
         createFacilityButton.setOnClickListener(view -> {
             // get facility name and address from input fields
@@ -43,8 +45,11 @@ public class FacilityCreationFragment extends AppCompatActivity {
                 Toast.makeText(this, "Invalid address", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Facility facility = new Facility(facilityName, facilityAddress, facilityOwner);
+            Facility facility = new Facility(facilityName, facilityAddress);
             facilityOwner.setFacility(facility);
+            // add facility to database
+            facility.setFacilityReference(databaseManager.createFacility(facilityOwner, facility));
+
 
         });
     }
