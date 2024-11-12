@@ -3,8 +3,6 @@ package com.example.myapplication;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
-import android.graphics.Bitmap;
-
 import com.google.android.gms.maps.model.LatLng;
 
 import org.junit.Test;
@@ -13,7 +11,7 @@ import java.util.Date;
 
 public class FacilityUnitTest {
     @Test
-    public void constructorTest() {
+    public void constructorTest() throws Exception {
         LatLng location = new LatLng(69.420, 42.69);
         Facility facility = new Facility("name", location);
     }
