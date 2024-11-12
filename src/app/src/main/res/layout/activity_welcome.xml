@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/gradient_color_bg"
+    tools:context=".WelcomeActivity">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome"
+        android:textColor="#454242"
+        tools:ignore="HardcodedText"
+        android:textStyle="normal"
+        android:fontFamily="sans-serif"
+        android:textSize="33sp"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/welcome_button"
+        android:layout_marginTop="150dp"
+
+        android:text="Get Started"
+        android:paddingStart="20dp"
+        android:paddingRight="20dp"
+        android:background="@drawable/button_bg"
+        tools:ignore="HardcodedText" />
+
+
+
+</LinearLayout>

@@ -3,21 +3,15 @@ package com.example.myapplication;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
-import android.graphics.Bitmap;
-
 import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.util.Date;
 
 public class FacilityUnitTest {
-    FirebaseFirestore db = Mockito.mock(FirebaseFirestore.class);
-
     @Test
-    public void constructorTest() {
+    public void constructorTest() throws Exception {
         LatLng location = new LatLng(69.420, 42.69);
         Facility facility = new Facility("name", location);
     }

@@ -4,25 +4,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.util.Date;
 
 public class EntrantPoolUnitTest {
-    FirebaseFirestore db = Mockito.mock(FirebaseFirestore.class);
-
     @Test
-    public void constructorTest() {
+    public void constructorTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
     }
 
     @Test
     public void addEntrantNotInPoolTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         assertEquals(entrantPool.getEntrants().size(), 1);
@@ -32,7 +28,7 @@ public class EntrantPoolUnitTest {
     @Test
     public void addEntrantInPoolTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         assertThrows(EntrantAlreadyInPool.class, () -> {entrantPool.addEntrant(entrant, location);});
@@ -41,7 +37,7 @@ public class EntrantPoolUnitTest {
     @Test
     public void removeEntrantNotInPoolTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         entrantPool.removeEntrant(entrant);
         assertEquals(entrantPool.getEntrants().size(), 0);
     }
@@ -49,7 +45,7 @@ public class EntrantPoolUnitTest {
     @Test
     public void removeEntrantInPoolTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         assertEquals(entrantPool.getEntrants().size(), 1);
@@ -61,7 +57,7 @@ public class EntrantPoolUnitTest {
     @Test
     public void setEntrantStatusTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         entrantPool.setEntrantStatus(entrant, Status.notChosen);
@@ -71,13 +67,13 @@ public class EntrantPoolUnitTest {
     @Test
     public void setEntrantStatusNotInPoolTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         entrantPool.setEntrantStatus(entrant, Status.notChosen);
         assertEquals(entrantPool.getEntrants().size(), 0);
     }
 
     @Test
-    public void getEntrantsNoEntrantsTest() {
+    public void getEntrantsNoEntrantsTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
         assertEquals(entrantPool.getEntrants().size(), 0);
     }
@@ -85,7 +81,7 @@ public class EntrantPoolUnitTest {
     @Test
     public void getEntrantsTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         assertEquals(entrantPool.getEntrants().size(), 1);
@@ -93,7 +89,7 @@ public class EntrantPoolUnitTest {
     }
 
     @Test
-    public void getEntrantStatusesNoEntrantsTest() {
+    public void getEntrantStatusesNoEntrantsTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
         assertEquals(entrantPool.getEntrantStatuses().size(), 0);
     }
@@ -101,7 +97,7 @@ public class EntrantPoolUnitTest {
     @Test
     public void getEntrantStatusesTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        User entrant = new User("name", "email@email.ca");
+        User entrant = new User(null, "name", "email@email.ca");
         LatLng location = new LatLng(69.420, 42.69);
         entrantPool.addEntrant(entrant, location);
         assertEquals(entrantPool.getEntrantStatuses().size(), 1);
@@ -110,7 +106,7 @@ public class EntrantPoolUnitTest {
     }
 
     @Test
-    public void drawEntrantsNoEntrantsTest() {
+    public void drawEntrantsNoEntrantsTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
         entrantPool.drawEntrants(0);
         // TODO finish writing tests for drawEntrants when functionality is added
