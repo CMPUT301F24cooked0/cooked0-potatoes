@@ -2,9 +2,6 @@ package com.example.myapplication;
 
 import android.graphics.Bitmap;
 
-import com.google.firebase.Firebase;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.Date;
 
 /**
