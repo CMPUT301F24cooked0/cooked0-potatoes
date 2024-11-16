@@ -69,6 +69,7 @@ public class FacilityEditFragment extends AppCompatActivity {
         return null;
     }
     public LatLng getAddress(String address) {
+        // converts string address given by user to LatLng
         Geocoder geocoder = new Geocoder(this);
         try {
             List<Address> addresses = geocoder.getFromLocationName(address, 1);
@@ -78,7 +79,6 @@ public class FacilityEditFragment extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "Error getting address", Toast.LENGTH_SHORT).show();
             return null;
         }
         return null;
