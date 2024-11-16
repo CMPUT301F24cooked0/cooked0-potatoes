@@ -1,7 +1,7 @@
 package com.example.myapplication;
 
 import android.app.DatePickerDialog;
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -26,13 +25,10 @@ public class EditEventFragment extends Fragment {
     private Bitmap eventPoster;
     private Event event;
 
-    public EditEventFragment() {
-        return;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.edit_event, container, false);
+        View view = inflater.inflate(R.layout.fragment_edit_event, container, false);
 
         eventNameEditText = view.findViewById(R.id.editEventNameInput);
         eventCapacityEditText = view.findViewById(R.id.editEventCapInput);

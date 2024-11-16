@@ -1,7 +1,5 @@
 package com.example.myapplication;
 
-import static android.media.MediaSyncEvent.createEvent;
-
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -18,7 +16,6 @@ import android.widget.Toast;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 
@@ -37,7 +34,7 @@ public class CreateEventFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.create_event, container, false);
+        View view = inflater.inflate(R.layout.fragment_create_event, container, false);
 
 
 
