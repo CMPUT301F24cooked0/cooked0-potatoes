@@ -19,6 +19,9 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+/**
+ * This fragment is used to view the events of a facility and provide the option to edit the facility.
+ */
 public class FacilityViewEventsFragment extends Fragment {
     View view;
     TextView facilityName;

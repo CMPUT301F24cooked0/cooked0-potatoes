@@ -16,6 +16,10 @@ import android.widget.Toast;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * This fragment is used to edit an existing event.
+ */
+
 public class EditEventFragment extends Fragment {
 
     private EditText eventNameEditText, eventCapacityEditText;

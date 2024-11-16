@@ -23,6 +23,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+/**
+ * This fragment is used to create a new event.
+ */
 public class CreateEventFragment extends Fragment {
     private EditText eventName, eventDate, eventCapacity, eventDetails, eventStart, eventEnd;
     private Button createEventButton;

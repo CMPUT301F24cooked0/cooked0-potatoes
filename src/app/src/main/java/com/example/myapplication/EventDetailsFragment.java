@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- *
+ * This fragment is used to display the details of an event.
  */
 public class EventDetailsFragment extends Fragment {
     View view;
