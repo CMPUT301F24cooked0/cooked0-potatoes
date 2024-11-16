@@ -3,58 +3,84 @@ package com.example.myapplication;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 import java.util.Locale;
 
-public class FacilityEditFragment extends AppCompatActivity {
+/**
+ * This class represents a page for editing an existing facility.
+ */
+public class FacilityEditFragment extends Fragment {
+    // TODO get facility from bundle
+    View view;
     EditText facilityNameInput;
     EditText facilityAddressInput;
     Button editButton;
-    Facility existingFacility;
+    // Facility existingFacility;
     DatabaseManager databaseManager;
+    String addressStr;
+    String facilityName;
+    String facilityAddressStr;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.facility_edit);
-        facilityNameInput = findViewById(R.id.editFacilityName);
-        facilityAddressInput = findViewById(R.id.editFacilityAddress);
-        editButton = findViewById(R.id.editFacilityButton);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_facility_edit, container, false);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        facilityNameInput = view.findViewById(R.id.editFacilityName);
+        facilityAddressInput = view.findViewById(R.id.editFacilityAddress);
+        editButton = view.findViewById(R.id.editFacilityButton);
         databaseManager = new DatabaseManager();
-        existingFacility = (Facility) getIntent().getSerializableExtra("facility");
-        facilityNameInput.setText(existingFacility.getName()); // autofill existing facility name
-        String address = latLngtoAddress(existingFacility.getLocation()); // convert LatLng to address
-        facilityAddressInput.setText(address); // autofill existing facility address
-        editButton.setOnClickListener(view -> {
-            // get facility name and address from input fields
-            String facilityName = facilityNameInput.getText().toString();
-            String facilityAddressStr = facilityAddressInput.getText().toString();
-            if (facilityName.isEmpty() || facilityAddressStr.isEmpty()) {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            LatLng facilityAddress = getAddress(facilityAddressStr);
-            existingFacility.setName(facilityName);
-            existingFacility.setLocation(facilityAddress);
-            // update facility in database
-            databaseManager.updateFacility(existingFacility);
-
-
-
-
-        });
+//        existingFacility = (Facility) getArguments().getSerializable("facility");
+//        facilityNameInput.setText(existingFacility.getName()); // autofill existing facility name
+//        addressStr = latLngtoAddress(existingFacility.getLocation()); // convert LatLng to address
+//        facilityAddressInput.setText(addressStr); // autofill existing facility address
+        editButton.setOnClickListener(this::onClick);
 
     }
+    public void onClick(View view) {
+        // get facility name and address from input fields
+        facilityName = facilityNameInput.getText().toString();
+        facilityAddressStr = facilityAddressInput.getText().toString();
+        if (facilityName.isEmpty() || facilityAddressStr.isEmpty()) {
+            Toast.makeText(this.requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        LatLng facilityAddress = getAddress(facilityAddressStr);
+        if (facilityAddress == null) {
+            Toast.makeText(this.requireContext(), "Invalid address", Toast.LENGTH_SHORT).show();
+            return;
+        }
+//        existingFacility.setName(facilityName);
+//        existingFacility.setLocation(facilityAddress);
+        // update facility in database
+//        databaseManager.updateFacility(existingFacility);
+
+
+    }
+
     public String latLngtoAddress(LatLng location) {
-        Geocoder geocode = new Geocoder(this, Locale.getDefault());
+        // converts LatLng input to string address
+        Geocoder geocode = new Geocoder(this.requireContext(), Locale.getDefault());
         try {
             List<Address> addresses = geocode.getFromLocation(location.latitude, location.longitude, 1);
             if (addresses != null && !addresses.isEmpty()) {
@@ -63,14 +89,15 @@ public class FacilityEditFragment extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "Error converting to string address", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.requireContext(), "Error converting to string address", Toast.LENGTH_SHORT).show();
             return null;
         }
         return null;
     }
+
     public LatLng getAddress(String address) {
         // converts string address given by user to LatLng
-        Geocoder geocoder = new Geocoder(this);
+        Geocoder geocoder = new Geocoder(this.requireContext(), Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocationName(address, 1);
             if (addresses != null && !addresses.isEmpty()) {
@@ -83,5 +110,4 @@ public class FacilityEditFragment extends AppCompatActivity {
         }
         return null;
     }
-
 }
