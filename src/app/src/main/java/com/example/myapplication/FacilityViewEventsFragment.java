@@ -37,6 +37,7 @@ public class FacilityViewEventsFragment extends Fragment {
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         // TODO get facility object
 //        facility = (Facility) getIntent().getSerializableExtra("facility");
         facilityName = view.findViewById(R.id.facilityNamePlaceholder);
