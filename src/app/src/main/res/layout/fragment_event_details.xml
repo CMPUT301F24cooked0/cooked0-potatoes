@@ -29,8 +29,16 @@
             android:id="@+id/event_name_placeholder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textAlignment="textStart" />
+            android:text="EventName"
+            android:textAlignment="textStart"
+            android:textColor="@color/defaultButtonColor"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/event_desc_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="EventDesc" />
 
     </LinearLayout>
 
