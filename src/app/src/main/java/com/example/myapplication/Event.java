@@ -170,7 +170,7 @@ public class Event {
      * remove an entrant from this event
      * @param entrant
      */
-    public void removeEntrant(User entrant) {
+    public void removeEntrant(User entrant) throws Exception {
         this.entrantPool.removeEntrant(entrant); // entrantPool does validation for us
     }
 
@@ -179,7 +179,7 @@ public class Event {
      * @param entrant
      * @param status
      */
-    public void setEntrantStatus(User entrant, Status status) {
+    public void setEntrantStatus(User entrant, Status status) throws Exception {
         this.entrantPool.setEntrantStatus(entrant, status);
     }
 
@@ -227,7 +227,7 @@ public class Event {
      * get a list of this event's entrants
      * @return
      */
-    public ArrayList<User> getEntrants() {
+    public ArrayList<User> getEntrants() throws Exception {
         return this.entrantPool.getEntrants();
     }
 

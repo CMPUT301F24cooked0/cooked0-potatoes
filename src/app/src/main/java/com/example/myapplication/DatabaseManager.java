@@ -14,12 +14,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class DatabaseManager { // static class
     private final FirebaseFirestore db;
+    private ArrayList<User> users;
+    // the ArrayList of users is intended to store a reference to each and every User object created by the getUser method.
+    // The reason this is done is because the getUser method is recursive,
+    // however, the getEntrantStatus method at the "end" of the recursion needs to call the getUser method.
+    // without this ArrayList, copies of the same user may be created indefinitely,
+    // however this method allows the infinite loop to be avoided by using
+    // already existing instances of users we are looking for
 
     public DatabaseManager() {
         this.db = FirebaseFirestore.getInstance();
+        this.users = new ArrayList<User>();
     }
 
     public DocumentReference createUser(User user) {
@@ -55,7 +64,15 @@ public class DatabaseManager { // static class
         this.updateFacility(user.getFacility());
     }
 
-    public User getUser(String userID) throws Exception {
+    public User getUser(String userID) {
+        // before creating a new user object from the database, we need to check if we already have a User object for this user
+        for (User user : this.users) {
+            if (user.getUniqueID().equals(userID)) {
+                return user;
+            }
+        }
+
+        // we didn't already have this user created, so we fetch it from the database
         DocumentReference userRef = this.db.collection(DatabaseCollectionNames.users.name()).document(userID);
         final User[] user = new User[1];
         user[0] = null;
@@ -117,6 +134,7 @@ public class DatabaseManager { // static class
         if (user[0] == null) {
             return null;
         }
+        this.users.add(user[0]);
         Facility facility = this.getFacility(user[0]); // get user's facility
         user[0].setFacility(facility);
 
@@ -151,7 +169,7 @@ public class DatabaseManager { // static class
         }
     }
 
-    public Facility getFacility(User organizer) throws Exception {
+    public Facility getFacility(User organizer) {
         DocumentReference userRef = organizer.getUserReference();
         CollectionReference facilityCol = userRef.collection(DatabaseCollectionNames.facilities.name());
         final Facility[] facility = new Facility[1];
@@ -239,7 +257,7 @@ public class DatabaseManager { // static class
         }
     }
 
-    public ArrayList<Event> getEvents(Facility facility) throws Exception {
+    public ArrayList<Event> getEvents(Facility facility) {
         DocumentReference facilityRef = facility.getFacilityReference();
         CollectionReference eventCol = facilityRef.collection(DatabaseCollectionNames.events.name());
         ArrayList<Event> events = new ArrayList<>();
@@ -309,7 +327,12 @@ public class DatabaseManager { // static class
             }
             // recreate event with EntrantPool which was previously missing
             events.remove(event);
-            event = new Event(event.getName(), event.getDate(), event.getEventPoster(), event.getCapacity(), event.getQrCode(), entrantPool, event.getEventReference());
+            try {
+                event = new Event(event.getName(), event.getDate(), event.getEventPoster(), event.getCapacity(), event.getQrCode(), entrantPool, event.getEventReference());
+            }
+            catch (Exception e) {
+                continue;
+            }
             events.add(event);
         }
 
@@ -385,7 +408,7 @@ public class DatabaseManager { // static class
                     Status status = (Status) statusTemp;
 
                     try {
-                        User entrant = null; // FIXME should I get user?...
+                        User entrant = getUser(entrantID);
                         entrantStatuses.add(new EntrantStatus(entrant, joinedFrom, status, entrantStatusRefs.get(entrantStatusRefs.size()-1)));
                     }
                     catch (Exception e) {
