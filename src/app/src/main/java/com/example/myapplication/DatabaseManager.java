@@ -41,7 +41,7 @@ public class DatabaseManager { // static class
         userData.put(DatabaseUserFieldNames.name.name(), user.getName());
         userData.put(DatabaseUserFieldNames.email.name(), user.getEmail());
         userData.put(DatabaseUserFieldNames.phoneNumber.name(), user.getPhoneNumber());
-        userData.put(DatabaseUserFieldNames.profilePicture.name(), user.getProfilePicture());
+        //userData.put(DatabaseUserFieldNames.profilePicture.name(), user.getProfilePicture());
         userData.put(DatabaseUserFieldNames.receivesOrgAdmNotifications.name(), user.getReceivesOrgAdmNotifications());
         DocumentReference userRef = this.db.collection(DatabaseCollectionNames.users.name()).document(userID);
         userRef.set(userData);

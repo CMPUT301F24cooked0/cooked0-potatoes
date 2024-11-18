@@ -52,13 +52,21 @@ public class MainActivity extends AppCompatActivity {
         String profileDetails = "Name: " + name + "\nEmail: " + email + "\nPhone: " + phone;
         profileTextView.setText(profileDetails);
 
+        Bitmap decodedByte = null;
         if (encodedImage != null) {
             byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             profileImageView.setImageBitmap(decodedByte);
         }
 
-    signOut.setOnClickListener(new View.OnClickListener() {
+        try {
+            User user = new User("12345", name, email, Long.getLong(phone), decodedByte);
+            new DatabaseManager().createUser(user);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        signOut.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             signOutUser();
