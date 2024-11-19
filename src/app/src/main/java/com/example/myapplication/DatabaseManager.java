@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class DatabaseManager { // static class
+public class DatabaseManager implements OnFacilityFetchListener { // static class
     private final FirebaseFirestore db;
     private ArrayList<User> users;
     // the ArrayList of users is intended to store a reference to each and every User object created by the getUser method.
@@ -100,14 +100,14 @@ public class DatabaseManager { // static class
         }
 
         if (documentSnapshot == null) {
-            throw new UserDoesNotExist("documentSnapshot was null");
+            return null;
         }
         if (!documentSnapshot.exists()) {
-            throw new UserDoesNotExist("documentSnapshot does not exist");
+            return null;
         }
         HashMap<String, Object> userData = (HashMap<String, Object>) documentSnapshot.getData();
         if (userData == null) {
-            throw new UserDoesNotExist("this user does not exist in the database");
+            return null;
         }
 
         // get user data from document
@@ -153,8 +153,7 @@ public class DatabaseManager { // static class
             return null;
         }
         this.users.add(user);
-        //Facility facility = this.getFacility(user); // get user's facility // FIXME temporary comment
-        //user.setFacility(facility);
+        this.getFacility(user, this); // get user's facility, which is automatically added to user
 
         return user;
     }
@@ -187,58 +186,76 @@ public class DatabaseManager { // static class
         }
     }
 
-    public Facility getFacility(User organizer) {
+    public void getFacility(User organizer, OnFacilityFetchListener onFacilityFetchListener) {
+        Thread thread = new Thread(() -> {
+            Facility facility = fetchFacility(organizer);
+            onFacilityFetchListener.onFacilityFetch(organizer, facility);
+        });
+        thread.start();
+    }
+
+    private Facility fetchFacility(User organizer) {
         DocumentReference userRef = organizer.getUserReference();
         CollectionReference facilityCol = userRef.collection(DatabaseCollectionNames.facilities.name());
-        final Facility[] facility = new Facility[1];
-        facility[0] = null;
-        facilityCol.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
-                DocumentReference facilityRef;
-                assert (documentSnapshots.size() <= 1); // user should have either 0 or 1 facility
-                if (documentSnapshots.isEmpty()) {
-                    return;
-                }
-                facilityRef = documentSnapshots.get(0).getReference();
-                HashMap<String, Object> facilityData = (HashMap<String, Object>) documentSnapshots.get(0).getData();
-                if (facilityData == null) {
-                    return;
-                }
+        Facility facility = null;
 
-                // get facility data from document
-
-                Object nameTemp = facilityData.get(DatabaseFacilityFieldNames.name.name());
-                if (nameTemp == null) {
-                    throw new FacilityDoesNotExist("this facility was missing the name field");
-                }
-                String name = (String) nameTemp;
-
-                Object locationTemp = facilityData.get(DatabaseFacilityFieldNames.location.name());
-                if (locationTemp == null) {
-                    throw new FacilityDoesNotExist("this facility was missing the location field");
-                }
-                LatLng location = (LatLng) locationTemp;
-
-                try {
-                    facility[0] = new Facility(name, location, facilityRef, new ArrayList<Event>());
-                }
-                catch (Exception e) {
-                    facility[0] = null;
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        if (facility[0] == null) {
+        Task<QuerySnapshot> task = facilityCol.get();
+        QuerySnapshot queryDocumentSnapshots = null;
+        try {
+            queryDocumentSnapshots = Tasks.await(task);
+        } catch (ExecutionException e) {
+            return null;
+        } catch (InterruptedException e) {
             return null;
         }
-        ArrayList<Event> events = this.getEvents(facility[0]); // get facility's events
-        for (Event event : events) {
-            facility[0].addEvent(event);
+
+        if (queryDocumentSnapshots == null) {
+            return null;
+        }
+        List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+        DocumentReference facilityRef;
+        assert (documentSnapshots.size() <= 1); // user should have either 0 or 1 facility
+        if (documentSnapshots.isEmpty()) {
+            return null;
+        }
+        facilityRef = documentSnapshots.get(0).getReference();
+        HashMap<String, Object> facilityData = (HashMap<String, Object>) documentSnapshots.get(0).getData();
+        if (facilityData == null) {
+            return null;
         }
 
-        return facility[0];
+        // get facility data from document
+
+        Object nameTemp = facilityData.get(DatabaseFacilityFieldNames.name.name());
+        if (nameTemp == null) {
+            throw new FacilityDoesNotExist("this facility was missing the name field");
+        }
+        String name = (String) nameTemp;
+
+        Object locationTemp = facilityData.get(DatabaseFacilityFieldNames.location.name());
+        if (locationTemp == null) {
+            throw new FacilityDoesNotExist("this facility was missing the location field");
+        }
+        LatLng location = (LatLng) locationTemp;
+
+        try {
+            facility = new Facility(name, location, facilityRef, new ArrayList<Event>());
+        }
+        catch (Exception e) {
+            facility = null;
+            throw new RuntimeException(e);
+        }
+        //ArrayList<Event> events = this.getEvents(facility); // get facility's events // FIXME temporary
+        //for (Event event : events) {
+        //    facility.addEvent(event);
+        //}
+
+        return facility;
+    }
+
+    @Override
+    public void onFacilityFetch(User organizer, Facility facility) {
+        organizer.setFacility(facility);
     }
 
     public DocumentReference createEvent(Facility facility, Event event) {
