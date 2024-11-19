@@ -69,7 +69,15 @@ public class DatabaseManager { // static class
         this.updateFacility(user.getFacility());
     }
 
-    public User getUser(String userID) throws InterruptedException, ExecutionException {
+    public void getUser(String userID, OnUserFetchListener onUserFetchListener) {
+        Thread thread = new Thread(() -> {
+            User user = fetchUser(userID);
+            onUserFetchListener.onUserFetch(user);
+        });
+        thread.start();
+    }
+
+    private User fetchUser(String userID) {
         // before creating a new user object from the database, we need to check if we already have a User object for this user
         for (User user : this.users) {
             if (user.getUniqueID().equals(userID)) {
@@ -82,7 +90,15 @@ public class DatabaseManager { // static class
         User user = null;
 
         Task<DocumentSnapshot> task = userRef.get();
-        DocumentSnapshot documentSnapshot = Tasks.await(task); // FIXME can't call this on main thread
+        DocumentSnapshot documentSnapshot = null;
+        try {
+            documentSnapshot = Tasks.await(task);
+        } catch (ExecutionException e) {
+            return null;
+        } catch (InterruptedException e) {
+            return null;
+        }
+
         if (documentSnapshot == null) {
             throw new UserDoesNotExist("documentSnapshot was null");
         }
@@ -95,56 +111,50 @@ public class DatabaseManager { // static class
         }
 
         // get user data from document
-
-        Object isAdminTemp = userData.get(DatabaseUserFieldNames.isAdmin.name());
-        if (isAdminTemp == null) {
-            throw new UserDoesNotExist("this user was missing the isAdmin field");
-        }
-        boolean isAdmin = (boolean) isAdminTemp;
-
-        Object nameTemp = userData.get(DatabaseUserFieldNames.name.name());
-        if (nameTemp == null) {
-            throw new UserDoesNotExist("this user was missing the name field");
-        }
-        String name = (String) nameTemp;
-
-        Object emailTemp = userData.get(DatabaseUserFieldNames.email.name());
-        if (emailTemp == null) {
-            throw new UserDoesNotExist("this user was missing the email field");
-        }
-        String email = (String) emailTemp;
-
-        Object phoneNumberTemp = userData.get(DatabaseUserFieldNames.phoneNumber.name());
-        if (phoneNumberTemp == null) {
-            throw new UserDoesNotExist("this user was missing the phoneNumber field");
-        }
-        Long phoneNumber = (Long) phoneNumberTemp;
-
-        Object profilePictureTemp = userData.get(DatabaseUserFieldNames.profilePicture.name());
-        if (profilePictureTemp == null) {
-            throw new UserDoesNotExist("this user was missing the profilePicture field");
-        }
-        Bitmap profilePicture = (Bitmap) profilePictureTemp;
-
-        Object notificationTemp = userData.get(DatabaseUserFieldNames.receivesOrgAdmNotifications.name());
-        if (notificationTemp == null) {
-            throw new UserDoesNotExist("this user was missing the receivesOrgAdmNotifications field");
-        }
-        boolean receivesOrgAdmNotifications = (boolean) notificationTemp;
-
         try {
-            user = new User(userID, name, email, phoneNumber, profilePicture, isAdmin, receivesOrgAdmNotifications, userRef, null);
-        } catch (Exception e) {
+            Object isAdminTemp = userData.get(DatabaseUserFieldNames.isAdmin.name());
+            boolean isAdmin = (boolean) isAdminTemp;
+
+            Object nameTemp = userData.get(DatabaseUserFieldNames.name.name());
+            if (nameTemp == null) {
+                // user name is mandatory
+                throw new UserDoesNotExist("this user was missing the name field");
+            }
+            String name = (String) nameTemp;
+
+            Object emailTemp = userData.get(DatabaseUserFieldNames.email.name());
+            if (emailTemp == null) {
+                // user email is mandatory
+                throw new UserDoesNotExist("this user was missing the email field");
+            }
+            String email = (String) emailTemp;
+
+            Object phoneNumberTemp = userData.get(DatabaseUserFieldNames.phoneNumber.name());
+            Long phoneNumber = (Long) phoneNumberTemp;
+
+            Object profilePictureTemp = userData.get(DatabaseUserFieldNames.profilePicture.name());
+            Bitmap profilePicture = (Bitmap) profilePictureTemp;
+
+            Object notificationTemp = userData.get(DatabaseUserFieldNames.receivesOrgAdmNotifications.name());
+            boolean receivesOrgAdmNotifications = (boolean) notificationTemp;
+
+            try {
+                user = new User(userID, name, email, phoneNumber, profilePicture, isAdmin, receivesOrgAdmNotifications, userRef, null);
+            } catch (Exception e) {
+                user = null;
+                throw new RuntimeException(e);
+            }
+        }
+        catch (Exception e) {
             user = null;
-            throw new RuntimeException(e);
         }
 
         if (user == null) {
             return null;
         }
         this.users.add(user);
-        Facility facility = this.getFacility(user); // get user's facility
-        user.setFacility(facility);
+        //Facility facility = this.getFacility(user); // get user's facility // FIXME temporary comment
+        //user.setFacility(facility);
 
         return user;
     }
@@ -416,7 +426,7 @@ public class DatabaseManager { // static class
                     Status status = (Status) statusTemp;
 
                     try {
-                        User entrant = getUser(entrantID);
+                        User entrant = fetchUser(entrantID);
                         entrantStatuses.add(new EntrantStatus(entrant, joinedFrom, status, entrantStatusRefs.get(entrantStatusRefs.size()-1)));
                     }
                     catch (Exception e) {

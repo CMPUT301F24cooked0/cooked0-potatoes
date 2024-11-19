@@ -20,11 +20,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnUserFetchListener {
     private TextView profileTextView;
     private ImageView profileImageView;
     private Button signOut;
     private ImageButton editUserInfo;
+    private User user;
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
@@ -59,14 +60,10 @@ public class MainActivity extends AppCompatActivity {
             profileImageView.setImageBitmap(decodedByte);
         }
 
-        User user;
+        new DatabaseManager().getUser("12345", this);
+        Long phoneNumber = Long.parseLong(phone);
         try {
-            user = new DatabaseManager().getUser("12345");
-            if (user == null) {
-                Long phoneNumber = Long.parseLong(phone);
-                user = new User("12345", name, email, phoneNumber, decodedByte);
-                new DatabaseManager().createUser(user);
-            }
+            user = new User("12345", name, email, phoneNumber, decodedByte);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -98,5 +95,15 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onUserFetch(User user) {
+        if (user == null) {
+            new DatabaseManager().createUser(this.user);
+        }
+        else {
+            this.user = user;
+        }
     }
 }
