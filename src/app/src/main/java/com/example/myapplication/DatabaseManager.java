@@ -15,13 +15,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class DatabaseManager implements OnFacilityFetchListener { // static class
+public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchListener { // static class
     private final FirebaseFirestore db;
     private ArrayList<User> users;
     // the ArrayList of users is intended to store a reference to each and every User object created by the getUser method.
@@ -245,10 +246,7 @@ public class DatabaseManager implements OnFacilityFetchListener { // static clas
             facility = null;
             throw new RuntimeException(e);
         }
-        //ArrayList<Event> events = this.getEvents(facility); // get facility's events // FIXME temporary
-        //for (Event event : events) {
-        //    facility.addEvent(event);
-        //}
+        this.getEvents(facility, this); // get facility's events
 
         return facility;
     }
@@ -292,68 +290,84 @@ public class DatabaseManager implements OnFacilityFetchListener { // static clas
         }
     }
 
-    public ArrayList<Event> getEvents(Facility facility) {
+    public void getEvents(Facility facility, OnEventsFetchListener onEventsFetchListener) {
+        Thread thread = new Thread(() -> {
+            ArrayList<Event> events = fetchEvents(facility);
+            onEventsFetchListener.onEventsFetch(facility, events);
+        });
+        thread.start();
+    }
+
+    private ArrayList<Event> fetchEvents(Facility facility) {
         DocumentReference facilityRef = facility.getFacilityReference();
         CollectionReference eventCol = facilityRef.collection(DatabaseCollectionNames.events.name());
         ArrayList<Event> events = new ArrayList<>();
-        eventCol.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
-                ArrayList<DocumentReference> eventRefs = new ArrayList<>();
-                if (documentSnapshots.isEmpty()) {
-                    return;
-                }
-                HashMap<String, Object> eventData;
 
-                for (DocumentSnapshot documentSnapshot : documentSnapshots) { // for each event is the collection
-                    eventData = (HashMap<String, Object>) documentSnapshot.getData();
-                    if (eventData == null) {
-                        continue;
-                    }
-                    eventRefs.add(documentSnapshot.getReference());
+        Task<QuerySnapshot> task = eventCol.get();
+        QuerySnapshot queryDocumentSnapshots = null;
+        try {
+            queryDocumentSnapshots = Tasks.await(task);
+        } catch (ExecutionException e) {
+            return events;
+        } catch (InterruptedException e) {
+            return events;
+        }
 
-                    // get event data from document
+        if (queryDocumentSnapshots == null) {
+            return events;
+        }
 
-                    Object nameTemp = eventData.get(DatabaseEventFieldNames.name.name());
-                    if (nameTemp == null) {
-                        throw new EventDoesNotExist("this event was missing the name field");
-                    }
-                    String name = (String) nameTemp;
+        List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+        ArrayList<DocumentReference> eventRefs = new ArrayList<>();
+        if (documentSnapshots.isEmpty()) {
+            return events;
+        }
+        HashMap<String, Object> eventData;
 
-                    Object dateTemp = eventData.get(DatabaseEventFieldNames.date.name());
-                    if (dateTemp == null) {
-                        throw new EventDoesNotExist("this event was missing the date field");
-                    }
-                    Date date = (Date) dateTemp;
-
-                    Object eventPosterTemp = eventData.get(DatabaseEventFieldNames.eventPoster.name());
-                    if (eventPosterTemp == null) {
-                        throw new EventDoesNotExist("this event was missing the eventPoster field");
-                    }
-                    Bitmap eventPoster = (Bitmap) eventPosterTemp;
-
-                    Object qrCodeTemp = eventData.get(DatabaseEventFieldNames.qrCode.name());
-                    if (qrCodeTemp == null) {
-                        throw new EventDoesNotExist("this event was missing the qrCode field");
-                    }
-                    QRCode qrCode = new QRCode((String) qrCodeTemp);
-
-                    Object capacityTemp = eventData.get(DatabaseEventFieldNames.capacity.name());
-                    if (capacityTemp == null) {
-                        throw new EventDoesNotExist("this event was missing the capacity field");
-                    }
-                    Integer capacity = (Integer) capacityTemp;
-
-                    try {
-                        events.add(new Event(name, date, eventPoster, capacity, qrCode, null, eventRefs.get(eventRefs.size()-1)));
-                    }
-                    catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+        for (DocumentSnapshot documentSnapshot : documentSnapshots) { // for each event is the collection
+            eventData = (HashMap<String, Object>) documentSnapshot.getData();
+            if (eventData == null) {
+                continue;
             }
-        });
+            eventRefs.add(documentSnapshot.getReference());
+
+            // get event data from document
+
+            Object nameTemp = eventData.get(DatabaseEventFieldNames.name.name());
+            if (nameTemp == null) {
+                throw new EventDoesNotExist("this event was missing the name field");
+            }
+            String name = (String) nameTemp;
+
+            Object dateTemp = eventData.get(DatabaseEventFieldNames.date.name());
+            if (dateTemp == null) {
+                throw new EventDoesNotExist("this event was missing the date field");
+            }
+            Date date = (Date) dateTemp;
+
+            Object eventPosterTemp = eventData.get(DatabaseEventFieldNames.eventPoster.name());
+            if (eventPosterTemp == null) {
+                throw new EventDoesNotExist("this event was missing the eventPoster field");
+            }
+            Bitmap eventPoster = (Bitmap) eventPosterTemp;
+
+            Object qrCodeTemp = eventData.get(DatabaseEventFieldNames.qrCode.name());
+            if (qrCodeTemp == null) {
+                throw new EventDoesNotExist("this event was missing the qrCode field");
+            }
+            QRCode qrCode = new QRCode((String) qrCodeTemp);
+
+            Object capacityTemp = eventData.get(DatabaseEventFieldNames.capacity.name());
+            Integer capacity = (Integer) capacityTemp;
+
+            try {
+                events.add(new Event(name, date, eventPoster, capacity, qrCode, null, eventRefs.get(eventRefs.size()-1)));
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         for (Event event : events) {
             ArrayList<EntrantStatus> entrantStatuses = this.getEntrantStatuses(event);
             EntrantPool entrantPool = new EntrantPool();
@@ -372,6 +386,13 @@ public class DatabaseManager implements OnFacilityFetchListener { // static clas
         }
 
         return events;
+    }
+
+    @Override
+    public void onEventsFetch(Facility facility, ArrayList<Event> events) {
+        for (Event event : events) {
+            facility.addEvent(event);
+        }
     }
 
     public DocumentReference createEntrantStatus(Event event, EntrantStatus entrantStatus) {
