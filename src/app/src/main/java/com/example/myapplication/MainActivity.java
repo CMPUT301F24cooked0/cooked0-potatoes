@@ -59,9 +59,14 @@ public class MainActivity extends AppCompatActivity {
             profileImageView.setImageBitmap(decodedByte);
         }
 
+        User user;
         try {
-            User user = new User("12345", name, email, Long.getLong(phone), decodedByte);
-            new DatabaseManager().createUser(user);
+            user = new DatabaseManager().getUser("12345");
+            if (user == null) {
+                Long phoneNumber = Long.parseLong(phone);
+                user = new User("12345", name, email, phoneNumber, decodedByte);
+                new DatabaseManager().createUser(user);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

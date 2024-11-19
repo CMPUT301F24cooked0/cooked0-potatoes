@@ -2,8 +2,13 @@ package com.example.myapplication;
 
 import android.graphics.Bitmap;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -14,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 public class DatabaseManager { // static class
     private final FirebaseFirestore db;
@@ -64,7 +69,7 @@ public class DatabaseManager { // static class
         this.updateFacility(user.getFacility());
     }
 
-    public User getUser(String userID) {
+    public User getUser(String userID) throws InterruptedException, ExecutionException {
         // before creating a new user object from the database, we need to check if we already have a User object for this user
         for (User user : this.users) {
             if (user.getUniqueID().equals(userID)) {
@@ -74,71 +79,74 @@ public class DatabaseManager { // static class
 
         // we didn't already have this user created, so we fetch it from the database
         DocumentReference userRef = this.db.collection(DatabaseCollectionNames.users.name()).document(userID);
-        final User[] user = new User[1];
-        user[0] = null;
+        User user = null;
 
-        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                HashMap<String, Object> userData = (HashMap<String, Object>) documentSnapshot.getData();
-                if (userData == null) {
-                    throw new UserDoesNotExist("this user does not exist in the database");
-                }
+        Task<DocumentSnapshot> task = userRef.get();
+        DocumentSnapshot documentSnapshot = Tasks.await(task); // FIXME can't call this on main thread
+        if (documentSnapshot == null) {
+            throw new UserDoesNotExist("documentSnapshot was null");
+        }
+        if (!documentSnapshot.exists()) {
+            throw new UserDoesNotExist("documentSnapshot does not exist");
+        }
+        HashMap<String, Object> userData = (HashMap<String, Object>) documentSnapshot.getData();
+        if (userData == null) {
+            throw new UserDoesNotExist("this user does not exist in the database");
+        }
 
-                // get user data from document
+        // get user data from document
 
-                Object isAdminTemp = userData.get(DatabaseUserFieldNames.isAdmin.name());
-                if (isAdminTemp == null) {
-                    throw new UserDoesNotExist("this user was missing the isAdmin field");
-                }
-                boolean isAdmin = (boolean) isAdminTemp;
+        Object isAdminTemp = userData.get(DatabaseUserFieldNames.isAdmin.name());
+        if (isAdminTemp == null) {
+            throw new UserDoesNotExist("this user was missing the isAdmin field");
+        }
+        boolean isAdmin = (boolean) isAdminTemp;
 
-                Object nameTemp = userData.get(DatabaseUserFieldNames.name.name());
-                if (nameTemp == null) {
-                    throw new UserDoesNotExist("this user was missing the name field");
-                }
-                String name = (String) nameTemp;
+        Object nameTemp = userData.get(DatabaseUserFieldNames.name.name());
+        if (nameTemp == null) {
+            throw new UserDoesNotExist("this user was missing the name field");
+        }
+        String name = (String) nameTemp;
 
-                Object emailTemp = userData.get(DatabaseUserFieldNames.email.name());
-                if (emailTemp == null) {
-                    throw new UserDoesNotExist("this user was missing the email field");
-                }
-                String email = (String) emailTemp;
+        Object emailTemp = userData.get(DatabaseUserFieldNames.email.name());
+        if (emailTemp == null) {
+            throw new UserDoesNotExist("this user was missing the email field");
+        }
+        String email = (String) emailTemp;
 
-                Object phoneNumberTemp = userData.get(DatabaseUserFieldNames.phoneNumber.name());
-                if (phoneNumberTemp == null) {
-                    throw new UserDoesNotExist("this user was missing the phoneNumber field");
-                }
-                Long phoneNumber = (Long) phoneNumberTemp;
+        Object phoneNumberTemp = userData.get(DatabaseUserFieldNames.phoneNumber.name());
+        if (phoneNumberTemp == null) {
+            throw new UserDoesNotExist("this user was missing the phoneNumber field");
+        }
+        Long phoneNumber = (Long) phoneNumberTemp;
 
-                Object profilePictureTemp = userData.get(DatabaseUserFieldNames.profilePicture.name());
-                if (profilePictureTemp == null) {
-                    throw new UserDoesNotExist("this user was missing the profilePicture field");
-                }
-                Bitmap profilePicture = (Bitmap) profilePictureTemp;
+        Object profilePictureTemp = userData.get(DatabaseUserFieldNames.profilePicture.name());
+        if (profilePictureTemp == null) {
+            throw new UserDoesNotExist("this user was missing the profilePicture field");
+        }
+        Bitmap profilePicture = (Bitmap) profilePictureTemp;
 
-                Object notificationTemp = userData.get(DatabaseUserFieldNames.receivesOrgAdmNotifications.name());
-                if (notificationTemp == null) {
-                    throw new UserDoesNotExist("this user was missing the receivesOrgAdmNotifications field");
-                }
-                boolean receivesOrgAdmNotifications = (boolean) notificationTemp;
+        Object notificationTemp = userData.get(DatabaseUserFieldNames.receivesOrgAdmNotifications.name());
+        if (notificationTemp == null) {
+            throw new UserDoesNotExist("this user was missing the receivesOrgAdmNotifications field");
+        }
+        boolean receivesOrgAdmNotifications = (boolean) notificationTemp;
 
-                try {
-                    user[0] = new User(userID, name, email, phoneNumber, profilePicture, isAdmin, receivesOrgAdmNotifications, userRef, null);
-                } catch (Exception e) {
-                    user[0] = null;
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        if (user[0] == null) {
+        try {
+            user = new User(userID, name, email, phoneNumber, profilePicture, isAdmin, receivesOrgAdmNotifications, userRef, null);
+        } catch (Exception e) {
+            user = null;
+            throw new RuntimeException(e);
+        }
+
+        if (user == null) {
             return null;
         }
-        this.users.add(user[0]);
-        Facility facility = this.getFacility(user[0]); // get user's facility
-        user[0].setFacility(facility);
+        this.users.add(user);
+        Facility facility = this.getFacility(user); // get user's facility
+        user.setFacility(facility);
 
-        return user[0];
+        return user;
     }
 
     public DocumentReference createFacility(User user, Facility facility) {
