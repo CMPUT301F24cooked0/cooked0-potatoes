@@ -37,9 +37,9 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         this.users = new ArrayList<User>();
     }
 
-    public DocumentReference createUser(User user) {
+    public Boolean createUser(User user) {
         if (user == null) {
-            return null;
+            return false;
         }
         String userID = user.getUniqueID();
         HashMap<String, Object> userData = new HashMap<>();
@@ -51,8 +51,10 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         userData.put(DatabaseUserFieldNames.receivesOrgAdmNotifications.name(), user.getReceivesOrgAdmNotifications());
         DocumentReference userRef = this.db.collection(DatabaseCollectionNames.users.name()).document(userID);
         userRef.set(userData);
+        user.setUserReference(userRef);
+        this.createFacility(user, user.getFacility());
 
-        return userRef;
+        return true;
     }
 
     public void updateUser(User user) {
@@ -159,9 +161,9 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         return user;
     }
 
-    public DocumentReference createFacility(User user, Facility facility) {
+    public Boolean createFacility(User user, Facility facility) {
         if (user == null || facility == null) {
-            return null;
+            return false;
         }
         DocumentReference userRef = user.getUserReference();
         DocumentReference facilityRef = userRef.collection(DatabaseCollectionNames.facilities.name()).document();
@@ -169,8 +171,12 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         facilityData.put(DatabaseFacilityFieldNames.name.name(), facility.getName());
         facilityData.put(DatabaseFacilityFieldNames.location.name(), facility.getLocation());
         facilityRef.set(facilityData);
+        facility.setFacilityReference(facilityRef);
+        for (Event event : facility.getEvents()) {
+            this.createEvent(facility, event);
+        }
 
-        return facilityRef;
+        return true;
     }
 
     public void updateFacility(Facility facility) {
@@ -256,9 +262,9 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         organizer.setFacility(facility);
     }
 
-    public DocumentReference createEvent(Facility facility, Event event) {
+    public Boolean createEvent(Facility facility, Event event) {
         if (facility == null || event == null) {
-            return null;
+            return false;
         }
         DocumentReference facilityRef = facility.getFacilityReference();
         DocumentReference eventRef = facilityRef.collection(DatabaseCollectionNames.events.name()).document();
@@ -269,8 +275,12 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode().getText());
         eventData.put(DatabaseEventFieldNames.capacity.name(), event.getCapacity());
         eventRef.set(eventData);
+        event.setEventReference(eventRef);
+        for (EntrantStatus entrantStatus : event.getEntrantStatuses()) {
+            this.createEntrantStatus(event, entrantStatus);
+        }
 
-        return eventRef;
+        return true;
     }
 
     public void updateEvent(Event event) {
@@ -383,9 +393,9 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
     }
 
-    public DocumentReference createEntrantStatus(Event event, EntrantStatus entrantStatus) {
+    public Boolean createEntrantStatus(Event event, EntrantStatus entrantStatus) {
         if (event == null || entrantStatus == null) {
-            return null;
+            return false;
         }
         DocumentReference eventRef = event.getEventReference();
         DocumentReference entrantStatusRef = eventRef.collection(DatabaseCollectionNames.entrantStatuses.name()).document();
@@ -394,8 +404,9 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         entrantStatusData.put(DatabaseEntrantStatusFieldNames.joinedFrom.name(), entrantStatus.getJoinedFrom());
         entrantStatusData.put(DatabaseEntrantStatusFieldNames.status.name(), entrantStatus.getStatus());
         entrantStatusRef.set(entrantStatusData);
+        entrantStatus.setEntrantStatusReference(entrantStatusRef);
 
-        return entrantStatusRef;
+        return true;
     }
 
     public void updateEntrantStatus(EntrantStatus entrantStatus) {
