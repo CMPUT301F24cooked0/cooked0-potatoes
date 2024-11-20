@@ -81,6 +81,16 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         this.updateFacility(user.getFacility());
     }
 
+    /**
+     * Requests to get a User from the database.
+     * Once the User is fetched, which is done asynchronously, it will be returned
+     * via the onUserFetchListener method.
+     * IMPORTANT NOTE: The DatabaseManager will recursively build the User
+     * and attach all objects that the User is attached to (its Facility, Events, EntrantStatuses),
+     * however this MAY be done after the onUserFetchListener has returned the user // FIXME get things recursively all on the same thread in private methods, so that the user object is fully built before being returned
+     * @param userID
+     * @param onUserFetchListener
+     */
     public void getUser(String userID, OnUserFetchListener onUserFetchListener) {
         Thread thread = new Thread(() -> {
             User user = fetchUser(userID);
@@ -214,6 +224,13 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
     }
 
+    /**
+     * Requests to get a User's Facility from the database.
+     * Once the Facility is fetched, which is done asynchronously, it will be returned
+     * via the onFacilityFetchListener method.
+     * @param organizer
+     * @param onFacilityFetchListener
+     */
     public void getFacility(User organizer, OnFacilityFetchListener onFacilityFetchListener) {
         Thread thread = new Thread(() -> {
             Facility facility = fetchFacility(organizer);
@@ -333,6 +350,13 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
     }
 
+    /**
+     * Requests to get a Facility's Events from the database.
+     * Once the Events have all been fetched, which is done asynchronously, they wil be returned
+     * via the onEventsFetchListener method.
+     * @param facility
+     * @param onEventsFetchListener
+     */
     public void getEvents(Facility facility, OnEventsFetchListener onEventsFetchListener) {
         Thread thread = new Thread(() -> {
             ArrayList<Event> events = fetchEvents(facility);
@@ -464,6 +488,13 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         entrantStatusRef.update(entrantStatusData);
     }
 
+    /**
+     * Requests to get an Event's EntrantStatuses from the database.
+     * Once the EntrantStatuses have all been fetched, which is done asynchronously, they will be returned
+     * via the onEntrantStatusesFetchListener method.
+     * @param event
+     * @param onEntrantStatusesFetchListener
+     */
     public void getEntrantStatuses(Event event, OnEntrantStatusesFetchListener onEntrantStatusesFetchListener) {
         Thread thread = new Thread(() -> {
             ArrayList<EntrantStatus> entrantStatuses = fetchEntrantStatuses(event);
