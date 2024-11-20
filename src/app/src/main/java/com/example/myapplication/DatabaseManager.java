@@ -27,11 +27,20 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
     // however this method allows the infinite loop to be avoided by using
     // already existing instances of users we are looking for
 
+    /**
+     * Connects to the database
+     */
     public DatabaseManager() {
         this.db = FirebaseFirestore.getInstance();
         this.users = new ArrayList<User>();
     }
 
+    /**
+     * Inserts a User into the database.
+     * Recursively inserts all of the objects attached to the user (Facility, Events, EntrantStatuses)
+     * @param user
+     * @return true on success, false on failure or if user was null
+     */
     public Boolean createUser(User user) {
         if (user == null) {
             return false;
@@ -52,6 +61,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         return true;
     }
 
+    /**
+     * Updates the information related to a User in the database.
+     * Recursively updates all of the objects attached to the user (Facility, Events, EntrantStatuses)
+     * @param user
+     */
     public void updateUser(User user) {
         if (user == null) {
             return;
@@ -156,6 +170,13 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         return user;
     }
 
+    /**
+     * Inserts a Facility into the database.
+     * Recursively inserts all of the objects attached to the Facility (Events, EntrantStatuses)
+     * @param user
+     * @param facility
+     * @return true on success, false on failure or if either user or facility was null
+     */
     public Boolean createFacility(User user, Facility facility) {
         if (user == null || facility == null) {
             return false;
@@ -174,6 +195,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         return true;
     }
 
+    /**
+     * Updates the information related to a Facility in the database.
+     * Recursively updates all of the objects attached to the facility (Events, EntrantStatuses)
+     * @param facility
+     */
     public void updateFacility(Facility facility) {
         if (facility == null) {
             return;
@@ -257,6 +283,13 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         organizer.setFacility(facility);
     }
 
+    /**
+     * Inserts an Event into the database.
+     * Recursively inserts all of the objects attached to the event (EntrantStatuses)
+     * @param facility
+     * @param event
+     * @return true on success, false on failure or if either facility or event was null
+     */
     public Boolean createEvent(Facility facility, Event event) {
         if (facility == null || event == null) {
             return false;
@@ -278,6 +311,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         return true;
     }
 
+    /**
+     * Updates the information related to an Event in the database.
+     * Recursively updates all of the objects attached to the event (EntrantStatuses)
+     * @param event
+     */
     public void updateEvent(Event event) {
         if (event == null) {
             return;
@@ -388,6 +426,12 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
     }
 
+    /**
+     * Inserts an EntrantStatus into the database.
+     * @param event
+     * @param entrantStatus
+     * @return true on success, false on failure or if either event or entrantStatus was null
+     */
     public Boolean createEntrantStatus(Event event, EntrantStatus entrantStatus) {
         if (event == null || entrantStatus == null) {
             return false;
@@ -404,6 +448,10 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         return true;
     }
 
+    /**
+     * Updates the information related to an EntrantStatus in the database.
+     * @param entrantStatus
+     */
     public void updateEntrantStatus(EntrantStatus entrantStatus) {
         if (entrantStatus == null) {
             return;
