@@ -19,6 +19,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.Date;
+
 
 public class MainActivity extends AppCompatActivity implements OnUserFetchListener {
     private TextView profileTextView;
@@ -59,14 +63,27 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
             decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             profileImageView.setImageBitmap(decodedByte);
         }
-
-        new DatabaseManager().getUser("12345", this);
+        DatabaseManager databaseManager = new DatabaseManager();
         Long phoneNumber = Long.parseLong(phone);
         try {
             user = new User("12345", name, email, phoneNumber, decodedByte);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        user.setFacility(new Facility("test name", new LatLng(42.69, 69.42)));
+        try {
+            user.getFacility().addEvent(new Event("event name", new Date(), null));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            user.getFacility().getEvents().get(0).addEntrant(new User("54321", "test entrant", "entrant@ualberta.ca"), new LatLng(69.42, 42.69));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        databaseManager.createUser(user);
+
+        databaseManager.getUser("12345", this);
 
         signOut.setOnClickListener(new View.OnClickListener() {
         @Override
