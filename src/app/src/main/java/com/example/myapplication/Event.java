@@ -167,6 +167,17 @@ public class Event {
     }
 
     /**
+     * Add an entrant to this event with a custom initial status
+     * @param entrant
+     * @param joinedFrom
+     * @param status
+     * @throws EntrantAlreadyInPool
+     */
+    public void addEntrant(User entrant, LatLng joinedFrom, Status status) throws EntrantAlreadyInPool {
+        this.entrantPool.addEntrant(entrant, joinedFrom, status);
+    }
+
+    /**
      * remove an entrant from this event
      * @param entrant
      */

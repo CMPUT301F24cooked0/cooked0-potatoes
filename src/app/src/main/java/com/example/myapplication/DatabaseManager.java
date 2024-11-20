@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchListener { // static class
+public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchListener, OnEntrantStatusesFetchListener { // static class
     private final FirebaseFirestore db;
     private ArrayList<User> users;
     // the ArrayList of users is intended to store a reference to each and every User object created by the getUser method.
@@ -369,19 +369,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
 
         for (Event event : events) {
-            ArrayList<EntrantStatus> entrantStatuses = this.getEntrantStatuses(event);
-            EntrantPool entrantPool = new EntrantPool();
-            for (EntrantStatus entrantStatus : entrantStatuses) {
-                entrantPool.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
-            }
-            // recreate event with EntrantPool which was previously missing
-            events.remove(event);
-            try {
-                event = new Event(event.getName(), event.getDate(), event.getEventPoster(), event.getCapacity(), event.getQrCode(), entrantPool, event.getEventReference());
-            }
-            catch (Exception e) {
-                continue;
-            }
+            this.getEntrantStatuses(event, this);
             events.add(event);
         }
 
@@ -422,58 +410,83 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         entrantStatusRef.update(entrantStatusData);
     }
 
-    public ArrayList<EntrantStatus> getEntrantStatuses(Event event) {
+    public void getEntrantStatuses(Event event, OnEntrantStatusesFetchListener onEntrantStatusesFetchListener) {
+        Thread thread = new Thread(() -> {
+            ArrayList<EntrantStatus> entrantStatuses = fetchEntrantStatuses(event);
+            onEntrantStatusesFetchListener.onEntrantStatusesFetch(event, entrantStatuses);
+        });
+        thread.start();
+    }
+
+    private ArrayList<EntrantStatus> fetchEntrantStatuses(Event event) {
         DocumentReference eventRef = event.getEventReference();
         CollectionReference entrantStatusCol = eventRef.collection(DatabaseCollectionNames.entrantStatuses.name());
         ArrayList<EntrantStatus> entrantStatuses = new ArrayList<>();
-        entrantStatusCol.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
-                ArrayList<DocumentReference> entrantStatusRefs = new ArrayList<>();
-                if (documentSnapshots.isEmpty()) {
-                    return;
-                }
-                HashMap<String, Object> entrantStatusData;
 
-                for (DocumentSnapshot documentSnapshot : documentSnapshots) { // for each entrantStatus in collection
-                    entrantStatusData = (HashMap<String, Object>) documentSnapshot.getData();
-                    if (entrantStatusData == null) {
-                        continue;
-                    }
-                    entrantStatusRefs.add(documentSnapshot.getReference());
+        Task<QuerySnapshot> task = entrantStatusCol.get();
+        QuerySnapshot queryDocumentSnapshots = null;
+        try {
+            queryDocumentSnapshots = Tasks.await(task);
+        } catch (ExecutionException e) {
+            return entrantStatuses;
+        } catch (InterruptedException e) {
+            return entrantStatuses;
+        }
 
-                    // get entrantStatus data from document
+        if (queryDocumentSnapshots == null) {
+            return entrantStatuses;
+        }
 
-                    Object entrantIDTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.entrantID.name());
-                    if (entrantIDTemp == null) {
-                        throw new EntrantStatusDoesNotExist("this entrantstatus was missing the entrantID field");
-                    }
-                    String entrantID = (String) entrantIDTemp;
+        List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+        ArrayList<DocumentReference> entrantStatusRefs = new ArrayList<>();
+        if (documentSnapshots.isEmpty()) {
+            return entrantStatuses;
+        }
+        HashMap<String, Object> entrantStatusData;
 
-                    Object joinedFromTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.joinedFrom.name());
-                    if (joinedFromTemp == null) {
-                        throw new EntrantStatusDoesNotExist("this entrantstatus was missing the joinedFrom field");
-                    }
-                    LatLng joinedFrom = (LatLng) joinedFromTemp;
-
-                    Object statusTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.status.name());
-                    if (statusTemp == null) {
-                        throw new EntrantStatusDoesNotExist("this entrantstatus was missing the status field");
-                    }
-                    Status status = (Status) statusTemp;
-
-                    try {
-                        User entrant = fetchUser(entrantID);
-                        entrantStatuses.add(new EntrantStatus(entrant, joinedFrom, status, entrantStatusRefs.get(entrantStatusRefs.size()-1)));
-                    }
-                    catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+        for (DocumentSnapshot documentSnapshot : documentSnapshots) { // for each entrantStatus in collection
+            entrantStatusData = (HashMap<String, Object>) documentSnapshot.getData();
+            if (entrantStatusData == null) {
+                continue;
             }
-        });
+            entrantStatusRefs.add(documentSnapshot.getReference());
+
+            // get entrantStatus data from document
+
+            Object entrantIDTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.entrantID.name());
+            if (entrantIDTemp == null) {
+                throw new EntrantStatusDoesNotExist("this entrantstatus was missing the entrantID field");
+            }
+            String entrantID = (String) entrantIDTemp;
+
+            Object joinedFromTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.joinedFrom.name());
+            if (joinedFromTemp == null) {
+                throw new EntrantStatusDoesNotExist("this entrantstatus was missing the joinedFrom field");
+            }
+            LatLng joinedFrom = (LatLng) joinedFromTemp;
+
+            Object statusTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.status.name());
+            if (statusTemp == null) {
+                throw new EntrantStatusDoesNotExist("this entrantstatus was missing the status field");
+            }
+            Status status = (Status) statusTemp;
+
+            try {
+                User entrant = fetchUser(entrantID);
+                entrantStatuses.add(new EntrantStatus(entrant, joinedFrom, status, entrantStatusRefs.get(entrantStatusRefs.size()-1)));
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         return entrantStatuses;
+    }
+
+    @Override
+    public void onEntrantStatusesFetch(Event event, ArrayList<EntrantStatus> entrantStatuses) {
+        for (EntrantStatus entrantStatus : entrantStatuses) {
+            event.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
+        }
     }
 }
