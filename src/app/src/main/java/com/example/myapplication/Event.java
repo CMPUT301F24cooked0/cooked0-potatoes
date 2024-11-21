@@ -6,7 +6,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.*;
 
 /*
 This class is responsible for creating an event object using user input. It sets information about
@@ -14,7 +14,7 @@ the event and also gets information about the event.
  */
 public class Event {
     private String name;
-    private Date date;
+    private Instant instant;
     private Integer capacity;
     private Bitmap eventPoster;
     private QRCode qrCode;
@@ -24,13 +24,13 @@ public class Event {
     /***
      * Base constructor to consolidate code used by other constructors
      * @param name
-     * @param date
+     * @param instant
      * @param eventPoster
      * @throws Exception
      */
-    public Event(String name, Date date, Bitmap eventPoster) throws Exception {
+    public Event(String name, Instant instant, Bitmap eventPoster) throws Exception {
         this.setName(name);
-        this.setDate(date);
+        this.setInstant(instant);
         this.setEventPoster(eventPoster);
         this.qrCode = new QRCode(); // TODO auto-generate text for QR code?
         this.setQrCode(qrCode);
@@ -42,24 +42,24 @@ public class Event {
      * create an event with a capacity
      * @param capacity
     */
-    public Event(String name, Date date, Bitmap eventPoster, Integer capacity) throws Exception {
-        this(name, date, eventPoster);
+    public Event(String name, Instant instant, Bitmap eventPoster, Integer capacity) throws Exception {
+        this(name, instant, eventPoster);
         this.setCapacity(capacity);
     }
 
     /**
      * only use this constructor in DatabaseManager to instantiate an Event from the data in the database
      * @param name
-     * @param date
+     * @param instant
      * @param eventPoster
      * @param capacity
      * @param qrCode
      * @param entrantPool
      * @param eventRef
      */
-    public Event(String name, Date date, Bitmap eventPoster, Integer capacity, QRCode qrCode, EntrantPool entrantPool, DocumentReference eventRef) throws Exception {
+    public Event(String name, Instant instant, Bitmap eventPoster, Integer capacity, QRCode qrCode, EntrantPool entrantPool, DocumentReference eventRef) throws Exception {
         this.setName(name);
-        this.setDate(date);
+        this.setInstant(instant);
         this.setEventPoster(eventPoster);
         this.setCapacity(capacity);
         this.setQrCode(qrCode);
@@ -92,18 +92,17 @@ public class Event {
 
     /**
      * set this event's date, throws an exception if the date is null or in the past
-     * @param date
+     * @param instant
      * @throws Exception
      */
-    public void setDate(Date date) throws Exception {
-        if (date == null) {
+    public void setInstant(Instant instant) throws Exception {
+        if (instant == null) {
             throw new Exception("cannot set event date to null");
         }
-        if (date.before(new Date())) {
-            // if the date is in the past / before "now"
+        if (instant.isBefore(Instant.now())) {
             throw new Exception("cannot set event date in the past");
         }
-        this.date = date;
+        this.instant = instant;
     }
 
     /**
@@ -207,8 +206,8 @@ public class Event {
      * get this event's date
      * @return
      */
-    public Date getDate() {
-        return this.date;
+    public Instant getInstant() {
+        return this.instant;
     }
 
     /**
