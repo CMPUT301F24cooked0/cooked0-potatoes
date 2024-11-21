@@ -46,7 +46,7 @@ public class CreateEventFragmentTest {
 
             // Check if the event was created successfully
             Event event = fragment.createEvent(
-                    "Test Event", "01/01/2025", "02/01/2025", 100, "Test event description", -1, Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
+                    "Test Event", "01/01/2025", "02/01/2025", 100, "Test event description", Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
             );
 
             assertNotNull(event);

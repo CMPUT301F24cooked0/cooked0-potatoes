@@ -58,7 +58,7 @@ public class CreateEventFragment extends Fragment {
 
     }
 
-    public Event createEvent(String name, String startDate, String endDate, int capacity, String details, int facilityId, Bitmap eventPoster) {
+    public Event createEvent(String name, String startDate, String endDate, int capacity, String details, Bitmap eventPoster) {
         if (name.isEmpty() || startDate.isEmpty() || endDate.isEmpty() || details.isEmpty()) {
             return null;  // Return null if fields are invalid
         }
