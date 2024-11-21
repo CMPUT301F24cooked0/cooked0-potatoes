@@ -281,7 +281,8 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (locationTemp == null) {
             throw new FacilityDoesNotExist("this facility was missing the location field");
         }
-        LatLng location = (LatLng) locationTemp;
+        HashMap<String, Double> locationMap = (HashMap) locationTemp;
+        LatLng location = new LatLng(locationMap.get("latitude"), locationMap.get("longitude"));
 
         try {
             facility = new Facility(name, location, facilityRef, new ArrayList<Event>());
@@ -316,7 +317,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         HashMap<String, Object> eventData = new HashMap<>();
         eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
         eventData.put(DatabaseEventFieldNames.date.name(), event.getDate());
-        eventData.put(DatabaseEventFieldNames.eventPoster.name(), event.getEventPoster());
+        //eventData.put(DatabaseEventFieldNames.eventPoster.name(), event.getEventPoster()); // FIXME image
         eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode().getText());
         eventData.put(DatabaseEventFieldNames.capacity.name(), event.getCapacity());
         eventRef.set(eventData);
