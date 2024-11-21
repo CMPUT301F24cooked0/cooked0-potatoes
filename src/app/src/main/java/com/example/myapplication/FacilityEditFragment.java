@@ -50,7 +50,7 @@ public class FacilityEditFragment extends Fragment {
         facilityAddressInput = view.findViewById(R.id.editFacilityAddress);
         editButton = view.findViewById(R.id.editFacilityButton);
         databaseManager = new DatabaseManager();
-        existingFacility = new Facility("Old Name", new LatLng(0, 0));
+        //existingFacility = (Facility) getArguments().getSerializable("facility");
         facilityNameInput.setText(existingFacility.getName()); // autofill existing facility name
         addressStr = latLngToAddress(existingFacility.getLocation());// convert LatLng to address
         if (addressStr == null) {
