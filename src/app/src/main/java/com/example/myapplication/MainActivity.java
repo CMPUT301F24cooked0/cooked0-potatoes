@@ -59,15 +59,6 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
             decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             profileImageView.setImageBitmap(decodedByte);
         }
-
-        new DatabaseManager().getUser("12345", this);
-        Long phoneNumber = Long.parseLong(phone);
-        try {
-            user = new User("12345", name, email, phoneNumber, decodedByte);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
         signOut.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
