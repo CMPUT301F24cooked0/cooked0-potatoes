@@ -21,7 +21,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.time.*;
+import java.util.Date;
 
 
 public class MainActivity extends AppCompatActivity implements OnUserFetchListener {
@@ -72,8 +72,7 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
         }
         user.setFacility(new Facility("test name", new LatLng(42.69, 69.42)));
         try {
-            Instant instant = Instant.parse("2025-01-01T00:00:00.00Z");
-            user.getFacility().addEvent(new Event("event name", instant, decodedByte));
+            user.getFacility().addEvent(new Event("event name", new Date(2025, 1, 1), decodedByte));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -82,9 +81,9 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        databaseManager.createUser(user);
+        //databaseManager.createUser(user);
 
-        //databaseManager.updateUser(user);
+        // TODO test update methods too
 
         databaseManager.getUser("12345", this);
 
