@@ -10,7 +10,6 @@ activity = "1.9.3"
 constraintlayout = "2.2.0"
 mockitoCore = "5.7.0"
 playServicesMaps = "19.0.0"
-fragmentTesting = "1.8.5"
 
 [libraries]
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
