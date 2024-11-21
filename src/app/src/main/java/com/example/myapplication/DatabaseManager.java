@@ -12,6 +12,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -75,7 +76,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         userData.put(DatabaseUserFieldNames.name.name(), user.getName());
         userData.put(DatabaseUserFieldNames.email.name(), user.getEmail());
         userData.put(DatabaseUserFieldNames.phoneNumber.name(), user.getPhoneNumber());
-        userData.put(DatabaseUserFieldNames.profilePicture.name(), user.getProfilePicture());
+        //userData.put(DatabaseUserFieldNames.profilePicture.name(), user.getProfilePicture()); // FIXME
         userData.put(DatabaseUserFieldNames.receivesOrgAdmNotifications.name(), user.getReceivesOrgAdmNotifications());
         DocumentReference userRef = user.getUserReference();
         userRef.update(userData);
@@ -317,7 +318,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         DocumentReference eventRef = facilityRef.collection(DatabaseCollectionNames.events.name()).document();
         HashMap<String, Object> eventData = new HashMap<>();
         eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
-        eventData.put(DatabaseEventFieldNames.date.name(), event.getDate()); // FIXME date is wrong?
+        eventData.put(DatabaseEventFieldNames.date.name(), new Timestamp(event.getInstant()));
         //eventData.put(DatabaseEventFieldNames.eventPoster.name(), event.getEventPoster()); // FIXME image
         eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode().getText());
         eventData.put(DatabaseEventFieldNames.capacity.name(), event.getCapacity());
@@ -341,9 +342,9 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
         HashMap<String, Object> eventData = new HashMap<>();
         eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
-        eventData.put(DatabaseEventFieldNames.date.name(), event.getDate());
-        eventData.put(DatabaseEventFieldNames.eventPoster.name(), event.getEventPoster());
-        eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode());
+        eventData.put(DatabaseEventFieldNames.date.name(), new Timestamp(event.getInstant()));
+        //eventData.put(DatabaseEventFieldNames.eventPoster.name(), event.getEventPoster()); // FIXME
+        eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode().getText());
         eventData.put(DatabaseEventFieldNames.capacity.name(), event.getCapacity());
         DocumentReference eventRef = event.getEventReference();
         eventRef.update(eventData);
@@ -413,7 +414,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
                 throw new EventDoesNotExist("this event was missing the date field");
             }
             Timestamp dateTimestamp = (Timestamp) dateTemp;
-            Date date = dateTimestamp.toDate();
+            Instant instant = dateTimestamp.toInstant();
 
             Object eventPosterTemp = eventData.get(DatabaseEventFieldNames.eventPoster.name());
             //if (eventPosterTemp == null) { // FIXME temp
@@ -431,7 +432,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             Integer capacity = (Integer) capacityTemp;
 
             try {
-                events.add(new Event(name, date, eventPoster, capacity, qrCode, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
+                events.add(new Event(name, instant, eventPoster, capacity, qrCode, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
             }
             catch (Exception e) {
                 throw new RuntimeException(e);
