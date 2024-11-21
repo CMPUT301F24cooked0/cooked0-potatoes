@@ -68,7 +68,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
      * @param user
      */
     public void updateUser(User user) {
-        if (user == null) {
+        if (user == null || user.getUserReference() == null) {
             return;
         }
         HashMap<String, Object> userData = new HashMap<>();
@@ -212,7 +212,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
      * @param facility
      */
     public void updateFacility(Facility facility) {
-        if (facility == null) {
+        if (facility == null || facility.getFacilityReference() == null) {
             return;
         }
         HashMap<String, Object> facilityData = new HashMap<>();
@@ -336,7 +336,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
      * @param event
      */
     public void updateEvent(Event event) {
-        if (event == null) {
+        if (event == null || event.getEventReference() == null) {
             return;
         }
         HashMap<String, Object> eventData = new HashMap<>();
@@ -479,7 +479,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
      * @param entrantStatus
      */
     public void updateEntrantStatus(EntrantStatus entrantStatus) {
-        if (entrantStatus == null) {
+        if (entrantStatus == null || entrantStatus.getEntrantStatusReference() == null) {
             return;
         }
         HashMap<String, Object> entrantStatusData = new HashMap<>();
