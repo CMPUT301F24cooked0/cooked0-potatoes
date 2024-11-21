@@ -29,7 +29,7 @@ public class FacilityEditFragment extends Fragment {
     EditText facilityNameInput;
     EditText facilityAddressInput;
     Button editButton;
-    // Facility existingFacility;
+    Facility existingFacility;
     DatabaseManager databaseManager;
     String addressStr;
     String facilityName;
@@ -50,10 +50,14 @@ public class FacilityEditFragment extends Fragment {
         facilityAddressInput = view.findViewById(R.id.editFacilityAddress);
         editButton = view.findViewById(R.id.editFacilityButton);
         databaseManager = new DatabaseManager();
-//        existingFacility = (Facility) getArguments().getSerializable("facility");
-//        facilityNameInput.setText(existingFacility.getName()); // autofill existing facility name
-//        addressStr = latLngtoAddress(existingFacility.getLocation()); // convert LatLng to address
-//        facilityAddressInput.setText(addressStr); // autofill existing facility address
+        existingFacility = new Facility("Old Name", new LatLng(0, 0));
+        facilityNameInput.setText(existingFacility.getName()); // autofill existing facility name
+        addressStr = latLngToAddress(existingFacility.getLocation());// convert LatLng to address
+        if (addressStr == null) {
+            Toast.makeText(this.requireContext(), "Error converting to string address", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        facilityAddressInput.setText(addressStr); // autofill existing facility address
         editButton.setOnClickListener(this::onClick);
 
     }
@@ -65,20 +69,21 @@ public class FacilityEditFragment extends Fragment {
             Toast.makeText(this.requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
+        // convert address to LatLng
         LatLng facilityAddress = getAddress(facilityAddressStr);
         if (facilityAddress == null) {
             Toast.makeText(this.requireContext(), "Invalid address", Toast.LENGTH_SHORT).show();
             return;
         }
-//        existingFacility.setName(facilityName);
-//        existingFacility.setLocation(facilityAddress);
+        existingFacility.setName(facilityName);
+        existingFacility.setLocation(facilityAddress);
         // update facility in database
-//        databaseManager.updateFacility(existingFacility);
+        databaseManager.updateFacility(existingFacility);
 
 
     }
 
-    public String latLngtoAddress(LatLng location) {
+    public String latLngToAddress(LatLng location) {
         // converts LatLng input to string address
         Geocoder geocode = new Geocoder(this.requireContext(), Locale.getDefault());
         try {
@@ -89,7 +94,6 @@ public class FacilityEditFragment extends Fragment {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this.requireContext(), "Error converting to string address", Toast.LENGTH_SHORT).show();
             return null;
         }
         return null;
