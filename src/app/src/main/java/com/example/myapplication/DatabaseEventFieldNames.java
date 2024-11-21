@@ -2,7 +2,7 @@ package com.example.myapplication;
 
 public enum DatabaseEventFieldNames {
     name,
-    date,
+    instant,
     eventPoster,
     qrCode,
     capacity;

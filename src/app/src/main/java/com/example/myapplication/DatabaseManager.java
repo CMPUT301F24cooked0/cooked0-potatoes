@@ -14,7 +14,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -318,7 +317,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         DocumentReference eventRef = facilityRef.collection(DatabaseCollectionNames.events.name()).document();
         HashMap<String, Object> eventData = new HashMap<>();
         eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
-        eventData.put(DatabaseEventFieldNames.date.name(), new Timestamp(event.getInstant()));
+        eventData.put(DatabaseEventFieldNames.instant.name(), new Timestamp(event.getInstant()));
         //eventData.put(DatabaseEventFieldNames.eventPoster.name(), event.getEventPoster()); // FIXME image
         eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode().getText());
         eventData.put(DatabaseEventFieldNames.capacity.name(), event.getCapacity());
@@ -342,7 +341,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
         HashMap<String, Object> eventData = new HashMap<>();
         eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
-        eventData.put(DatabaseEventFieldNames.date.name(), new Timestamp(event.getInstant()));
+        eventData.put(DatabaseEventFieldNames.instant.name(), new Timestamp(event.getInstant()));
         //eventData.put(DatabaseEventFieldNames.eventPoster.name(), event.getEventPoster()); // FIXME
         eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode().getText());
         eventData.put(DatabaseEventFieldNames.capacity.name(), event.getCapacity());
@@ -409,9 +408,9 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             }
             String name = (String) nameTemp;
 
-            Object dateTemp = eventData.get(DatabaseEventFieldNames.date.name());
+            Object dateTemp = eventData.get(DatabaseEventFieldNames.instant.name());
             if (dateTemp == null) {
-                throw new EventDoesNotExist("this event was missing the date field");
+                throw new EventDoesNotExist("this event was missing the instant field");
             }
             Timestamp dateTimestamp = (Timestamp) dateTemp;
             Instant instant = dateTimestamp.toInstant();

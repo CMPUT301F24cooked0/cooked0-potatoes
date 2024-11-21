@@ -91,16 +91,16 @@ public class Event {
     }
 
     /**
-     * set this event's date, throws an exception if the date is null or in the past
+     * set this event's instant, throws an exception if the instant is null or in the past
      * @param instant
      * @throws Exception
      */
     public void setInstant(Instant instant) throws Exception {
         if (instant == null) {
-            throw new Exception("cannot set event date to null");
+            throw new Exception("cannot set event instant to null");
         }
         if (instant.isBefore(Instant.now())) {
-            throw new Exception("cannot set event date in the past");
+            throw new Exception("cannot set event instant in the past");
         }
         this.instant = instant;
     }
@@ -203,7 +203,7 @@ public class Event {
     }
 
     /**
-     * get this event's date
+     * get this event's instant
      * @return
      */
     public Instant getInstant() {
