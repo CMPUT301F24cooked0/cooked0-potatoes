@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -281,7 +282,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (locationTemp == null) {
             throw new FacilityDoesNotExist("this facility was missing the location field");
         }
-        HashMap<String, Double> locationMap = (HashMap) locationTemp;
+        HashMap<String, Double> locationMap = (HashMap<String, Double>) locationTemp;
         LatLng location = new LatLng(locationMap.get("latitude"), locationMap.get("longitude"));
 
         try {
@@ -316,7 +317,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         DocumentReference eventRef = facilityRef.collection(DatabaseCollectionNames.events.name()).document();
         HashMap<String, Object> eventData = new HashMap<>();
         eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
-        eventData.put(DatabaseEventFieldNames.date.name(), event.getDate());
+        eventData.put(DatabaseEventFieldNames.date.name(), event.getDate()); // FIXME date is wrong?
         //eventData.put(DatabaseEventFieldNames.eventPoster.name(), event.getEventPoster()); // FIXME image
         eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode().getText());
         eventData.put(DatabaseEventFieldNames.capacity.name(), event.getCapacity());
@@ -411,25 +412,26 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             if (dateTemp == null) {
                 throw new EventDoesNotExist("this event was missing the date field");
             }
-            Date date = (Date) dateTemp;
+            Timestamp dateTimestamp = (Timestamp) dateTemp;
+            Date date = dateTimestamp.toDate();
 
             Object eventPosterTemp = eventData.get(DatabaseEventFieldNames.eventPoster.name());
-            if (eventPosterTemp == null) {
-                throw new EventDoesNotExist("this event was missing the eventPoster field");
-            }
+            //if (eventPosterTemp == null) { // FIXME temp
+            //    throw new EventDoesNotExist("this event was missing the eventPoster field");
+            //}
             Bitmap eventPoster = (Bitmap) eventPosterTemp;
 
             Object qrCodeTemp = eventData.get(DatabaseEventFieldNames.qrCode.name());
-            if (qrCodeTemp == null) {
-                throw new EventDoesNotExist("this event was missing the qrCode field");
-            }
+            //if (qrCodeTemp == null) { // FIXME temp
+            //    throw new EventDoesNotExist("this event was missing the qrCode field");
+            //}
             QRCode qrCode = new QRCode((String) qrCodeTemp);
 
             Object capacityTemp = eventData.get(DatabaseEventFieldNames.capacity.name());
             Integer capacity = (Integer) capacityTemp;
 
             try {
-                events.add(new Event(name, date, eventPoster, capacity, qrCode, null, eventRefs.get(eventRefs.size()-1)));
+                events.add(new Event(name, date, eventPoster, capacity, qrCode, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
             }
             catch (Exception e) {
                 throw new RuntimeException(e);
@@ -438,7 +440,6 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
 
         for (Event event : events) {
             this.getEntrantStatuses(event, this);
-            events.add(event);
         }
 
         return events;
@@ -549,13 +550,15 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             if (joinedFromTemp == null) {
                 throw new EntrantStatusDoesNotExist("this entrantstatus was missing the joinedFrom field");
             }
-            LatLng joinedFrom = (LatLng) joinedFromTemp;
+            HashMap<String, Double> joinedFromMap = (HashMap<String, Double>) joinedFromTemp;
+            LatLng joinedFrom = new LatLng(joinedFromMap.get("latitude"), joinedFromMap.get("longitude"));
 
             Object statusTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.status.name());
             if (statusTemp == null) {
                 throw new EntrantStatusDoesNotExist("this entrantstatus was missing the status field");
             }
-            Status status = (Status) statusTemp;
+            String statusString = (String) statusTemp;
+            Status status = Status.valueOf(statusString);
 
             try {
                 User entrant = fetchUser(entrantID);
