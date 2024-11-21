@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.zxing.WriterException;
 
@@ -37,6 +38,8 @@ public class DownloadQRFragment extends Fragment {
         downloadBtn = view.findViewById(R.id.downloadButton);
         continueBtn = view.findViewById(R.id.continueButton);
         qrCodeImage = view.findViewById(R.id.qrCodeImage);
+        // Notify the user that the QR code has been generated
+        Toast.makeText(requireContext(), "QR Code Generated and Stored", Toast.LENGTH_SHORT).show(); // TODO change style of pop up message
         // eventQRCode = (QRCode) getArguments().getSerializable("qrCode"); // TODO get qr code from bundle once navigation is completed
 //        try { // TODO set qr image once navigation complete
 //            qrCodeImage.setImageBitmap(eventQRCode.getImage());
@@ -49,6 +52,8 @@ public class DownloadQRFragment extends Fragment {
     }
     public void onClickDownload (View view) {
         // TODO download QR code
+
+
     }
     public void onClickContinue (View view) {
 //        Fragment fragment = new FacilityViewEventsFragment();
