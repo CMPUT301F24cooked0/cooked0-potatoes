@@ -22,7 +22,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.time.*;
-import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends AppCompatActivity implements OnUserFetchListener {
@@ -83,20 +82,16 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        //databaseManager.createUser(user);
+        databaseManager.createUser(user);
+
+        //databaseManager.updateUser(user);
 
         databaseManager.getUser("12345", this);
 
         signOut.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            try {
-                user.getFacility().getEvents().get(0).setInstant(Instant.parse("2026-01-01T00:00:00.00Z"));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            databaseManager.updateUser(user);
-            //signOutUser();
+            signOutUser();
         }
     });
     editUserInfo.setOnClickListener(new View.OnClickListener() {
