@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
         }
         user.setFacility(new Facility("test name", new LatLng(42.69, 69.42)));
         try {
-            user.getFacility().addEvent(new Event("event name", new Date(2025, 1, 1), decodedByte));
+            user.getFacility().addEvent(new Event("event name", new Date(), null));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -81,9 +81,7 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        //databaseManager.createUser(user);
-
-        // TODO test update methods too
+        databaseManager.createUser(user);
 
         databaseManager.getUser("12345", this);
 
