@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
@@ -21,24 +22,60 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.myapplication.databinding.ActivityMainBinding;
+import com.example.myapplication.ui.facility.FacilityFragment;
+import com.example.myapplication.ui.notifications.NotificationsFragment;
+import com.example.myapplication.ui.profile.ProfileFragment;
+import com.example.myapplication.ui.scanQR.ScanQRFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
+
+    ActivityMainBinding binding;
+
     private TextView profileTextView;
     private ImageView profileImageView;
     private Button signOut;
     private ImageButton editUserInfo;
 
+
+
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_main);
+
+        replaceFragment(new NotificationsFragment());
+
+        binding.bottomNav.setOnItemSelectedListener(item -> {
+
+            switch (item.getItemId()) {
+                case R.id.navbar_inbox:
+                    replaceFragment(new NotificationsFragment());
+                    break;
+                case R.id.navbar_facility:
+                    replaceFragment(new FacilityFragment());
+                    break;
+                case R.id.navbar_scanQR:
+                    replaceFragment(new ScanQRFragment());
+                    break;
+                case R.id.navbar_profile:
+                    replaceFragment(new ProfileFragment());
+                    break;
+            }
+            return true;
+            });
+
 
         SharedPreferences preferences = getSharedPreferences("onboarding", MODE_PRIVATE);
         boolean isOnboardingComplete = preferences.getBoolean("onboarding_complete", false);
@@ -103,6 +140,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    private void replaceFragment(Fragment fragment) {
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.nav_host_fragment, fragment);
+
     }
 
     private void signOutUser() {

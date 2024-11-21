@@ -8,23 +8,23 @@
 
     <fragment
         android:id="@+id/inboxfragment"
-        android:name="com.example.myapplication.InboxFragment"
-        tools:layout="@layout/inbox_fragment" />
+        android:name="com.example.myapplication.ui.notifications.NotificationsFragment"
+        tools:layout="@layout/inbox_screen_fragment" />
 
     <fragment
         android:id="@+id/facilityfragment"
-        android:name="com.example.myapplication.FacilityFragment"
-        tools:layout="@layout/facility_fragment" />
+        android:name="com.example.myapplication.ui.facility.FacilityFragment"
+        tools:layout="@layout/facility_screen_fragment" />
 
     <fragment
         android:id="@+id/scanqrfragment"
-        android:name="com.example.myapplication.ScanQRFragment"
-        tools:layout="@layout/scan_qr_fragment" />
+        android:name="com.example.myapplication.ui.scanQR.ScanQRFragment"
+        tools:layout="@layout/scan_qr_screen_fragment" />
 
     <fragment
         android:id="@+id/profilefragment"
-        android:name="com.example.myapplication.ProfileFragment"
-        tools:layout="@layout/profile_fragment" />
+        android:name="com.example.myapplication.ui.profile.ProfileFragment"
+        tools:layout="@layout/profile_screen_fragment" />
 
 
 </navigation>

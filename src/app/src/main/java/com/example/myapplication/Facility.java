@@ -6,12 +6,12 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
-public class FacilityFragment extends Fragment {
+public class Facility {
     private final String name;
     private final LatLng location;
     private ArrayList<Event> events;
 
-    public FacilityFragment(String name, LatLng location) {
+    public Facility(String name, LatLng location) {
         this.name = name;
         this.location = location;
         this.events = new ArrayList<Event>();

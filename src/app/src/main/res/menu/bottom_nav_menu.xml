@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/navigation_inbox_frag"
+        android:id="@+id/navbar_inbox"
         android:icon="@drawable/baseline_move_to_inbox_24"
         android:title="Inbox" />
     <item
-        android:id="@+id/navigation_facility_frag"
+        android:id="@+id/navbar_facility"
         android:icon="@drawable/baseline_event_24"
         android:title="Facility" />
     <item
-        android:id="@+id/navigation_scanqr_frag"
+        android:id="@+id/navbar_scanQR"
         android:icon="@drawable/baseline_qr_code_scanner_24"
         android:title="Scan QR" />
     <item
-        android:id="@+id/navigation_profile_frag"
+        android:id="@+id/navbar_profile"
         android:icon="@drawable/baseline_person_outline_24"
         android:title="Profile" />
 </menu>
