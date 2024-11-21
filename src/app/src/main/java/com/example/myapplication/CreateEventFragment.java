@@ -94,7 +94,10 @@ public class CreateEventFragment extends Fragment {
         Bitmap eventPosterBitmap = ((BitmapDrawable) eventPoster.getDrawable()).getBitmap();
 
         Event event = createEvent(name, start, end, capacity, details, facilityId, eventPoster.getDrawingCache());
+        // eventQrCode = event.getQrCode();
+        // eventQrCode.setText(eventId); // TODO Do we use an event Id? Set qr code text to event Id here or automatically inside event class?
         // TODO update facility array with event
+        // TODO update event in database
 
         if (event != null) {
             // For now, just log the event or handle further operations

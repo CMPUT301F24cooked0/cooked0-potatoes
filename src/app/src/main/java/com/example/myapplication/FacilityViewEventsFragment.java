@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -51,17 +50,17 @@ public class FacilityViewEventsFragment extends Fragment {
         eventList.setAdapter(eventAdapter);
 //        facilityName.setText(facility.getName());
         addEventButton.setOnClickListener(this::onClickAddEvent);
-        // TODO Link with edit facility page
 //        facilityLink.setOnClickListener(this::onClickEditFacility);
         eventList.setOnItemClickListener((parent, v, position, id) -> {
-            FragmentManager fragmentManager = getParentFragmentManager();
-            EditEventFragment editEventFragment = new EditEventFragment();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            // TODO Link with event managing page once navigation (and event managing page) is completed
+//            FragmentManager fragmentManager = getParentFragmentManager();
+//            EditEventFragment editEventFragment = new EditEventFragment();
+//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 //            Bundle bundle = new Bundle();
 //            bundle.putSerializable("event", facility.getEvents().get(position));
 //            editEventFragment.setArguments(bundle);
-            fragmentTransaction.replace(R.id.fragment_container, editEventFragment);
-            fragmentTransaction.commit();
+//            fragmentTransaction.replace(R.id.fragment_container, editEventFragment); // TODO have this redirect to event managing page first
+//            fragmentTransaction.commit();
 
         });
 
@@ -70,15 +69,15 @@ public class FacilityViewEventsFragment extends Fragment {
         FragmentManager fragmentManager = getParentFragmentManager();
         CreateEventFragment createEventFragment = new CreateEventFragment();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        // TODO: pass in facility object
+        // TODO: pass in facility object once navigation completed
 //        Bundle bundle = new Bundle();
 //        bundle.putSerializable("facility", facility);
 //        createEventFragment.setArguments(bundle);
-        // TODO: get layout name to switch fragment
 //        fragmentTransaction.replace(R.id.fragment_container, createEventFragment);
         fragmentTransaction.commit();
 
     }
+    // TODO link with edit facility page once navigation completed
 //    public void onClickEditFacility(View view) {
 //        FragmentManager fragmentManager = getParentFragmentManager();
 //        EditFacilityFragment editFacilityFragment = new EditFacilityFragment();
