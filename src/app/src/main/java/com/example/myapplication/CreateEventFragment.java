@@ -27,12 +27,15 @@ import androidx.fragment.app.Fragment;
  * This fragment is used to create a new event.
  */
 public class CreateEventFragment extends Fragment {
+    private DatabaseManager databaseManager;
     private EditText eventName, eventDate, eventCapacity, eventDetails, eventStart, eventEnd;
     private Button createEventButton;
     private ImageView eventPoster;
     private Switch geoLocation;
     private Bitmap selectedPosterBitmap;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    private QRCode eventQrCode;
+    private Facility facility;
 
     @Nullable
     @Override
@@ -47,9 +50,7 @@ public class CreateEventFragment extends Fragment {
         eventStart = view.findViewById(R.id.eventStartInput);
         eventEnd =view.findViewById(R.id.eventEndInput);
         eventPoster = view.findViewById(R.id.eventPosterPlaceholder);
-        // TODO get facility from previous activity
-
-
+        //facility = (facility) getArguments().getSerializable("facility"); // TODO get facility from previous activity/fragment once navigation complete
         createEventButton = view.findViewById(R.id.createEventButton);
         createEventButton.setOnClickListener(this::onClick);
 
@@ -89,15 +90,15 @@ public class CreateEventFragment extends Fragment {
         String details = eventDetails.getText().toString().trim();
         String start = eventStart.getText().toString().trim();
         String end = eventEnd.getText().toString().trim();
-        int facilityId = getArguments().getInt("facilityId", -1);  // Default value is -1 in case facilityId is not found
         //boolean isGeoLocationEnabled = geoLocation.isChecked();
         Bitmap eventPosterBitmap = ((BitmapDrawable) eventPoster.getDrawable()).getBitmap();
 
-        Event event = createEvent(name, start, end, capacity, details, facilityId, eventPoster.getDrawingCache());
+        Event event = createEvent(name, start, end, capacity, details, eventPoster.getDrawingCache()); // TODO change how we store images?
         // eventQrCode = event.getQrCode();
         // eventQrCode.setText(eventId); // TODO Do we use an event Id? Set qr code text to event Id here or automatically inside event class?
-        // TODO update facility array with event
-        // TODO update event in database
+        // facility.addEvent(event);// TODO update facility array with event
+        // databaseManager.createEvent(facility, event);// TODO update event in database
+
 
         if (event != null) {
             // For now, just log the event or handle further operations
