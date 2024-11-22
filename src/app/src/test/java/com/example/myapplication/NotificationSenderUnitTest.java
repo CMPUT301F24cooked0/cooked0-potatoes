@@ -9,7 +9,7 @@ public class NotificationSenderUnitTest {
     public void sendNotificationTest() {
         User user = null;
         try {
-            user = new User("name", "email@test.ca");
+            user = new User(null, "name", "email@test.ca");
         }
         catch (Exception exception) {
             fail();

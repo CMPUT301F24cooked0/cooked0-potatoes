@@ -20,12 +20,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnUserFetchListener {
     private TextView profileTextView;
     private ImageView profileImageView;
     private Button signOut;
     private ImageButton editUserInfo;
+    private User user;
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
 
         profileTextView = findViewById(R.id.prfile_text);
         profileImageView = findViewById(R.id.my_profile);
@@ -54,13 +53,13 @@ public class MainActivity extends AppCompatActivity {
         String profileDetails = "Name: " + name + "\nEmail: " + email + "\nPhone: " + phone;
         profileTextView.setText(profileDetails);
 
+        Bitmap decodedByte = null;
         if (encodedImage != null) {
             byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             profileImageView.setImageBitmap(decodedByte);
         }
-
-    signOut.setOnClickListener(new View.OnClickListener() {
+        signOut.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             signOutUser();
@@ -87,5 +86,15 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onUserFetch(User user) {
+        if (user == null) {
+            new DatabaseManager().createUser(this.user);
+        }
+        else {
+            this.user = user;
+        }
     }
 }
