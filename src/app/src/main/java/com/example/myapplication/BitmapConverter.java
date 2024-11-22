@@ -1,14 +1,25 @@
 package com.example.myapplication;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
 
 public class BitmapConverter {
-    public static Bitmap StringToBitmap(String imageString) {
-        // TODO temporary
-        return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+    /**
+     * Converts an encoded image (Base64 String) to a Bitmap.
+     * @param encodedImage
+     * @return
+     */
+    public static Bitmap StringToBitmap(String encodedImage) {
+        if (encodedImage == null) {
+            return null;
+        }
+        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+        Bitmap imageBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+        return imageBitmap;
     }
 
     /**
