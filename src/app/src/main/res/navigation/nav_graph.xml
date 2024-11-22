@@ -8,22 +8,22 @@
 
     <fragment
         android:id="@+id/inboxfragment"
-        android:name="com.example.myapplication.ui.notifications.NotificationsFragment"
+        android:name="com.example.myapplication.ui.notifications.NotificationsScreenFragment"
         tools:layout="@layout/inbox_screen_fragment" />
 
     <fragment
         android:id="@+id/facilityfragment"
-        android:name="com.example.myapplication.ui.facility.FacilityFragment"
+        android:name="com.example.myapplication.ui.facility.FacilityScreenFragment"
         tools:layout="@layout/facility_screen_fragment" />
 
     <fragment
         android:id="@+id/scanqrfragment"
-        android:name="com.example.myapplication.ui.scanQR.ScanQRFragment"
+        android:name="com.example.myapplication.ui.scanQR.ScanQRScreenFragment"
         tools:layout="@layout/scan_qr_screen_fragment" />
 
     <fragment
         android:id="@+id/profilefragment"
-        android:name="com.example.myapplication.ui.profile.ProfileFragment"
+        android:name="com.example.myapplication.ui.profile.ProfileScreenFragment"
         tools:layout="@layout/profile_screen_fragment" />
 
 

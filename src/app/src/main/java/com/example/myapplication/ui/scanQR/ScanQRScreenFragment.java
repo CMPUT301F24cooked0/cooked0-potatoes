@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.databinding.ScanQrScreenFragmentBinding;
 
-public class ScanQRFragment extends Fragment {
+public class ScanQRScreenFragment extends Fragment {
 
     private ScanQrScreenFragmentBinding binding;
 
@@ -24,7 +24,7 @@ public class ScanQRFragment extends Fragment {
         binding = ScanQrScreenFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
+        final TextView textView = binding.textScanqr;
         scanQRViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }

@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.profile;
+package com.example.myapplication.ui.facility;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.databinding.ProfileScreenFragmentBinding;
+import com.example.myapplication.databinding.FacilityScreenFragmentBinding;
 
-public class ProfileFragment extends Fragment {
+public class FacilityScreenFragment extends Fragment {
 
-    private ProfileScreenFragmentBinding binding;
+    private FacilityScreenFragmentBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        ProfileViewModel profileViewModel =
-                new ViewModelProvider(this).get(ProfileViewModel.class);
+        FacilityViewModel facilityViewModel =
+                new ViewModelProvider(this).get(FacilityViewModel.class);
 
-        binding = ProfileScreenFragmentBinding.inflate(inflater, container, false);
+        binding = FacilityScreenFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.profileText;
-        profileViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textFacility;
+        facilityViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
