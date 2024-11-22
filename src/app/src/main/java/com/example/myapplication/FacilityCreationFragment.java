@@ -49,7 +49,7 @@ public class FacilityCreationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // facilityOwner = (User) getArguments().getSerializable("user");
+        // facilityOwner = (User) getArguments().getSerializable("user"); // TODO get user from bundle once navigation complete
         facilityNameInput = view.findViewById(R.id.addFacilityName);
         facilityAddressInput = view.findViewById(R.id.addFacilityAddress);
         createFacilityButton = view.findViewById(R.id.createFacilityButton);
