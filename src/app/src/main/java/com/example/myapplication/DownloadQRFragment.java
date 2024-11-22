@@ -12,10 +12,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.zxing.WriterException;
 
 /**
- *
+ * This fragment is used to notify the user that the QR code has been generated and stored in the database.
+ * It also provides the option to download the QR code and continue to the view events page.
  */
 public class DownloadQRFragment extends Fragment {
     View view;
