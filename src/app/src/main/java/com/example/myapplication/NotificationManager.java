@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import java.util.ArrayList;
+
 final public class NotificationManager { // this is a static class
     private NotificationManager() {
         // private constructor to prevent instantiation
@@ -25,5 +27,15 @@ final public class NotificationManager { // this is a static class
      */
     public static void sendNotification(Notification notification) {
         new DatabaseManager().createNotification(notification);
+    }
+
+    /**
+     * The "easy" getNotifications method, just provide a User and an OnNotificationFetchListener.
+     * The ArrayList<Notification> will be returned via the listener at some later time.
+     * @param user
+     * @param onNotificationFetchListener
+     */
+    public static void getNotifications(User user, OnNotificationFetchListener onNotificationFetchListener) {
+        new DatabaseManager().getNotifications(user.getUniqueID(), onNotificationFetchListener);
     }
 }
