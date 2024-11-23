@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.profile;
+package com.example.myapplication.ui.inbox;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.databinding.ProfileScreenFragmentBinding;
+import com.example.myapplication.databinding.InboxScreenFragmentBinding;
 
-public class ProfileScreenFragment extends Fragment {
+public class InboxFragment extends Fragment {
 
-    private ProfileScreenFragmentBinding binding;
+    private InboxScreenFragmentBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        ProfileViewModel profileViewModel =
-                new ViewModelProvider(this).get(ProfileViewModel.class);
+        InboxViewModel inboxViewModel =
+                new ViewModelProvider(this).get(InboxViewModel.class);
 
-        binding = ProfileScreenFragmentBinding.inflate(inflater, container, false);
+        binding = InboxScreenFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.profileText;
-        profileViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textInbox;
+        inboxViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

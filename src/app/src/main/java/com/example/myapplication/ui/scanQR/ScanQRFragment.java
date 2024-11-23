@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.facility;
+package com.example.myapplication.ui.scanQR;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.databinding.FacilityScreenFragmentBinding;
+import com.example.myapplication.databinding.ScanQrScreenFragmentBinding;
 
-public class FacilityScreenFragment extends Fragment {
+public class ScanQRFragment extends Fragment {
 
-    private FacilityScreenFragmentBinding binding;
+    private ScanQrScreenFragmentBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        FacilityViewModel facilityViewModel =
-                new ViewModelProvider(this).get(FacilityViewModel.class);
+        ScanQRViewModel scanQRViewModel =
+                new ViewModelProvider(this).get(ScanQRViewModel.class);
 
-        binding = FacilityScreenFragmentBinding.inflate(inflater, container, false);
+        binding = ScanQrScreenFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textFacility;
-        facilityViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textScanqr;
+        scanQRViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

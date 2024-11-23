@@ -27,13 +27,10 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.myapplication.databinding.ActivityMainBinding;
-import com.example.myapplication.ui.facility.FacilityScreenFragment;
-import com.example.myapplication.ui.notifications.NotificationsScreenFragment;
-import com.example.myapplication.ui.profile.ProfileScreenFragment;
-import com.example.myapplication.ui.scanQR.ScanQRScreenFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,29 +49,48 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(R.layout.activity_main);
+        setContentView(binding.getRoot());
 
-        replaceFragment(new NotificationsScreenFragment());
+        // Set up the NavController for bottom navigation
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navbar_inbox, R.id.navbar_facility, R.id.navbar_scanQR, R.id.navbar_profile)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupWithNavController(bottomNav, navController);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.bottomNav, navController);
+
+
+        /*replaceFragment(new NotificationsScreenFragment());
 
         binding.bottomNav.setOnItemSelectedListener(item -> {
 
-            switch (item.getItemId()) {
-                case R.id.navbar_inbox:
-                    replaceFragment(new NotificationsScreenFragment());
-                    break;
-                case R.id.navbar_facility:
-                    replaceFragment(new FacilityScreenFragment());
-                    break;
-                case R.id.navbar_scanQR:
-                    replaceFragment(new ScanQRScreenFragment());
-                    break;
-                case R.id.navbar_profile:
-                    replaceFragment(new ProfileScreenFragment());
-                    break;
+            if (item.getItemId() == R.id.navbar_inbox) {
+                replaceFragment(new NotificationsScreenFragment());
+                return true;
             }
-            return true;
+            else if (item.getItemId() == R.id.navbar_facility) {
+                replaceFragment(new FacilityScreenFragment());
+                return true;
+            }
+            else if (item.getItemId() == R.id.navbar_scanQR) {
+                replaceFragment(new ScanQRScreenFragment());
+                return true;
+            }
+            else if (item.getItemId() == R.id.navbar_profile) {
+                replaceFragment(new ProfileScreenFragment());
+                return true;
+            }
+            else {
+                return false;
+            }
+
             });
 
+
+         */
 
         SharedPreferences preferences = getSharedPreferences("onboarding", MODE_PRIVATE);
         boolean isOnboardingComplete = preferences.getBoolean("onboarding_complete", false);
@@ -93,11 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 return insets;
             });
 
-            // Set up the NavController for bottom navigation
-            NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-            NavController navController = navHostFragment.getNavController();
-            BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
-            NavigationUI.setupWithNavController(bottomNav, navController);
+
 
 
             profileTextView = findViewById(R.id.profile_text);
@@ -136,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-
 
         }
     }

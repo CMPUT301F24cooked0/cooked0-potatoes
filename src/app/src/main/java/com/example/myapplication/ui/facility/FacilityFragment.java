@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.notifications;
+package com.example.myapplication.ui.facility;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.databinding.InboxScreenFragmentBinding;
+import com.example.myapplication.databinding.FacilityScreenFragmentBinding;
 
-public class NotificationsScreenFragment extends Fragment {
+public class FacilityFragment extends Fragment {
 
-    private InboxScreenFragmentBinding binding;
+    private FacilityScreenFragmentBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NotificationsViewModel notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
+        FacilityViewModel facilityViewModel =
+                new ViewModelProvider(this).get(FacilityViewModel.class);
 
-        binding = InboxScreenFragmentBinding.inflate(inflater, container, false);
+        binding = FacilityScreenFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textInbox;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textFacility;
+        facilityViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

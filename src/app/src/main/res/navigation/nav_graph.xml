@@ -2,29 +2,34 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
-    app:startDestination="@id/inboxfragment">
-
+    android:id="@+id/nav_graph">
 
     <fragment
-        android:id="@+id/inboxfragment"
-        android:name="com.example.myapplication.ui.notifications.NotificationsScreenFragment"
-        tools:layout="@layout/inbox_screen_fragment" />
+        android:id="@+id/navigation_inbox"
+        android:name="com.example.myapplication.ui.inbox.InboxFragment"
+        android:label="Inbox"
+        tools:layout="@layout/inbox_screen_fragment"
+        />
 
     <fragment
-        android:id="@+id/facilityfragment"
-        android:name="com.example.myapplication.ui.facility.FacilityScreenFragment"
-        tools:layout="@layout/facility_screen_fragment" />
+        android:id="@+id/navigation_facility"
+        android:name="com.example.myapplication.ui.facility.FacilityFragment"
+        android:label="Inbox"
+        tools:layout="@layout/facility_screen_fragment"
+        />
 
     <fragment
-        android:id="@+id/scanqrfragment"
-        android:name="com.example.myapplication.ui.scanQR.ScanQRScreenFragment"
-        tools:layout="@layout/scan_qr_screen_fragment" />
+        android:id="@+id/navigation_scanqr"
+        android:name="com.example.myapplication.ui.scanqr.scanqrscreenfragment"
+        android:label="Inbox"
+        tools:layout="@layout/scan_qr_screen_fragment"
+        />
 
     <fragment
-        android:id="@+id/profilefragment"
-        android:name="com.example.myapplication.ui.profile.ProfileScreenFragment"
-        tools:layout="@layout/profile_screen_fragment" />
-
+        android:id="@+id/navigation_profile"
+        android:name="com.example.myapplication.ui.profile.ProfileFragment"
+        android:label="Inbox"
+        tools:layout="@layout/profile_screen_fragment"
+        />
 
 </navigation>

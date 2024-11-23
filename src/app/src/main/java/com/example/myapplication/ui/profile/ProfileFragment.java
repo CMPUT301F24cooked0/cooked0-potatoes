@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.scanQR;
+package com.example.myapplication.ui.profile;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.databinding.ScanQrScreenFragmentBinding;
+import com.example.myapplication.databinding.ProfileScreenFragmentBinding;
 
-public class ScanQRScreenFragment extends Fragment {
+public class ProfileFragment extends Fragment {
 
-    private ScanQrScreenFragmentBinding binding;
+    private ProfileScreenFragmentBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        ScanQRViewModel scanQRViewModel =
-                new ViewModelProvider(this).get(ScanQRViewModel.class);
+        ProfileViewModel profileViewModel =
+                new ViewModelProvider(this).get(ProfileViewModel.class);
 
-        binding = ScanQrScreenFragmentBinding.inflate(inflater, container, false);
+        binding = ProfileScreenFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textScanqr;
-        scanQRViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.profileText;
+        profileViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
@@ -34,4 +34,5 @@ public class ScanQRScreenFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
 }
