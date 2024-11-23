@@ -1,7 +1,7 @@
 package com.example.myapplication;
 
-final public class NotificationSender { // this is a static class
-    private NotificationSender() {
+final public class NotificationManager { // this is a static class
+    private NotificationManager() {
         // private constructor to prevent instantiation
     }
 
