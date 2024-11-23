@@ -10,6 +10,6 @@ final public class NotificationSender { // this is a static class
     }
 
     public static void sendNotification(String user_unique_id, String notification) {
-        // TODO implement sending notifications by updating the database
+        new DatabaseManager().createNotification(user_unique_id, notification);
     }
 }
