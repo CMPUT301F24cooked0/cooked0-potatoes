@@ -12,6 +12,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -599,13 +600,14 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
 
     public void getNotifications(String userID, OnNotificationFetchListener onNotificationFetchListener) {
         Thread thread = new Thread(() -> {
-           Notification notification = fetchNotification(userID);
-           onNotificationFetchListener.onNotificationFetch(notification);
+           ArrayList<Notification> notifications = fetchNotifications(userID);
+           onNotificationFetchListener.onNotificationFetch(notifications);
         });
         thread.start();
     }
 
-    private Notification fetchNotification(String userID) {
+    private ArrayList<Notification> fetchNotifications(String userID) {
+        CollectionReference notificationCol = this.db.collection(DatabaseCollectionNames.notifications.name());
 
     }
 }

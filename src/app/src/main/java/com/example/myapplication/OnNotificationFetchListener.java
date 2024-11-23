@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import java.util.ArrayList;
+
 public interface OnNotificationFetchListener {
-    void onNotificationFetch(Notification notification);
+    void onNotificationFetch(ArrayList<Notification> notifications);
 }
