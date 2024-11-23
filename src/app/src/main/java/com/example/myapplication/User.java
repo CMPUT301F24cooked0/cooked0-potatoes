@@ -9,6 +9,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import com.google.firebase.firestore.DocumentReference;
+
+// import java.util.UUID;
+
+// UUID.randomUUID().toString(); -- a potential way to get a unique ID (untested)
 
 /*
 This class is creates a user object. It checks user info as well as the roll of the user.
@@ -19,15 +24,15 @@ provided by the user
 public class User {
     private static final FirebaseFirestore db=FirebaseFirestore.getInstance();
     protected static final CollectionReference userRef=db.collection("Users");
+    private String uniqueID;
     private String name;
     private String email;
     private Long phoneNumber;
     private Bitmap profilePicture;
-    private final boolean isAdmin;
+    private boolean isAdmin;
     private Facility facility;
     private boolean receivesOrgAdmNotifications;
-
-    // TODO constructor that gets info from database
+    private DocumentReference userRef;
 
     /**
      * Simplest constructor for the User class
@@ -39,12 +44,13 @@ public class User {
      * @param email
      * @throws Exception
      */
-    public User(String name, String email) throws Exception {
+    public User(String uniqueID, String name, String email) throws Exception {
+        this.uniqueID = uniqueID;
         this.setName(name); // it is important that name is set before profile picture
         this.setEmail(email);
         this.setPhoneNumber(null);
-        this.setProfilePicture(null); // FIXME profile picture may not be provided by user and must then be auto-generated
-        this.isAdmin = false; // TODO check DB
+        this.setProfilePicture(null);
+        this.isAdmin = false;
         this.setFacility(null);
         this.setReceivesOrgAdmNotifications(true);
     }
@@ -56,8 +62,8 @@ public class User {
      * @param phoneNumber
      * @throws Exception
      */
-    public User(String name, String email, Long phoneNumber) throws Exception {
-        this(name, email);
+    public User(String uniqueID, String name, String email, Long phoneNumber) throws Exception {
+        this(uniqueID, name, email);
         this.setPhoneNumber(phoneNumber);
     }
 
@@ -68,8 +74,8 @@ public class User {
      * @param profilePicture
      * @throws Exception
      */
-    public User(String name, String email, Bitmap profilePicture) throws Exception {
-        this(name, email);
+    public User(String uniqueID, String name, String email, Bitmap profilePicture) throws Exception {
+        this(uniqueID, name, email);
         this.setProfilePicture(profilePicture);
     }
 
@@ -83,8 +89,8 @@ public class User {
      * @param profilePicture
      * @throws Exception
      */
-    public User(String name, String email, Long phoneNumber, Bitmap profilePicture) throws Exception {
-        this(name, email, phoneNumber);
+    public User(String uniqueID, String name, String email, Long phoneNumber, Bitmap profilePicture) throws Exception {
+        this(uniqueID, name, email, phoneNumber);
         this.setProfilePicture(profilePicture);
     }
 
@@ -100,6 +106,35 @@ public class User {
     }
 
     /**
+     * only use this constructor in DatabaseManager to instantiate a user from the data in the database
+     * @param name
+     * @param email
+     * @param phoneNumber
+     * @param profilePicture
+     * @param isAdmin
+     * @param receivesOrgAdmNotifications
+     */
+    public User(String uniqueID, String name, String email, Long phoneNumber, Bitmap profilePicture, boolean isAdmin, boolean receivesOrgAdmNotifications, DocumentReference userRef, Facility facility) throws Exception {
+        this.uniqueID = uniqueID;
+        this.setName(name);
+        this.setEmail(email);
+        this.setPhoneNumber(phoneNumber);
+        this.setProfilePicture(profilePicture);
+        this.isAdmin = isAdmin;
+        this.setReceivesOrgAdmNotifications(receivesOrgAdmNotifications);
+        this.userRef = userRef;
+        this.facility = facility;
+    }
+
+    /**
+     * Get this user's unique device ID
+     * @return
+     */
+    public String getUniqueID() {
+        return this.uniqueID;
+    }
+
+    /**
      * Set this user's name, throws exception on null or empty name
      * @param name
      * @throws Exception
@@ -112,7 +147,6 @@ public class User {
             throw new Exception("name cannot be empty");
         }
         this.name = name;
-        // TODO update database
     }
 
     /**
@@ -131,16 +165,15 @@ public class User {
             throw new Exception("invalid email");
         }
         this.email = email;
-        // TODO update database
     }
 
     /**
-     * Set this user's phone number, throws exception on null or invalid phone number
+     * Set this user's phone number, throws exception on invalid phone number
      * @param phoneNumber
      * @throws Exception
      */
     public void setPhoneNumber(Long phoneNumber) throws Exception {
-        if (phoneNumber != null) {
+        if (phoneNumber != null) { // the following checks only apply to non-null phone numbers
             if (phoneNumber <= 0) {
                 throw new Exception("phone number cannot be a negative number");
             }
@@ -154,7 +187,6 @@ public class User {
         // phone number of null is ok since it is optional,
         // null indicates the user has not defined their phone number
         this.phoneNumber = phoneNumber;
-        // TODO update database
     }
 
     /**
@@ -168,7 +200,6 @@ public class User {
             // TODO generate profile picture based on user's name
         }
         this.profilePicture = profilePicture;
-        // TODO update database
     }
 
     /**
@@ -184,7 +215,6 @@ public class User {
      */
     public void setFacility(Facility facility) {
         this.facility = facility;
-        // TODO update database
     }
 
     /**
@@ -193,9 +223,11 @@ public class User {
      */
     public void setReceivesOrgAdmNotifications(boolean receivesOrgAdmNotifications){
         this.receivesOrgAdmNotifications = receivesOrgAdmNotifications;
-        // TODO update database
     }
 
+    /**
+     * delete this user's facility (user is no longer an organizer)
+     */
     public void deleteFacility() {
         this.setFacility(null);
     }
@@ -268,6 +300,7 @@ public class User {
      * Method that gets users data from the database and to be called in the AdministratorBrowseUsersFragment to populate the list.
      * @param onSuccessListener
      * @param onFailureListener
+     * @deprecated please DO NOT use this method. Use the DatabaseManager instead
      */
     public static void fetchUsers(OnSuccessListener<ArrayList<User>> onSuccessListener,OnFailureListener onFailureListener){
         userRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
@@ -288,4 +321,15 @@ public class User {
         }).addOnFailureListener(onFailureListener);
     }
 
+    public void setUserReference(DocumentReference userRef) {
+        this.userRef = userRef;
+    }
+
+    /**
+     * get the DocumentReference to the user in the database
+     * @return
+     */
+    public DocumentReference getUserReference() {
+        return this.userRef;
+    }
 }
