@@ -51,7 +51,7 @@ public class DownloadQRFragment extends Fragment {
 
     }
     public void onClickDownload (View view) {
-        // TODO download QR code
+        // TODO download QR code to device
 
 
     }
