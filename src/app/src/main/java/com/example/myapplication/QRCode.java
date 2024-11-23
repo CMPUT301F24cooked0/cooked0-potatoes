@@ -1,6 +1,6 @@
 package com.example.myapplication;
 
-import android.media.Image;
+import android.graphics.Bitmap;
 
 /*
 This class is responsible for creating a QR code and setting its text. It also returns the
@@ -44,7 +44,7 @@ public class QRCode {
      * generate the image of the QR code
      * @return
      */
-    public Image getImage() {
+    public Bitmap getImage() {
         if (this.text == null) {
             return null;
         }

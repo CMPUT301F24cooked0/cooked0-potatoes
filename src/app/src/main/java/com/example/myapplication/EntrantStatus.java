@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.firestore.DocumentReference;
 
 /*
 This class is responsible for getting and setting an entrants status. It also allows organizers
@@ -10,6 +11,7 @@ public class EntrantStatus {
     private final User entrant;
     private final LatLng joinedFrom;
     private Status status;
+    private DocumentReference entrantStatusRef;
 
     /**
      * Simplest constructor for an EntrantStatus.
@@ -17,11 +19,10 @@ public class EntrantStatus {
      * @param entrant
      * @param joinedFrom
      */
-    public EntrantStatus(User entrant, LatLng joinedFrom) {
+    public EntrantStatus(User entrant, LatLng joinedFrom) { // FIXME assert that entrant is not null!
         this.entrant = entrant;
         this.joinedFrom = joinedFrom;
-        this.status = Status.none; // starting status is none (no draw has occurred yet)
-        // TODO update database
+        this.setStatus(Status.none); // starting status is none (no draw has occurred yet)
     }
 
     /**
@@ -32,7 +33,21 @@ public class EntrantStatus {
      */
     public EntrantStatus(User entrant, LatLng joinedFrom, Status status) {
         this(entrant, joinedFrom);
-        this.status = status; // this constructor allows setting a different starting status
+        this.setStatus(status); // this constructor allows setting a different starting status
+    }
+
+    /**
+     * only use this constructor in DatabaseManager to instantiate an EntrantStatus from the data in the database
+     * @param entrant
+     * @param joinedFrom
+     * @param status
+     * @param entrantStatusRef
+     */
+    public EntrantStatus(User entrant, LatLng joinedFrom, Status status, DocumentReference entrantStatusRef) {
+        this.entrant = entrant;
+        this.joinedFrom = joinedFrom;
+        this.setStatus(status);
+        this.entrantStatusRef = entrantStatusRef;
     }
 
     /**
@@ -40,10 +55,10 @@ public class EntrantStatus {
      * @param status
      */
     public void setStatus(Status status) {
-        if (status != null) {
-            this.status = status;
-            // TODO update database
+        if (status == null) {
+            return;
         }
+        this.status = status;
     }
 
     /**
@@ -76,5 +91,17 @@ public class EntrantStatus {
      */
     public LatLng getJoinedFrom() {
         return this.joinedFrom;
+    }
+
+    public void setEntrantStatusReference(DocumentReference entrantStatusRef) {
+        this.entrantStatusRef = entrantStatusRef;
+    }
+
+    /**
+     * get a DocumentReference to this EntrantStatus in the database
+     * @return
+     */
+    public DocumentReference getEntrantStatusReference() {
+        return this.entrantStatusRef;
     }
 }
