@@ -582,23 +582,30 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
     /**
      * Creates a new notification for the user with userID in the database.
      * This will be received by the user at some later time.
-     * The current time is stored in the notification.
-     * @param userID
-     * @param notificationText
+     * @param notification
      * @return true on success, false on failure or if either userID or notificationText is null
      */
-    public Boolean createNotification(String userID, String notificationText) {
-        if (userID == null || notificationText == null) {
-            return false;
-        }
-        Instant instantPosted = Instant.now();
+    public Boolean createNotification(Notification notification) {
+        Instant instantPosted = notification.getInstantPosted();
         HashMap<String, Object> notificationData = new HashMap<>();
-        notificationData.put(DatabaseNotificationFieldNames.userID.name(), userID);
-        notificationData.put(DatabaseNotificationFieldNames.notificationText.name(), notificationText);
-        notificationData.put(DatabaseNotificationFieldNames.instantPosted.name(), instantPosted);
+        notificationData.put(DatabaseNotificationFieldNames.userID.name(), notification.getUserID());
+        notificationData.put(DatabaseNotificationFieldNames.notificationText.name(), notification.getNotificationText());
+        notificationData.put(DatabaseNotificationFieldNames.instantPosted.name(), new Timestamp(instantPosted));
         DocumentReference notificationRef = this.db.collection(DatabaseCollectionNames.notifications.name()).document();
         notificationRef.set(notificationData);
 
         return true;
+    }
+
+    public void getNotifications(String userID, OnNotificationFetchListener onNotificationFetchListener) {
+        Thread thread = new Thread(() -> {
+           Notification notification = fetchNotification(userID);
+           onNotificationFetchListener.onNotificationFetch(notification);
+        });
+        thread.start();
+    }
+
+    private Notification fetchNotification(String userID) {
+
     }
 }

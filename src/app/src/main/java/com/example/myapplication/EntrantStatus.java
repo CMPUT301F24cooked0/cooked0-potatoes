@@ -65,7 +65,7 @@ public class EntrantStatus {
      * send a notification to this entrant
      * @param notification
      */
-    public void sendNotification(String notification) {
+    public void sendNotification(String notification) throws Exception {
         NotificationManager.sendNotification(this.entrant, notification);
     }
 
