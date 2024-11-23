@@ -10,6 +10,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.lang.reflect.Array;
@@ -600,14 +601,71 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
 
     public void getNotifications(String userID, OnNotificationFetchListener onNotificationFetchListener) {
         Thread thread = new Thread(() -> {
-           ArrayList<Notification> notifications = fetchNotifications(userID);
-           onNotificationFetchListener.onNotificationFetch(notifications);
+            ArrayList<Notification> notifications = null;
+            try {
+                notifications = fetchNotifications(userID);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            onNotificationFetchListener.onNotificationFetch(notifications);
         });
         thread.start();
     }
 
-    private ArrayList<Notification> fetchNotifications(String userID) {
+    private ArrayList<Notification> fetchNotifications(String userID) throws Exception {
         CollectionReference notificationCol = this.db.collection(DatabaseCollectionNames.notifications.name());
+        ArrayList<Notification> notifications = new ArrayList<>();
 
+        Task<QuerySnapshot> task = notificationCol.get();
+        QuerySnapshot queryDocumentSnapshots = null;
+        try {
+            queryDocumentSnapshots = Tasks.await(task);
+        } catch (ExecutionException e) {
+            return null;
+        } catch (InterruptedException e) {
+            return null;
+        }
+
+        if (queryDocumentSnapshots == null) {
+            return null;
+        }
+        List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+        if (documentSnapshots.isEmpty()) {
+            return null;
+        }
+        HashMap<String, Object> notificationData;
+
+        for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+            notificationData = (HashMap<String, Object>) documentSnapshot.getData();
+            if (notificationData == null) {
+                continue;
+            }
+
+            Object userIdTemp = notificationData.get(DatabaseNotificationFieldNames.userID.name());
+            if (userIdTemp == null) {
+                throw new Exception("Notification in database had no userID associated with it, fix underlying cause!");
+            }
+            String fetchedUserID = (String) userIdTemp;
+            if (!fetchedUserID.equals(userID)) {
+                continue; // no need to fetch this notification as it isn't for this user
+            }
+
+            Object notificationTextTemp = notificationData.get(DatabaseNotificationFieldNames.notificationText.name());
+            if (notificationTextTemp == null) {
+                throw new Exception("Notification in database had no notificationText associated with it, fix underlying cause!");
+            }
+            String notificationText = (String) notificationTextTemp;
+
+            Object instantPostedTemp = notificationData.get(DatabaseNotificationFieldNames.instantPosted.name());
+            if (instantPostedTemp == null) {
+                throw new Exception("Notification in database had no instantPosted associated with it, fix underlying cause!");
+            }
+            Timestamp instantPostedTimestamp = (Timestamp) instantPostedTemp;
+            Instant instantPosted = instantPostedTimestamp.toInstant();
+
+            notifications.add(new Notification(userID, notificationText, instantPosted));
+        }
+
+        return notifications;
     }
 }
