@@ -131,9 +131,9 @@ public class SignUpActivity extends AppCompatActivity {
      * @return
      */
     private Bitmap generateProfileImage(String name) {
-        String firstNameInitial = name.length() > 0 ? name.substring(0, 1).toUpperCase() : "A";
+        String firstNameInitial = !name.isEmpty() ? name.substring(0, 1).toUpperCase() : "A";
 
-        int size = 200;
+        int size = 1024;
         Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
@@ -144,7 +144,7 @@ public class SignUpActivity extends AppCompatActivity {
         canvas.drawCircle(size / 2, size / 2, size / 2, paint);
 
         paint.setColor(Color.WHITE);
-        paint.setTextSize(100);
+        paint.setTextSize(size/2);
         paint.setTextAlign(Paint.Align.CENTER);
 
         Rect textBounds = new Rect();
