@@ -24,7 +24,6 @@ import java.util.Locale;
  * This class represents a page for editing an existing facility.
  */
 public class FacilityEditFragment extends Fragment {
-    // TODO get facility from bundle
     View view;
     EditText facilityNameInput;
     EditText facilityAddressInput;
@@ -34,6 +33,7 @@ public class FacilityEditFragment extends Fragment {
     String addressStr;
     String facilityName;
     String facilityAddressStr;
+    LatLng facilityLocation;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,16 +50,11 @@ public class FacilityEditFragment extends Fragment {
         facilityAddressInput = view.findViewById(R.id.editFacilityAddress);
         editButton = view.findViewById(R.id.editFacilityButton);
         databaseManager = new DatabaseManager();
-        //existingFacility = (Facility) getArguments().getSerializable("facility");
+        //existingFacility = (Facility) getArguments().getSerializable("facility"); // TODO get facility from bundle once navigation complete
         facilityNameInput.setText(existingFacility.getName()); // autofill existing facility name
-        addressStr = latLngToAddress(existingFacility.getLocation());// convert LatLng to address
-        if (addressStr == null) {
-            Toast.makeText(this.requireContext(), "Error converting to string address", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        addressStr = existingFacility.getAddress(); // get existing facility address string
         facilityAddressInput.setText(addressStr); // autofill existing facility address
         editButton.setOnClickListener(this::onClick);
-
     }
     public void onClick(View view) {
         // get facility name and address from input fields
@@ -69,35 +64,33 @@ public class FacilityEditFragment extends Fragment {
             Toast.makeText(this.requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
-        // convert address to LatLng
-        LatLng facilityAddress = getAddress(facilityAddressStr);
-        if (facilityAddress == null) {
-            Toast.makeText(this.requireContext(), "Invalid address", Toast.LENGTH_SHORT).show();
+
+        // convert address to LatLng if it has changed otherwise use existing LatLng
+        if (addressStr.equals(facilityAddressStr)) {
+            facilityLocation = existingFacility.getLocation();
+        } else {
+            facilityLocation = getAddress(facilityAddressStr);
+            if (facilityLocation == null) {
+                Toast.makeText(this.requireContext(), "Invalid address", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        // set facility name, address, and location in existing facility object
+        try {
+            existingFacility.setName(facilityName);
+            existingFacility.setAddress(facilityAddressStr);
+            existingFacility.setLocation(facilityLocation);
+        } catch (Exception e) {
+            Toast.makeText(this.requireContext(), "Unable to update facility", Toast.LENGTH_SHORT).show();
             return;
         }
-        existingFacility.setName(facilityName);
-        existingFacility.setLocation(facilityAddress);
-        // update facility in database
-        databaseManager.updateFacility(existingFacility);
+
+        databaseManager.updateFacility(existingFacility); // update facility in database
 
 
     }
 
-    public String latLngToAddress(LatLng location) {
-        // converts LatLng input to string address
-        Geocoder geocode = new Geocoder(this.requireContext(), Locale.getDefault());
-        try {
-            List<Address> addresses = geocode.getFromLocation(location.latitude, location.longitude, 1);
-            if (addresses != null && !addresses.isEmpty()) {
-                Address address = addresses.get(0);
-                return address.getAddressLine(0);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return null;
-    }
 
     public LatLng getAddress(String address) {
         // converts string address given by user to LatLng

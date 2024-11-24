@@ -31,7 +31,7 @@ public class FacilityCreationFragment extends Fragment {
     EditText facilityNameInput;
     EditText facilityAddressInput;
     Button createFacilityButton;
-    //User facilityOwner;
+    User facilityOwner;
     DatabaseManager databaseManager;
     String facilityName;
     String facilityAddressStr;
@@ -64,22 +64,23 @@ public class FacilityCreationFragment extends Fragment {
             Toast.makeText(this.requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
-        // convert address to LatLng
-        LatLng facilityAddress = getAddress(facilityAddressStr);
+
+        LatLng facilityAddress = getAddress(facilityAddressStr); // convert address to LatLng
         if (facilityAddress == null) {
             Toast.makeText(this.requireContext(), "Invalid address", Toast.LENGTH_SHORT).show();
             return;
         }
+
         // create facility object
         try {
             facility = new Facility(facilityName, facilityAddress, facilityAddressStr);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Toast.makeText(this.requireContext(), "Unable to create facility", Toast.LENGTH_SHORT).show();
+            return;
         }
-        ;
-        // user.setFacility(facility);
-        // add facility to database and set facility document reference
-        // facility.setFacilityReference(databaseManager.createFacility(facilityOwner, facility));
+
+        facilityOwner.setFacility(facility); // set facility for user
+        databaseManager.createFacility(facilityOwner, facility); // add facility to database and set facility document reference
     }
 
     public LatLng getAddress(String address) {
