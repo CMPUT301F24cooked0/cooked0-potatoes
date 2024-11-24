@@ -14,6 +14,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -21,6 +22,7 @@ import java.util.concurrent.ExecutionException;
 public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchListener, OnEntrantStatusesFetchListener { // static class
     private final FirebaseFirestore db;
     private ArrayList<User> users;
+    private int stringMaximumLength = 1000000; // 1MB
     // the ArrayList of users is intended to store a reference to each and every User object created by the getUser method.
     // The reason this is done is because the getUser method is recursive,
     // however, the getEntrantStatus method at the "end" of the recursion needs to call the getUser method.
@@ -52,7 +54,15 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         userData.put(DatabaseUserFieldNames.name.name(), user.getName());
         userData.put(DatabaseUserFieldNames.email.name(), user.getEmail());
         userData.put(DatabaseUserFieldNames.phoneNumber.name(), user.getPhoneNumber());
-        //userData.put(DatabaseUserFieldNames.profilePicture.name(), user.getProfilePicture()); // FIXME this causes issues
+        String encodedProfilePicture = null;
+        try {
+            encodedProfilePicture = BitmapConverter.BitmapToCompressedString(user.getProfilePicture(), this.stringMaximumLength);
+        } catch (Exception e) {
+            // the image could not be compressed small enough for some reason, so we unfortunately have to upload nothing.
+            // this really should not be possible though
+            encodedProfilePicture = null;
+        }
+        userData.put(DatabaseUserFieldNames.profilePicture.name(), encodedProfilePicture);
         userData.put(DatabaseUserFieldNames.receivesOrgAdmNotifications.name(), user.getReceivesOrgAdmNotifications());
         DocumentReference userRef = this.db.collection(DatabaseCollectionNames.users.name()).document(userID);
         userRef.set(userData);
@@ -75,7 +85,15 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         userData.put(DatabaseUserFieldNames.name.name(), user.getName());
         userData.put(DatabaseUserFieldNames.email.name(), user.getEmail());
         userData.put(DatabaseUserFieldNames.phoneNumber.name(), user.getPhoneNumber());
-        //userData.put(DatabaseUserFieldNames.profilePicture.name(), user.getProfilePicture()); // FIXME
+        String encodedProfilePicture = null;
+        try {
+            encodedProfilePicture = BitmapConverter.BitmapToCompressedString(user.getProfilePicture(), this.stringMaximumLength);
+        } catch (Exception e) {
+            // the image could not be compressed small enough for some reason, so we unfortunately have to upload nothing.
+            // this really should not be possible though
+            encodedProfilePicture = null;
+        }
+        userData.put(DatabaseUserFieldNames.profilePicture.name(), encodedProfilePicture);
         userData.put(DatabaseUserFieldNames.receivesOrgAdmNotifications.name(), user.getReceivesOrgAdmNotifications());
         DocumentReference userRef = user.getUserReference();
         userRef.update(userData);
@@ -156,7 +174,8 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             Long phoneNumber = (Long) phoneNumberTemp;
 
             Object profilePictureTemp = userData.get(DatabaseUserFieldNames.profilePicture.name());
-            Bitmap profilePicture = (Bitmap) profilePictureTemp;
+            String encodedProfilePicture = (String) profilePictureTemp;
+            Bitmap profilePicture = BitmapConverter.StringToBitmap(encodedProfilePicture);
 
             Object notificationTemp = userData.get(DatabaseUserFieldNames.receivesOrgAdmNotifications.name());
             boolean receivesOrgAdmNotifications = (boolean) notificationTemp;
@@ -323,7 +342,15 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         HashMap<String, Object> eventData = new HashMap<>();
         eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
         eventData.put(DatabaseEventFieldNames.instant.name(), new Timestamp(event.getInstant()));
-        //eventData.put(DatabaseEventFieldNames.eventPoster.name(), event.getEventPoster()); // FIXME image
+        String encodedEventPoster = null;
+        try {
+            encodedEventPoster = BitmapConverter.BitmapToCompressedString(event.getEventPoster(), this.stringMaximumLength);
+        } catch (Exception e) {
+            // the image could not be compressed small enough for some reason, so we unfortunately have to upload nothing.
+            // this really should not be possible though
+            encodedEventPoster = null;
+        }
+        eventData.put(DatabaseEventFieldNames.eventPoster.name(), encodedEventPoster);
         eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode().getText());
         eventData.put(DatabaseEventFieldNames.capacity.name(), event.getCapacity());
         eventRef.set(eventData);
@@ -347,7 +374,15 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         HashMap<String, Object> eventData = new HashMap<>();
         eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
         eventData.put(DatabaseEventFieldNames.instant.name(), new Timestamp(event.getInstant()));
-        //eventData.put(DatabaseEventFieldNames.eventPoster.name(), event.getEventPoster()); // FIXME
+        String encodedEventPoster = null;
+        try {
+            encodedEventPoster = BitmapConverter.BitmapToCompressedString(event.getEventPoster(), this.stringMaximumLength);
+        } catch (Exception e) {
+            // the image could not be compressed small enough for some reason, so we unfortunately have to upload nothing.
+            // this really should not be possible though
+            encodedEventPoster = null;
+        }
+        eventData.put(DatabaseEventFieldNames.eventPoster.name(), encodedEventPoster);
         eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode().getText());
         eventData.put(DatabaseEventFieldNames.capacity.name(), event.getCapacity());
         DocumentReference eventRef = event.getEventReference();
@@ -421,15 +456,13 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             Instant instant = dateTimestamp.toInstant();
 
             Object eventPosterTemp = eventData.get(DatabaseEventFieldNames.eventPoster.name());
-            //if (eventPosterTemp == null) { // FIXME temp
-            //    throw new EventDoesNotExist("this event was missing the eventPoster field");
-            //}
-            Bitmap eventPoster = (Bitmap) eventPosterTemp;
+            if (eventPosterTemp == null) {
+                throw new EventDoesNotExist("this event was missing the eventPoster field");
+            }
+            String encodedEventPoster = (String) eventPosterTemp;
+            Bitmap eventPoster = BitmapConverter.StringToBitmap(encodedEventPoster);
 
             Object qrCodeTemp = eventData.get(DatabaseEventFieldNames.qrCode.name());
-            //if (qrCodeTemp == null) { // FIXME temp
-            //    throw new EventDoesNotExist("this event was missing the qrCode field");
-            //}
             QRCode qrCode = new QRCode((String) qrCodeTemp);
 
             Object capacityTemp = eventData.get(DatabaseEventFieldNames.capacity.name());
