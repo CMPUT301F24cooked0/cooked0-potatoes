@@ -11,18 +11,21 @@ retrieves them. The class is also responsible for adding and removing events cre
  */
 public class Facility {
     private String name;
+    // String address representation of the location coordinates, for displaying to the user
+    private String address;
     private LatLng location;
     private ArrayList<Event> events;
     private DocumentReference facilityRef;
 
     /**
-     * Simplest public constructor, which **creates a new facility** ond adds it to the database
+     * Simplest public constructor
      * @param name
      * @param location
      */
-    public Facility(String name, LatLng location) {
-        this.name = name;
-        this.location = location;
+    public Facility(String name, LatLng location, String address) throws Exception {
+        this.setName(name);
+        this.setLocation(location);
+        this.setAddress(address);
         this.events = new ArrayList<Event>();
     }
 
@@ -33,9 +36,9 @@ public class Facility {
      * @param facilityRef
      * @param events
      */
-    public Facility(String name, LatLng location, DocumentReference facilityRef, ArrayList<Event> events) {
-        this(name, location);
-        this.facilityRef = facilityRef;
+    public Facility(String name, LatLng location, String address, DocumentReference facilityRef, ArrayList<Event> events) throws Exception {
+        this(name, location, address);
+        this.setFacilityReference(facilityRef);
         for (Event event : events) {
             this.addEvent(event);
         }
@@ -81,7 +84,10 @@ public class Facility {
      * edit this facility's name
      * @param name
      */
-    public void setName(String name) {
+    public void setName(String name) throws Exception {
+        if (name == null) {
+            throw new Exception("Facility name cannot be null");
+        }
         this.name = name;
     }
 
@@ -89,8 +95,19 @@ public class Facility {
      * edit this facility's location
      * @param location
      */
-    public void setLocation(LatLng location) {
+    public void setLocation(LatLng location) throws Exception {
+        if (location == null) {
+            throw new Exception("Facility location cannot be null");
+        }
         this.location = location;
+    }
+
+    /**
+     * edit this facility's address
+     * @param address
+     */
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     /**
@@ -101,6 +118,10 @@ public class Facility {
         return this.events;
     }
 
+    /**
+     * Set this facility's DocumentReference (in the database)
+     * @param facilityRef
+     */
     public void setFacilityReference(DocumentReference facilityRef) {
         this.facilityRef = facilityRef;
     }
@@ -127,5 +148,13 @@ public class Facility {
      */
     public LatLng getLocation() {
         return this.location;
+    }
+
+    /**
+     * get this facility's address
+     * @return
+     */
+    public String getAddress() {
+        return this.address;
     }
 }

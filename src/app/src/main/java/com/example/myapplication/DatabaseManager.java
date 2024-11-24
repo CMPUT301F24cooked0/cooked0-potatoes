@@ -3,28 +3,50 @@ package com.example.myapplication;
 import android.graphics.Bitmap;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-public class DatabaseManager { // static class
+public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchListener, OnEntrantStatusesFetchListener { // static class
     private final FirebaseFirestore db;
+    private ArrayList<User> users;
+    private int stringMaximumLength = 1000000; // 1MB
+    // the ArrayList of users is intended to store a reference to each and every User object created by the getUser method.
+    // The reason this is done is because the getUser method is recursive,
+    // however, the getEntrantStatus method at the "end" of the recursion needs to call the getUser method.
+    // without this ArrayList, copies of the same user may be created indefinitely,
+    // however this method allows the infinite loop to be avoided by using
+    // already existing instances of users we are looking for
 
+    /**
+     * Connects to the database
+     */
     public DatabaseManager() {
         this.db = FirebaseFirestore.getInstance();
+        this.users = new ArrayList<User>();
     }
 
-    public DocumentReference createUser(User user) {
+    /**
+     * Inserts a User into the database.
+     * Recursively inserts all of the objects attached to the user (Facility, Events, EntrantStatuses)
+     * @param user
+     * @return true on success, false on failure or if user was null
+     */
+    public Boolean createUser(User user) {
         if (user == null) {
-            return null;
+            return false;
         }
         String userID = user.getUniqueID();
         HashMap<String, Object> userData = new HashMap<>();
@@ -32,118 +54,191 @@ public class DatabaseManager { // static class
         userData.put(DatabaseUserFieldNames.name.name(), user.getName());
         userData.put(DatabaseUserFieldNames.email.name(), user.getEmail());
         userData.put(DatabaseUserFieldNames.phoneNumber.name(), user.getPhoneNumber());
-        userData.put(DatabaseUserFieldNames.profilePicture.name(), user.getProfilePicture());
+        String encodedProfilePicture = null;
+        try {
+            encodedProfilePicture = BitmapConverter.BitmapToCompressedString(user.getProfilePicture(), this.stringMaximumLength);
+        } catch (Exception e) {
+            // the image could not be compressed small enough for some reason, so we unfortunately have to upload nothing.
+            // this really should not be possible though
+            encodedProfilePicture = null;
+        }
+        userData.put(DatabaseUserFieldNames.profilePicture.name(), encodedProfilePicture);
         userData.put(DatabaseUserFieldNames.receivesOrgAdmNotifications.name(), user.getReceivesOrgAdmNotifications());
         DocumentReference userRef = this.db.collection(DatabaseCollectionNames.users.name()).document(userID);
         userRef.set(userData);
+        user.setUserReference(userRef);
+        this.createFacility(user, user.getFacility());
 
-        return userRef;
+        return true;
     }
 
+    /**
+     * Updates the information related to a User in the database.
+     * Recursively updates all of the objects attached to the user (Facility, Events, EntrantStatuses)
+     * @param user
+     */
     public void updateUser(User user) {
-        if (user == null) {
+        if (user == null || user.getUserReference() == null) {
             return;
         }
         HashMap<String, Object> userData = new HashMap<>();
         userData.put(DatabaseUserFieldNames.name.name(), user.getName());
         userData.put(DatabaseUserFieldNames.email.name(), user.getEmail());
         userData.put(DatabaseUserFieldNames.phoneNumber.name(), user.getPhoneNumber());
-        userData.put(DatabaseUserFieldNames.profilePicture.name(), user.getProfilePicture());
+        String encodedProfilePicture = null;
+        try {
+            encodedProfilePicture = BitmapConverter.BitmapToCompressedString(user.getProfilePicture(), this.stringMaximumLength);
+        } catch (Exception e) {
+            // the image could not be compressed small enough for some reason, so we unfortunately have to upload nothing.
+            // this really should not be possible though
+            encodedProfilePicture = null;
+        }
+        userData.put(DatabaseUserFieldNames.profilePicture.name(), encodedProfilePicture);
         userData.put(DatabaseUserFieldNames.receivesOrgAdmNotifications.name(), user.getReceivesOrgAdmNotifications());
         DocumentReference userRef = user.getUserReference();
         userRef.update(userData);
         this.updateFacility(user.getFacility());
     }
 
-    public User getUser(String userID) throws Exception {
-        DocumentReference userRef = this.db.collection(DatabaseCollectionNames.users.name()).document(userID);
-        final User[] user = new User[1];
-        user[0] = null;
-
-        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                HashMap<String, Object> userData = (HashMap<String, Object>) documentSnapshot.getData();
-                if (userData == null) {
-                    throw new UserDoesNotExist("this user does not exist in the database");
-                }
-
-                // get user data from document
-
-                Object isAdminTemp = userData.get(DatabaseUserFieldNames.isAdmin.name());
-                if (isAdminTemp == null) {
-                    throw new UserDoesNotExist("this user was missing the isAdmin field");
-                }
-                boolean isAdmin = (boolean) isAdminTemp;
-
-                Object nameTemp = userData.get(DatabaseUserFieldNames.name.name());
-                if (nameTemp == null) {
-                    throw new UserDoesNotExist("this user was missing the name field");
-                }
-                String name = (String) nameTemp;
-
-                Object emailTemp = userData.get(DatabaseUserFieldNames.email.name());
-                if (emailTemp == null) {
-                    throw new UserDoesNotExist("this user was missing the email field");
-                }
-                String email = (String) emailTemp;
-
-                Object phoneNumberTemp = userData.get(DatabaseUserFieldNames.phoneNumber.name());
-                if (phoneNumberTemp == null) {
-                    throw new UserDoesNotExist("this user was missing the phoneNumber field");
-                }
-                Long phoneNumber = (Long) phoneNumberTemp;
-
-                Object profilePictureTemp = userData.get(DatabaseUserFieldNames.profilePicture.name());
-                if (profilePictureTemp == null) {
-                    throw new UserDoesNotExist("this user was missing the profilePicture field");
-                }
-                Bitmap profilePicture = (Bitmap) profilePictureTemp;
-
-                Object notificationTemp = userData.get(DatabaseUserFieldNames.receivesOrgAdmNotifications.name());
-                if (notificationTemp == null) {
-                    throw new UserDoesNotExist("this user was missing the receivesOrgAdmNotifications field");
-                }
-                boolean receivesOrgAdmNotifications = (boolean) notificationTemp;
-
-                try {
-                    user[0] = new User(userID, name, email, phoneNumber, profilePicture, isAdmin, receivesOrgAdmNotifications, userRef, null);
-                } catch (Exception e) {
-                    user[0] = null;
-                    throw new RuntimeException(e);
-                }
-            }
+    /**
+     * Requests to get a User from the database.
+     * Once the User is fetched, which is done asynchronously, it will be returned
+     * via the onUserFetchListener method.
+     * IMPORTANT NOTE: The DatabaseManager will recursively build the User
+     * and attach all objects that the User is attached to (its Facility, Events, EntrantStatuses),
+     * however this MAY be done after the onUserFetchListener has returned the user // FIXME get things recursively all on the same thread in private methods, so that the user object is fully built before being returned
+     * @param userID
+     * @param onUserFetchListener
+     */
+    public void getUser(String userID, OnUserFetchListener onUserFetchListener) {
+        Thread thread = new Thread(() -> {
+            User user = fetchUser(userID);
+            onUserFetchListener.onUserFetch(user);
         });
-        if (user[0] == null) {
-            return null;
-        }
-        Facility facility = this.getFacility(user[0]); // get user's facility
-        user[0].setFacility(facility);
-
-        return user[0];
+        thread.start();
     }
 
-    public DocumentReference createFacility(User user, Facility facility) {
-        if (user == null || facility == null) {
+    private User fetchUser(String userID) {
+        // before creating a new user object from the database, we need to check if we already have a User object for this user
+        for (User user : this.users) {
+            if (user.getUniqueID().equals(userID)) {
+                return user;
+            }
+        }
+
+        // we didn't already have this user created, so we fetch it from the database
+        DocumentReference userRef = this.db.collection(DatabaseCollectionNames.users.name()).document(userID);
+        User user = null;
+
+        Task<DocumentSnapshot> task = userRef.get();
+        DocumentSnapshot documentSnapshot = null;
+        try {
+            documentSnapshot = Tasks.await(task);
+        } catch (ExecutionException e) {
             return null;
+        } catch (InterruptedException e) {
+            return null;
+        }
+
+        if (documentSnapshot == null) {
+            return null;
+        }
+        if (!documentSnapshot.exists()) {
+            return null;
+        }
+        HashMap<String, Object> userData = (HashMap<String, Object>) documentSnapshot.getData();
+        if (userData == null) {
+            return null;
+        }
+
+        // get user data from document
+        try {
+            Object isAdminTemp = userData.get(DatabaseUserFieldNames.isAdmin.name());
+            boolean isAdmin = (boolean) isAdminTemp;
+
+            Object nameTemp = userData.get(DatabaseUserFieldNames.name.name());
+            if (nameTemp == null) {
+                // user name is mandatory
+                throw new UserDoesNotExist("this user was missing the name field");
+            }
+            String name = (String) nameTemp;
+
+            Object emailTemp = userData.get(DatabaseUserFieldNames.email.name());
+            if (emailTemp == null) {
+                // user email is mandatory
+                throw new UserDoesNotExist("this user was missing the email field");
+            }
+            String email = (String) emailTemp;
+
+            Object phoneNumberTemp = userData.get(DatabaseUserFieldNames.phoneNumber.name());
+            Long phoneNumber = (Long) phoneNumberTemp;
+
+            Object profilePictureTemp = userData.get(DatabaseUserFieldNames.profilePicture.name());
+            String encodedProfilePicture = (String) profilePictureTemp;
+            Bitmap profilePicture = BitmapConverter.StringToBitmap(encodedProfilePicture);
+
+            Object notificationTemp = userData.get(DatabaseUserFieldNames.receivesOrgAdmNotifications.name());
+            boolean receivesOrgAdmNotifications = (boolean) notificationTemp;
+
+            try {
+                user = new User(userID, name, email, phoneNumber, profilePicture, isAdmin, receivesOrgAdmNotifications, userRef, null);
+            } catch (Exception e) {
+                user = null;
+                throw new RuntimeException(e);
+            }
+        }
+        catch (Exception e) {
+            user = null;
+        }
+
+        if (user == null) {
+            return null;
+        }
+        this.users.add(user);
+        this.getFacility(user, this); // get user's facility, which is automatically added to user
+
+        return user;
+    }
+
+    /**
+     * Inserts a Facility into the database.
+     * Recursively inserts all of the objects attached to the Facility (Events, EntrantStatuses)
+     * @param user
+     * @param facility
+     * @return true on success, false on failure or if either user or facility was null
+     */
+    public Boolean createFacility(User user, Facility facility) {
+        if (user == null || facility == null) {
+            return false;
         }
         DocumentReference userRef = user.getUserReference();
         DocumentReference facilityRef = userRef.collection(DatabaseCollectionNames.facilities.name()).document();
         HashMap<String, Object> facilityData = new HashMap<>();
         facilityData.put(DatabaseFacilityFieldNames.name.name(), facility.getName());
         facilityData.put(DatabaseFacilityFieldNames.location.name(), facility.getLocation());
+        facilityData.put(DatabaseFacilityFieldNames.address.name(), facility.getAddress());
         facilityRef.set(facilityData);
+        facility.setFacilityReference(facilityRef);
+        for (Event event : facility.getEvents()) {
+            this.createEvent(facility, event);
+        }
 
-        return facilityRef;
+        return true;
     }
 
+    /**
+     * Updates the information related to a Facility in the database.
+     * Recursively updates all of the objects attached to the facility (Events, EntrantStatuses)
+     * @param facility
+     */
     public void updateFacility(Facility facility) {
-        if (facility == null) {
+        if (facility == null || facility.getFacilityReference() == null) {
             return;
         }
         HashMap<String, Object> facilityData = new HashMap<>();
         facilityData.put(DatabaseFacilityFieldNames.name.name(), facility.getName());
         facilityData.put(DatabaseFacilityFieldNames.location.name(), facility.getLocation());
+        facilityData.put(DatabaseFacilityFieldNames.address.name(), facility.getAddress());
         DocumentReference facilityRef = facility.getFacilityReference();
         facilityRef.update(facilityData);
         for (Event event : facility.getEvents()) {
@@ -151,86 +246,144 @@ public class DatabaseManager { // static class
         }
     }
 
-    public Facility getFacility(User organizer) throws Exception {
-        DocumentReference userRef = organizer.getUserReference();
-        CollectionReference facilityCol = userRef.collection(DatabaseCollectionNames.facilities.name());
-        final Facility[] facility = new Facility[1];
-        facility[0] = null;
-        facilityCol.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
-                DocumentReference facilityRef;
-                assert (documentSnapshots.size() <= 1); // user should have either 0 or 1 facility
-                if (documentSnapshots.isEmpty()) {
-                    return;
-                }
-                facilityRef = documentSnapshots.get(0).getReference();
-                HashMap<String, Object> facilityData = (HashMap<String, Object>) documentSnapshots.get(0).getData();
-                if (facilityData == null) {
-                    return;
-                }
-
-                // get facility data from document
-
-                Object nameTemp = facilityData.get(DatabaseFacilityFieldNames.name.name());
-                if (nameTemp == null) {
-                    throw new FacilityDoesNotExist("this facility was missing the name field");
-                }
-                String name = (String) nameTemp;
-
-                Object locationTemp = facilityData.get(DatabaseFacilityFieldNames.location.name());
-                if (locationTemp == null) {
-                    throw new FacilityDoesNotExist("this facility was missing the location field");
-                }
-                LatLng location = (LatLng) locationTemp;
-
-                try {
-                    facility[0] = new Facility(name, location, facilityRef, new ArrayList<Event>());
-                }
-                catch (Exception e) {
-                    facility[0] = null;
-                    throw new RuntimeException(e);
-                }
-            }
+    /**
+     * Requests to get a User's Facility from the database.
+     * Once the Facility is fetched, which is done asynchronously, it will be returned
+     * via the onFacilityFetchListener method.
+     * @param organizer
+     * @param onFacilityFetchListener
+     */
+    public void getFacility(User organizer, OnFacilityFetchListener onFacilityFetchListener) {
+        Thread thread = new Thread(() -> {
+            Facility facility = fetchFacility(organizer);
+            onFacilityFetchListener.onFacilityFetch(organizer, facility);
         });
-        if (facility[0] == null) {
-            return null;
-        }
-        ArrayList<Event> events = this.getEvents(facility[0]); // get facility's events
-        for (Event event : events) {
-            facility[0].addEvent(event);
-        }
-
-        return facility[0];
+        thread.start();
     }
 
-    public DocumentReference createEvent(Facility facility, Event event) {
-        if (facility == null || event == null) {
+    private Facility fetchFacility(User organizer) {
+        DocumentReference userRef = organizer.getUserReference();
+        CollectionReference facilityCol = userRef.collection(DatabaseCollectionNames.facilities.name());
+        Facility facility = null;
+
+        Task<QuerySnapshot> task = facilityCol.get();
+        QuerySnapshot queryDocumentSnapshots = null;
+        try {
+            queryDocumentSnapshots = Tasks.await(task);
+        } catch (ExecutionException e) {
             return null;
+        } catch (InterruptedException e) {
+            return null;
+        }
+
+        if (queryDocumentSnapshots == null) {
+            return null;
+        }
+        List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+        DocumentReference facilityRef;
+        assert (documentSnapshots.size() <= 1); // user should have either 0 or 1 facility
+        if (documentSnapshots.isEmpty()) {
+            return null;
+        }
+        facilityRef = documentSnapshots.get(0).getReference();
+        HashMap<String, Object> facilityData = (HashMap<String, Object>) documentSnapshots.get(0).getData();
+        if (facilityData == null) {
+            return null;
+        }
+
+        // get facility data from document
+
+        Object nameTemp = facilityData.get(DatabaseFacilityFieldNames.name.name());
+        if (nameTemp == null) {
+            throw new FacilityDoesNotExist("this facility was missing the name field");
+        }
+        String name = (String) nameTemp;
+
+        Object locationTemp = facilityData.get(DatabaseFacilityFieldNames.location.name());
+        if (locationTemp == null) {
+            throw new FacilityDoesNotExist("this facility was missing the location field");
+        }
+        HashMap<String, Double> locationMap = (HashMap<String, Double>) locationTemp;
+        LatLng location = new LatLng(locationMap.get("latitude"), locationMap.get("longitude"));
+
+        Object addressTemp = facilityData.get(DatabaseFacilityFieldNames.name.name());
+        String address = (String) addressTemp;
+
+        try {
+            facility = new Facility(name, location, address, facilityRef, new ArrayList<Event>());
+        }
+        catch (Exception e) {
+            facility = null;
+            throw new RuntimeException(e);
+        }
+        this.getEvents(facility, this); // get facility's events
+
+        return facility;
+    }
+
+    @Override
+    public void onFacilityFetch(User organizer, Facility facility) {
+        organizer.setFacility(facility);
+    }
+
+    /**
+     * Inserts an Event into the database.
+     * Recursively inserts all of the objects attached to the event (EntrantStatuses)
+     * @param facility
+     * @param event
+     * @return true on success, false on failure or if either facility or event was null
+     */
+    public Boolean createEvent(Facility facility, Event event) {
+        if (facility == null || event == null) {
+            return false;
         }
         DocumentReference facilityRef = facility.getFacilityReference();
         DocumentReference eventRef = facilityRef.collection(DatabaseCollectionNames.events.name()).document();
         HashMap<String, Object> eventData = new HashMap<>();
         eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
-        eventData.put(DatabaseEventFieldNames.date.name(), event.getDate());
-        eventData.put(DatabaseEventFieldNames.eventPoster.name(), event.getEventPoster());
+        eventData.put(DatabaseEventFieldNames.instant.name(), new Timestamp(event.getInstant()));
+        String encodedEventPoster = null;
+        try {
+            encodedEventPoster = BitmapConverter.BitmapToCompressedString(event.getEventPoster(), this.stringMaximumLength);
+        } catch (Exception e) {
+            // the image could not be compressed small enough for some reason, so we unfortunately have to upload nothing.
+            // this really should not be possible though
+            encodedEventPoster = null;
+        }
+        eventData.put(DatabaseEventFieldNames.eventPoster.name(), encodedEventPoster);
         eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode().getText());
         eventData.put(DatabaseEventFieldNames.capacity.name(), event.getCapacity());
         eventRef.set(eventData);
+        event.setEventReference(eventRef);
+        for (EntrantStatus entrantStatus : event.getEntrantStatuses()) {
+            this.createEntrantStatus(event, entrantStatus);
+        }
 
-        return eventRef;
+        return true;
     }
 
+    /**
+     * Updates the information related to an Event in the database.
+     * Recursively updates all of the objects attached to the event (EntrantStatuses)
+     * @param event
+     */
     public void updateEvent(Event event) {
-        if (event == null) {
+        if (event == null || event.getEventReference() == null) {
             return;
         }
         HashMap<String, Object> eventData = new HashMap<>();
         eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
-        eventData.put(DatabaseEventFieldNames.date.name(), event.getDate());
-        eventData.put(DatabaseEventFieldNames.eventPoster.name(), event.getEventPoster());
-        eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode());
+        eventData.put(DatabaseEventFieldNames.instant.name(), new Timestamp(event.getInstant()));
+        String encodedEventPoster = null;
+        try {
+            encodedEventPoster = BitmapConverter.BitmapToCompressedString(event.getEventPoster(), this.stringMaximumLength);
+        } catch (Exception e) {
+            // the image could not be compressed small enough for some reason, so we unfortunately have to upload nothing.
+            // this really should not be possible though
+            encodedEventPoster = null;
+        }
+        eventData.put(DatabaseEventFieldNames.eventPoster.name(), encodedEventPoster);
+        eventData.put(DatabaseEventFieldNames.qrCode.name(), event.getQrCode().getText());
         eventData.put(DatabaseEventFieldNames.capacity.name(), event.getCapacity());
         DocumentReference eventRef = event.getEventReference();
         eventRef.update(eventData);
@@ -239,86 +392,113 @@ public class DatabaseManager { // static class
         }
     }
 
-    public ArrayList<Event> getEvents(Facility facility) throws Exception {
+    /**
+     * Requests to get a Facility's Events from the database.
+     * Once the Events have all been fetched, which is done asynchronously, they wil be returned
+     * via the onEventsFetchListener method.
+     * @param facility
+     * @param onEventsFetchListener
+     */
+    public void getEvents(Facility facility, OnEventsFetchListener onEventsFetchListener) {
+        Thread thread = new Thread(() -> {
+            ArrayList<Event> events = fetchEvents(facility);
+            onEventsFetchListener.onEventsFetch(facility, events);
+        });
+        thread.start();
+    }
+
+    private ArrayList<Event> fetchEvents(Facility facility) {
         DocumentReference facilityRef = facility.getFacilityReference();
         CollectionReference eventCol = facilityRef.collection(DatabaseCollectionNames.events.name());
         ArrayList<Event> events = new ArrayList<>();
-        eventCol.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
-                ArrayList<DocumentReference> eventRefs = new ArrayList<>();
-                if (documentSnapshots.isEmpty()) {
-                    return;
-                }
-                HashMap<String, Object> eventData;
 
-                for (DocumentSnapshot documentSnapshot : documentSnapshots) { // for each event is the collection
-                    eventData = (HashMap<String, Object>) documentSnapshot.getData();
-                    if (eventData == null) {
-                        continue;
-                    }
-                    eventRefs.add(documentSnapshot.getReference());
+        Task<QuerySnapshot> task = eventCol.get();
+        QuerySnapshot queryDocumentSnapshots = null;
+        try {
+            queryDocumentSnapshots = Tasks.await(task);
+        } catch (ExecutionException e) {
+            return events;
+        } catch (InterruptedException e) {
+            return events;
+        }
 
-                    // get event data from document
+        if (queryDocumentSnapshots == null) {
+            return events;
+        }
 
-                    Object nameTemp = eventData.get(DatabaseEventFieldNames.name.name());
-                    if (nameTemp == null) {
-                        throw new EventDoesNotExist("this event was missing the name field");
-                    }
-                    String name = (String) nameTemp;
+        List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+        ArrayList<DocumentReference> eventRefs = new ArrayList<>();
+        if (documentSnapshots.isEmpty()) {
+            return events;
+        }
+        HashMap<String, Object> eventData;
 
-                    Object dateTemp = eventData.get(DatabaseEventFieldNames.date.name());
-                    if (dateTemp == null) {
-                        throw new EventDoesNotExist("this event was missing the date field");
-                    }
-                    Date date = (Date) dateTemp;
-
-                    Object eventPosterTemp = eventData.get(DatabaseEventFieldNames.eventPoster.name());
-                    if (eventPosterTemp == null) {
-                        throw new EventDoesNotExist("this event was missing the eventPoster field");
-                    }
-                    Bitmap eventPoster = (Bitmap) eventPosterTemp;
-
-                    Object qrCodeTemp = eventData.get(DatabaseEventFieldNames.qrCode.name());
-                    if (qrCodeTemp == null) {
-                        throw new EventDoesNotExist("this event was missing the qrCode field");
-                    }
-                    QRCode qrCode = new QRCode((String) qrCodeTemp);
-
-                    Object capacityTemp = eventData.get(DatabaseEventFieldNames.capacity.name());
-                    if (capacityTemp == null) {
-                        throw new EventDoesNotExist("this event was missing the capacity field");
-                    }
-                    Integer capacity = (Integer) capacityTemp;
-
-                    try {
-                        events.add(new Event(name, date, eventPoster, capacity, qrCode, null, eventRefs.get(eventRefs.size()-1)));
-                    }
-                    catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+        for (DocumentSnapshot documentSnapshot : documentSnapshots) { // for each event is the collection
+            eventData = (HashMap<String, Object>) documentSnapshot.getData();
+            if (eventData == null) {
+                continue;
             }
-        });
+            eventRefs.add(documentSnapshot.getReference());
+
+            // get event data from document
+
+            Object nameTemp = eventData.get(DatabaseEventFieldNames.name.name());
+            if (nameTemp == null) {
+                throw new EventDoesNotExist("this event was missing the name field");
+            }
+            String name = (String) nameTemp;
+
+            Object dateTemp = eventData.get(DatabaseEventFieldNames.instant.name());
+            if (dateTemp == null) {
+                throw new EventDoesNotExist("this event was missing the instant field");
+            }
+            Timestamp dateTimestamp = (Timestamp) dateTemp;
+            Instant instant = dateTimestamp.toInstant();
+
+            Object eventPosterTemp = eventData.get(DatabaseEventFieldNames.eventPoster.name());
+            if (eventPosterTemp == null) {
+                throw new EventDoesNotExist("this event was missing the eventPoster field");
+            }
+            String encodedEventPoster = (String) eventPosterTemp;
+            Bitmap eventPoster = BitmapConverter.StringToBitmap(encodedEventPoster);
+
+            Object qrCodeTemp = eventData.get(DatabaseEventFieldNames.qrCode.name());
+            QRCode qrCode = new QRCode((String) qrCodeTemp);
+
+            Object capacityTemp = eventData.get(DatabaseEventFieldNames.capacity.name());
+            Integer capacity = (Integer) capacityTemp;
+
+            try {
+                events.add(new Event(name, instant, eventPoster, capacity, qrCode, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         for (Event event : events) {
-            ArrayList<EntrantStatus> entrantStatuses = this.getEntrantStatuses(event);
-            EntrantPool entrantPool = new EntrantPool();
-            for (EntrantStatus entrantStatus : entrantStatuses) {
-                entrantPool.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
-            }
-            // recreate event with EntrantPool which was previously missing
-            events.remove(event);
-            event = new Event(event.getName(), event.getDate(), event.getEventPoster(), event.getCapacity(), event.getQrCode(), entrantPool, event.getEventReference());
-            events.add(event);
+            this.getEntrantStatuses(event, this);
         }
 
         return events;
     }
 
-    public DocumentReference createEntrantStatus(Event event, EntrantStatus entrantStatus) {
+    @Override
+    public void onEventsFetch(Facility facility, ArrayList<Event> events) {
+        for (Event event : events) {
+            facility.addEvent(event);
+        }
+    }
+
+    /**
+     * Inserts an EntrantStatus into the database.
+     * @param event
+     * @param entrantStatus
+     * @return true on success, false on failure or if either event or entrantStatus was null
+     */
+    public Boolean createEntrantStatus(Event event, EntrantStatus entrantStatus) {
         if (event == null || entrantStatus == null) {
-            return null;
+            return false;
         }
         DocumentReference eventRef = event.getEventReference();
         DocumentReference entrantStatusRef = eventRef.collection(DatabaseCollectionNames.entrantStatuses.name()).document();
@@ -327,12 +507,17 @@ public class DatabaseManager { // static class
         entrantStatusData.put(DatabaseEntrantStatusFieldNames.joinedFrom.name(), entrantStatus.getJoinedFrom());
         entrantStatusData.put(DatabaseEntrantStatusFieldNames.status.name(), entrantStatus.getStatus());
         entrantStatusRef.set(entrantStatusData);
+        entrantStatus.setEntrantStatusReference(entrantStatusRef);
 
-        return entrantStatusRef;
+        return true;
     }
 
+    /**
+     * Updates the information related to an EntrantStatus in the database.
+     * @param entrantStatus
+     */
     public void updateEntrantStatus(EntrantStatus entrantStatus) {
-        if (entrantStatus == null) {
+        if (entrantStatus == null || entrantStatus.getEntrantStatusReference() == null) {
             return;
         }
         HashMap<String, Object> entrantStatusData = new HashMap<>();
@@ -343,58 +528,92 @@ public class DatabaseManager { // static class
         entrantStatusRef.update(entrantStatusData);
     }
 
-    public ArrayList<EntrantStatus> getEntrantStatuses(Event event) {
+    /**
+     * Requests to get an Event's EntrantStatuses from the database.
+     * Once the EntrantStatuses have all been fetched, which is done asynchronously, they will be returned
+     * via the onEntrantStatusesFetchListener method.
+     * @param event
+     * @param onEntrantStatusesFetchListener
+     */
+    public void getEntrantStatuses(Event event, OnEntrantStatusesFetchListener onEntrantStatusesFetchListener) {
+        Thread thread = new Thread(() -> {
+            ArrayList<EntrantStatus> entrantStatuses = fetchEntrantStatuses(event);
+            onEntrantStatusesFetchListener.onEntrantStatusesFetch(event, entrantStatuses);
+        });
+        thread.start();
+    }
+
+    private ArrayList<EntrantStatus> fetchEntrantStatuses(Event event) {
         DocumentReference eventRef = event.getEventReference();
         CollectionReference entrantStatusCol = eventRef.collection(DatabaseCollectionNames.entrantStatuses.name());
         ArrayList<EntrantStatus> entrantStatuses = new ArrayList<>();
-        entrantStatusCol.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
-                ArrayList<DocumentReference> entrantStatusRefs = new ArrayList<>();
-                if (documentSnapshots.isEmpty()) {
-                    return;
-                }
-                HashMap<String, Object> entrantStatusData;
 
-                for (DocumentSnapshot documentSnapshot : documentSnapshots) { // for each entrantStatus in collection
-                    entrantStatusData = (HashMap<String, Object>) documentSnapshot.getData();
-                    if (entrantStatusData == null) {
-                        continue;
-                    }
-                    entrantStatusRefs.add(documentSnapshot.getReference());
+        Task<QuerySnapshot> task = entrantStatusCol.get();
+        QuerySnapshot queryDocumentSnapshots = null;
+        try {
+            queryDocumentSnapshots = Tasks.await(task);
+        } catch (ExecutionException e) {
+            return entrantStatuses;
+        } catch (InterruptedException e) {
+            return entrantStatuses;
+        }
 
-                    // get entrantStatus data from document
+        if (queryDocumentSnapshots == null) {
+            return entrantStatuses;
+        }
 
-                    Object entrantIDTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.entrantID.name());
-                    if (entrantIDTemp == null) {
-                        throw new EntrantStatusDoesNotExist("this entrantstatus was missing the entrantID field");
-                    }
-                    String entrantID = (String) entrantIDTemp;
+        List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+        ArrayList<DocumentReference> entrantStatusRefs = new ArrayList<>();
+        if (documentSnapshots.isEmpty()) {
+            return entrantStatuses;
+        }
+        HashMap<String, Object> entrantStatusData;
 
-                    Object joinedFromTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.joinedFrom.name());
-                    if (joinedFromTemp == null) {
-                        throw new EntrantStatusDoesNotExist("this entrantstatus was missing the joinedFrom field");
-                    }
-                    LatLng joinedFrom = (LatLng) joinedFromTemp;
-
-                    Object statusTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.status.name());
-                    if (statusTemp == null) {
-                        throw new EntrantStatusDoesNotExist("this entrantstatus was missing the status field");
-                    }
-                    Status status = (Status) statusTemp;
-
-                    try {
-                        User entrant = null; // FIXME should I get user?...
-                        entrantStatuses.add(new EntrantStatus(entrant, joinedFrom, status, entrantStatusRefs.get(entrantStatusRefs.size()-1)));
-                    }
-                    catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+        for (DocumentSnapshot documentSnapshot : documentSnapshots) { // for each entrantStatus in collection
+            entrantStatusData = (HashMap<String, Object>) documentSnapshot.getData();
+            if (entrantStatusData == null) {
+                continue;
             }
-        });
+            entrantStatusRefs.add(documentSnapshot.getReference());
+
+            // get entrantStatus data from document
+
+            Object entrantIDTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.entrantID.name());
+            if (entrantIDTemp == null) {
+                throw new EntrantStatusDoesNotExist("this entrantstatus was missing the entrantID field");
+            }
+            String entrantID = (String) entrantIDTemp;
+
+            Object joinedFromTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.joinedFrom.name());
+            if (joinedFromTemp == null) {
+                throw new EntrantStatusDoesNotExist("this entrantstatus was missing the joinedFrom field");
+            }
+            HashMap<String, Double> joinedFromMap = (HashMap<String, Double>) joinedFromTemp;
+            LatLng joinedFrom = new LatLng(joinedFromMap.get("latitude"), joinedFromMap.get("longitude"));
+
+            Object statusTemp = entrantStatusData.get(DatabaseEntrantStatusFieldNames.status.name());
+            if (statusTemp == null) {
+                throw new EntrantStatusDoesNotExist("this entrantstatus was missing the status field");
+            }
+            String statusString = (String) statusTemp;
+            Status status = Status.valueOf(statusString);
+
+            try {
+                User entrant = fetchUser(entrantID);
+                entrantStatuses.add(new EntrantStatus(entrant, joinedFrom, status, entrantStatusRefs.get(entrantStatusRefs.size()-1)));
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         return entrantStatuses;
+    }
+
+    @Override
+    public void onEntrantStatusesFetch(Event event, ArrayList<EntrantStatus> entrantStatuses) {
+        for (EntrantStatus entrantStatus : entrantStatuses) {
+            event.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
+        }
     }
 }
