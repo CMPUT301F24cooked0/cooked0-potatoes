@@ -199,6 +199,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         HashMap<String, Object> facilityData = new HashMap<>();
         facilityData.put(DatabaseFacilityFieldNames.name.name(), facility.getName());
         facilityData.put(DatabaseFacilityFieldNames.location.name(), facility.getLocation());
+        facilityData.put(DatabaseFacilityFieldNames.address.name(), facility.getAddress());
         facilityRef.set(facilityData);
         facility.setFacilityReference(facilityRef);
         for (Event event : facility.getEvents()) {
@@ -220,6 +221,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         HashMap<String, Object> facilityData = new HashMap<>();
         facilityData.put(DatabaseFacilityFieldNames.name.name(), facility.getName());
         facilityData.put(DatabaseFacilityFieldNames.location.name(), facility.getLocation());
+        facilityData.put(DatabaseFacilityFieldNames.address.name(), facility.getAddress());
         DocumentReference facilityRef = facility.getFacilityReference();
         facilityRef.update(facilityData);
         for (Event event : facility.getEvents()) {
@@ -287,8 +289,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         HashMap<String, Double> locationMap = (HashMap<String, Double>) locationTemp;
         LatLng location = new LatLng(locationMap.get("latitude"), locationMap.get("longitude"));
 
+        Object addressTemp = facilityData.get(DatabaseFacilityFieldNames.name.name());
+        String address = (String) addressTemp;
+
         try {
-            facility = new Facility(name, location, facilityRef, new ArrayList<Event>());
+            facility = new Facility(name, location, address, facilityRef, new ArrayList<Event>());
         }
         catch (Exception e) {
             facility = null;
