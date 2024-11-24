@@ -19,7 +19,7 @@ public class EntrantStatus {
      * @param entrant
      * @param joinedFrom
      */
-    public EntrantStatus(User entrant, LatLng joinedFrom) {
+    public EntrantStatus(User entrant, LatLng joinedFrom) { // FIXME assert that entrant is not null!
         this.entrant = entrant;
         this.joinedFrom = joinedFrom;
         this.setStatus(Status.none); // starting status is none (no draw has occurred yet)
