@@ -70,7 +70,13 @@ public class FacilityCreationFragment extends Fragment {
             Toast.makeText(this.requireContext(), "Invalid address", Toast.LENGTH_SHORT).show();
             return;
         }
-        facility = new Facility(facilityName, facilityAddress);
+        // create facility object
+        try {
+            facility = new Facility(facilityName, facilityAddress, facilityAddressStr);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        ;
         // user.setFacility(facility);
         // add facility to database and set facility document reference
         // facility.setFacilityReference(databaseManager.createFacility(facilityOwner, facility));
