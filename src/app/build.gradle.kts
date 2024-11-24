@@ -44,4 +44,5 @@ dependencies {
     testImplementation(libs.mockito.core)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation(libs.qr.generator)
 }
