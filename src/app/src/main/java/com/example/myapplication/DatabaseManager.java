@@ -631,17 +631,18 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         notificationData.put(DatabaseNotificationFieldNames.userID.name(), notification.getUserID());
         notificationData.put(DatabaseNotificationFieldNames.notificationText.name(), notification.getNotificationText());
         notificationData.put(DatabaseNotificationFieldNames.instantPosted.name(), new Timestamp(instantPosted));
+        notificationData.put(DatabaseNotificationFieldNames.read.name(), false);
         DocumentReference notificationRef = this.db.collection(DatabaseCollectionNames.notifications.name()).document();
         notificationRef.set(notificationData);
 
         return true;
     }
 
-    public void getNotifications(String userID, OnNotificationFetchListener onNotificationFetchListener) {
+    public void getUnreadNotifications(String userID, OnNotificationFetchListener onNotificationFetchListener) {
         Thread thread = new Thread(() -> {
             ArrayList<Notification> notifications = null;
             try {
-                notifications = fetchNotifications(userID);
+                notifications = fetchUnreadNotifications(userID);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -650,7 +651,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         thread.start();
     }
 
-    private ArrayList<Notification> fetchNotifications(String userID) throws Exception {
+    private ArrayList<Notification> fetchUnreadNotifications(String userID) throws Exception {
         CollectionReference notificationCol = this.db.collection(DatabaseCollectionNames.notifications.name());
         ArrayList<Notification> notifications = new ArrayList<>();
 
@@ -679,6 +680,15 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
                 continue;
             }
 
+            Object readTemp = notificationData.get(DatabaseNotificationFieldNames.read.name());
+            if (readTemp == null) {
+                throw new Exception("Notification in database has no read status associated with it, fix underlying cause!");
+            }
+            Boolean read = (Boolean) readTemp;
+            if (read) {
+                continue; // skip this notification as it has already been read
+            }
+
             Object userIdTemp = notificationData.get(DatabaseNotificationFieldNames.userID.name());
             if (userIdTemp == null) {
                 throw new Exception("Notification in database had no userID associated with it, fix underlying cause!");
@@ -702,6 +712,12 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             Instant instantPosted = instantPostedTimestamp.toInstant();
 
             notifications.add(new Notification(userID, notificationText, instantPosted));
+
+            // mark notification as read in the database
+            DocumentReference notificationRef = documentSnapshot.getReference();
+            HashMap<String, Object> newData = new HashMap<>();
+            newData.put(DatabaseNotificationFieldNames.read.name(), true);
+            notificationRef.update(newData);
         }
 
         return notifications;
