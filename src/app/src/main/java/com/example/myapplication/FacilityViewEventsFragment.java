@@ -27,7 +27,7 @@ public class FacilityViewEventsFragment extends Fragment {
     TextView facilityLink;
     ListView eventList;
     EventArrayAdapter eventAdapter;
-//    Facility facility;
+    Facility facility;
     FloatingActionButton addEventButton;
 
     @Override
@@ -46,9 +46,9 @@ public class FacilityViewEventsFragment extends Fragment {
         facilityLink = view.findViewById(R.id.editFacilityLink);
         eventList = view.findViewById(R.id.eventList);
         addEventButton = view.findViewById(R.id.addBtn);
-//        eventAdapter = new EventArrayAdapter(this, facility.getEvents());
+        eventAdapter = new EventArrayAdapter(requireContext(), facility.getEvents());
         eventList.setAdapter(eventAdapter);
-//        facilityName.setText(facility.getName());
+        facilityName.setText(facility.getName());
         addEventButton.setOnClickListener(this::onClickAddEvent);
 //        facilityLink.setOnClickListener(this::onClickEditFacility);
         eventList.setOnItemClickListener((parent, v, position, id) -> {
