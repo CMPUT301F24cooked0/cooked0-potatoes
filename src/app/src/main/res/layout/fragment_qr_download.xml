@@ -16,6 +16,7 @@
         android:background="@drawable/qr_code_background"
         android:cropToPadding="true"
         android:elevation="10dp"
+        android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
