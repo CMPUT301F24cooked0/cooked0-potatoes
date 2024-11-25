@@ -24,6 +24,7 @@ import kotlin.annotation.Target;
 public class QRScannerFragment extends Fragment {
     View view;
     Button scanBtn;
+    String eventPath;
 
 
     @Override
