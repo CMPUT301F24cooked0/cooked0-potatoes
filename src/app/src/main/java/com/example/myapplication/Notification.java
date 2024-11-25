@@ -60,14 +60,26 @@ public class Notification {
         this.userID = userID;
     }
 
+    /**
+     * gets the Instant that the notification was posted
+     * @return
+     */
     public Instant getInstantPosted() {
         return this.instantPosted;
     }
 
+    /**
+     * gets the notification text
+     * @return
+     */
     public String getNotificationText() {
         return this.notificationText;
     }
 
+    /**
+     * gets the user ID for the User to which the notification is being sent to
+     * @return
+     */
     public String getUserID() {
         return this.userID;
     }

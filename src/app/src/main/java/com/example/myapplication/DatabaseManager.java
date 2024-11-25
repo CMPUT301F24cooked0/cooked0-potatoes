@@ -638,6 +638,14 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         return true;
     }
 
+    /**
+     * Requests to get a User's unread notifications from the database.
+     * Once the notifications have all been fetched, which is done asynchronously, they will be returned
+     * via the onNotificationFetchListener method.
+     * Notifications are automatically marked as read in the database as soon as they are fetched.
+     * @param userID
+     * @param onNotificationFetchListener
+     */
     public void getUnreadNotifications(String userID, OnNotificationFetchListener onNotificationFetchListener) {
         Thread thread = new Thread(() -> {
             ArrayList<Notification> notifications = null;
