@@ -15,6 +15,7 @@ import android.view.ViewGroup;
  */
 public class ViewEventDetailsFragment extends Fragment {
     View view;
+    String eventPath;
 
 
     @Override
@@ -28,5 +29,8 @@ public class ViewEventDetailsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        eventPath = (String) getArguments().get("eventPath");
+
+
     }
 }

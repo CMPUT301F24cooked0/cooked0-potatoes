@@ -6,6 +6,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +26,6 @@ import kotlin.annotation.Target;
 public class QRScannerFragment extends Fragment {
     View view;
     Button scanBtn;
-    String eventPath;
 
 
     @Override
@@ -45,13 +46,22 @@ public class QRScannerFragment extends Fragment {
     public void onClickScan(View view) {
         ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(),
                 result -> {
-                    if (result.getContents() == null) { // TODO handle other qr code texts (not in our database oath format
+                    if (result.getContents() == null) { // TODO handle other qr code texts (not in our database path format)
                         Toast.makeText(requireContext(), "Unable to get event details", Toast.LENGTH_LONG).show();
                     } else {
-                        // TODO get event using qr text and set up fragment transaction to show event details/signup
+                        // pass event path to view event details fragment to populate fragment
+                        FragmentManager fragmentManager = getParentFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        ViewEventDetailsFragment viewEventDetailsFragment = new ViewEventDetailsFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("eventPath", result.getContents());
+                        viewEventDetailsFragment.setArguments(bundle);
+                        fragmentTransaction.replace(R.id.fragment_container, viewEventDetailsFragment);
+                        fragmentTransaction.commit();
+
                     }
                 });
-        barcodeLauncher.launch(new ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setPrompt("Scan a QR code")); // launch QR scanner
+        barcodeLauncher.launch(new ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setPrompt("Scan Event QR code")); // launch QR scanner
 
     }
 }
