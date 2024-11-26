@@ -10,8 +10,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -615,5 +617,117 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         for (EntrantStatus entrantStatus : entrantStatuses) {
             event.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
         }
+    }
+
+    /**
+     * Creates a new notification for the user with userID in the database.
+     * This will be received by the user at some later time.
+     * @param notification
+     * @return true on success, false on failure or if either userID or notificationText is null
+     */
+    public Boolean createNotification(Notification notification) {
+        Instant instantPosted = notification.getInstantPosted();
+        HashMap<String, Object> notificationData = new HashMap<>();
+        notificationData.put(DatabaseNotificationFieldNames.userID.name(), notification.getUserID());
+        notificationData.put(DatabaseNotificationFieldNames.notificationText.name(), notification.getNotificationText());
+        notificationData.put(DatabaseNotificationFieldNames.instantPosted.name(), new Timestamp(instantPosted));
+        notificationData.put(DatabaseNotificationFieldNames.read.name(), false);
+        DocumentReference notificationRef = this.db.collection(DatabaseCollectionNames.notifications.name()).document();
+        notificationRef.set(notificationData);
+
+        return true;
+    }
+
+    /**
+     * Requests to get a User's unread notifications from the database.
+     * Once the notifications have all been fetched, which is done asynchronously, they will be returned
+     * via the onNotificationFetchListener method.
+     * Notifications are automatically marked as read in the database as soon as they are fetched.
+     * @param userID
+     * @param onNotificationFetchListener
+     */
+    public void getUnreadNotifications(String userID, OnNotificationFetchListener onNotificationFetchListener) {
+        Thread thread = new Thread(() -> {
+            ArrayList<Notification> notifications = null;
+            try {
+                notifications = fetchUnreadNotifications(userID);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            onNotificationFetchListener.onNotificationFetch(notifications);
+        });
+        thread.start();
+    }
+
+    private ArrayList<Notification> fetchUnreadNotifications(String userID) throws Exception {
+        CollectionReference notificationCol = this.db.collection(DatabaseCollectionNames.notifications.name());
+        ArrayList<Notification> notifications = new ArrayList<>();
+
+        Task<QuerySnapshot> task = notificationCol.get();
+        QuerySnapshot queryDocumentSnapshots = null;
+        try {
+            queryDocumentSnapshots = Tasks.await(task);
+        } catch (ExecutionException e) {
+            return null;
+        } catch (InterruptedException e) {
+            return null;
+        }
+
+        if (queryDocumentSnapshots == null) {
+            return null;
+        }
+        List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+        if (documentSnapshots.isEmpty()) {
+            return null;
+        }
+        HashMap<String, Object> notificationData;
+
+        for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+            notificationData = (HashMap<String, Object>) documentSnapshot.getData();
+            if (notificationData == null) {
+                continue;
+            }
+
+            Object readTemp = notificationData.get(DatabaseNotificationFieldNames.read.name());
+            if (readTemp == null) {
+                throw new Exception("Notification in database has no read status associated with it, fix underlying cause!");
+            }
+            Boolean read = (Boolean) readTemp;
+            if (read) {
+                continue; // skip this notification as it has already been read
+            }
+
+            Object userIdTemp = notificationData.get(DatabaseNotificationFieldNames.userID.name());
+            if (userIdTemp == null) {
+                throw new Exception("Notification in database had no userID associated with it, fix underlying cause!");
+            }
+            String fetchedUserID = (String) userIdTemp;
+            if (!fetchedUserID.equals(userID)) {
+                continue; // no need to fetch this notification as it isn't for this user
+            }
+
+            Object notificationTextTemp = notificationData.get(DatabaseNotificationFieldNames.notificationText.name());
+            if (notificationTextTemp == null) {
+                throw new Exception("Notification in database had no notificationText associated with it, fix underlying cause!");
+            }
+            String notificationText = (String) notificationTextTemp;
+
+            Object instantPostedTemp = notificationData.get(DatabaseNotificationFieldNames.instantPosted.name());
+            if (instantPostedTemp == null) {
+                throw new Exception("Notification in database had no instantPosted associated with it, fix underlying cause!");
+            }
+            Timestamp instantPostedTimestamp = (Timestamp) instantPostedTemp;
+            Instant instantPosted = instantPostedTimestamp.toInstant();
+
+            notifications.add(new Notification(userID, notificationText, instantPosted));
+
+            // mark notification as read in the database
+            DocumentReference notificationRef = documentSnapshot.getReference();
+            HashMap<String, Object> newData = new HashMap<>();
+            newData.put(DatabaseNotificationFieldNames.read.name(), true);
+            notificationRef.update(newData);
+        }
+
+        return notifications;
     }
 }
