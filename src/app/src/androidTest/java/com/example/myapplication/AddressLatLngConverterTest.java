@@ -1,5 +1,8 @@
 package com.example.myapplication;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 import android.content.Context;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -15,9 +18,8 @@ public class AddressLatLngConverterTest {
         LatLng correctLatLng = new LatLng(40.7627197, -73.97391309999999);
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         LatLng convertedAddress = AddressLatLngConverter.AddressStrToLatLng(addressStr, context);
-        assert convertedAddress != null;
-        assert convertedAddress.latitude == correctLatLng.latitude;
-        assert convertedAddress.longitude == correctLatLng.longitude;
+        assertEquals(correctLatLng.latitude, convertedAddress.latitude, 0.0001);
+        assertEquals(correctLatLng.longitude, convertedAddress.longitude, 0.0001);
 
     }
     @Test
@@ -25,6 +27,6 @@ public class AddressLatLngConverterTest {
         String addressStr = "this address does not exist";
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         LatLng convertedAddress = AddressLatLngConverter.AddressStrToLatLng(addressStr, context);
-        assert convertedAddress == null;
+        assertEquals(convertedAddress, null);
     }
 }
