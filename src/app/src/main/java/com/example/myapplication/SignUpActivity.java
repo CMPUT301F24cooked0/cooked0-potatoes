@@ -27,7 +27,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.io.ByteArrayOutputStream;
 
-
+/**
+ * This class is used currently as an Activity for the User to sign up by adding details of their profile.
+ * @author Daniyal Abbass, Ishaan Chandel
+ * @version 1.0
+ */
 public class SignUpActivity extends AppCompatActivity {
     private EditText nameEditText, emailEditText, phoneEditText;
     private ImageView profileImageView;
@@ -39,7 +43,7 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.sign_up_fragment);
+        setContentView(R.layout.activity_sign_up);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -81,6 +85,10 @@ public class SignUpActivity extends AppCompatActivity {
         signupButton.setOnClickListener(view -> saveUserDetails());
     }
 
+    /**
+     * Saves the user details to SharedPreferences.
+     * @author Daniyal Abbas
+     */
     private void saveUserDetails() {
         String name = nameEditText.getText().toString();
         String email = emailEditText.getText().toString();
@@ -117,10 +125,16 @@ public class SignUpActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * Generates a profile image based on the first letter of the user's name.
+     * @author Daniyal Abbas
+     * @param name - String storing name of the user to perform profile picture generation with
+     * @return
+     */
     private Bitmap generateProfileImage(String name) {
-        String firstNameInitial = name.length() > 0 ? name.substring(0, 1).toUpperCase() : "A";
+        String firstNameInitial = !name.isEmpty() ? name.substring(0, 1).toUpperCase() : "A";
 
-        int size = 200;
+        int size = 1024;
         Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
@@ -131,7 +145,7 @@ public class SignUpActivity extends AppCompatActivity {
         canvas.drawCircle(size / 2, size / 2, size / 2, paint);
 
         paint.setColor(Color.WHITE);
-        paint.setTextSize(100);
+        paint.setTextSize(size/2);
         paint.setTextAlign(Paint.Align.CENTER);
 
         Rect textBounds = new Rect();

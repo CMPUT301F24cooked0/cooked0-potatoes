@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@drawable/gradient_color_bg"
-    tools:context=".WelcomeFragment">
+    tools:context=".WelcomeActivity">
 
 
     <TextView
