@@ -6,7 +6,6 @@ import android.location.Geocoder;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -14,6 +13,7 @@ public class AddressLatLngConverter {
     /**
      * Converts an address String to a LatLng.
      * @param addressStr - String representing the address to convert
+     * @param context - Context of the application
      * @return LatLng representing the location of the address, or null if the address could not be converted
      */
     public static LatLng AddressStrToLatLng(String addressStr, Context context)  {
