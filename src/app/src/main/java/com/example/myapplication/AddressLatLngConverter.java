@@ -12,8 +12,8 @@ import java.util.List;
 public class AddressLatLngConverter {
     /**
      * Converts an address String to a LatLng.
-     * @param addressStr
-     * @return
+     * @param addressStr - String representing the address to convert
+     * @return LatLng representing the location
      */
     public static LatLng AddressStrToLatLng(String addressStr, Context context) throws IOException {
         Geocoder geocoder = new Geocoder(context);
