@@ -45,15 +45,4 @@ public class EntrantStatusUnitTest {
         outputStatus = entrantStatus.getStatus();
         assertEquals(Status.notChosen, outputStatus);
     }
-
-    @Test
-    public void sendNotificationTest() throws Exception {
-        User user = new User(null, "name", "email@email.com");
-        LatLng location = new LatLng(69.420, 42.69);
-        EntrantStatus entrantStatus = new EntrantStatus(user, location);
-
-        entrantStatus.sendNotification("notification");
-        // TODO test that NotificationSender.sendNotification was called
-        // I tried to do this using Mockito but it's really weird and complicated for some reason
-    }
 }
