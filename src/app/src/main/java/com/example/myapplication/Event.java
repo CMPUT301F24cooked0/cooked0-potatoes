@@ -20,6 +20,7 @@ public class Event {
     private QRCode qrCode;
     private final EntrantPool entrantPool;
     private DocumentReference eventRef;
+    private String details; // Add this field
 
     /***
      * Base constructor to consolidate code used by other constructors
@@ -257,5 +258,14 @@ public class Event {
      */
     public DocumentReference getEventReference() {
         return this.eventRef; // return reference to event in database
+    }
+
+    // Getter and setter for details
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
     }
 }
