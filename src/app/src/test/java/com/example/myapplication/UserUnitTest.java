@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import android.graphics.Bitmap;
@@ -16,27 +15,27 @@ import org.junit.Test;
 public class UserUnitTest {
     @Test
     public void firstConstructorTest() throws Exception {
-        User user = new User("name", "email@email.ca");
+        User user = new User(null, "name", "email@email.ca");
     }
 
     @Test
     public void secondConstructorTest() throws Exception {
-        User user = new User("name", "email@email.ca", 7801234567L);
+        User user = new User(null, "name", "email@email.ca", 7801234567L);
     }
 
     @Test
     public void thirdConstructorTest() throws Exception {
-        User user = new User("name", "email@email.ca", (Bitmap) null);
+        User user = new User(null, "name", "email@email.ca", (Bitmap) null);
     }
 
     @Test
     public void fourthConstructorTest() throws Exception {
-        User user = new User("name", "email@email.ca", 7801234567L, (Bitmap) null);
+        User user = new User(null, "name", "email@email.ca", 7801234567L, (Bitmap) null);
     }
 
     @Test
     public void setGetNameTest() throws Exception {
-        User user = new User("name", "email@email.ca");
+        User user = new User(null, "name", "email@email.ca");
         String newName = "newName";
         assertNotEquals(user.getName(), newName);
         user.setName(newName);
@@ -46,7 +45,7 @@ public class UserUnitTest {
 
     @Test
     public void setGetEmailTest() throws Exception {
-        User user = new User("name", "email@email.ca");
+        User user = new User(null, "name", "email@email.ca");
         String newEmail = "newEmail@email.ca";
         assertNotEquals(user.getEmail(), newEmail);
         user.setEmail(newEmail);
@@ -56,7 +55,7 @@ public class UserUnitTest {
 
     @Test
     public void setGetPhoneNumber() throws Exception {
-        User user = new User("name", "email@email.ca");
+        User user = new User(null, "name", "email@email.ca");
         Long phoneNumber = 7801234567L;
         assertNotEquals(user.getPhoneNumber(), phoneNumber);
         user.setPhoneNumber(phoneNumber);
@@ -71,7 +70,7 @@ public class UserUnitTest {
 
     @Test
     public void deleteProfilePictureTest() throws Exception {
-        User user = new User("name", "email@email.ca");
+        User user = new User(null, "name", "email@email.ca");
         assertNull(user.getProfilePicture());
         user.deleteProfilePicture();
         assertNull(user.getProfilePicture());
@@ -79,20 +78,22 @@ public class UserUnitTest {
 
     @Test
     public void setGetFacilityTest() throws Exception {
-        User user = new User("name", "email@email.ca");
+        User user = new User(null, "name", "email@email.ca");
         assertNull(user.getFacility());
         LatLng location = new LatLng(42.69, 69.42);
-        Facility facility = new Facility("name", location);
+        String address = "address";
+        Facility facility = new Facility("name", location, address);
         user.setFacility(facility);
         assertEquals(user.getFacility(), facility);
     }
 
     @Test
     public void deleteFacilityTest() throws Exception {
-        User user = new User("name", "email@email.ca");
+        User user = new User(null, "name", "email@email.ca");
         assertNull(user.getFacility());
         LatLng location = new LatLng(42.69, 69.42);
-        Facility facility = new Facility("name", location);
+        String address = "address";
+        Facility facility = new Facility("name", location, address);
         user.setFacility(facility);
         assertEquals(user.getFacility(), facility);
         user.deleteFacility();
@@ -101,7 +102,7 @@ public class UserUnitTest {
 
     @Test
     public void setGetReceivesOrgAdmNotificationsTest() throws Exception {
-        User user = new User("name", "email@email.ca");
+        User user = new User(null, "name", "email@email.ca");
         assertTrue(user.getReceivesOrgAdmNotifications());
         user.setReceivesOrgAdmNotifications(false);
         assertFalse(user.getReceivesOrgAdmNotifications());
@@ -109,16 +110,17 @@ public class UserUnitTest {
 
     @Test
     public void defaultIsAdminTest() throws Exception {
-        User user = new User("name", "email@email.ca");
+        User user = new User(null, "name", "email@email.ca");
         assertFalse(user.isAdmin());
     }
 
     @Test
     public void isOrganizerTest() throws Exception {
-        User user = new User("name", "email@email.ca");
+        User user = new User(null, "name", "email@email.ca");
         assertFalse(user.isOrganizer());
         LatLng location = new LatLng(42.69, 69.42);
-        Facility facility = new Facility("name", location);
+        String address = "address";
+        Facility facility = new Facility("name", location, address);
         user.setFacility(facility);
         assertTrue(user.isOrganizer());
     }

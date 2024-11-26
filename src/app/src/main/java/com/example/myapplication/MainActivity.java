@@ -25,7 +25,8 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.myapplication.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity implements OnUserFetchListener {
 
     private ActivityMainBinding binding;
 
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView profileImageView;
     private Button signOut;
     private ImageButton editUserInfo;
+    private User user;
 
 
 
@@ -76,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
             decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             profileImageView.setImageBitmap(decodedByte);
         }
-
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,4 +108,14 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+
+    @Override
+    public void onUserFetch(User user) {
+        if (user == null) {
+            new DatabaseManager().createUser(this.user);
+        }
+        else {
+            this.user = user;
+        }
+    }
 }

@@ -6,12 +6,17 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
+/*This class is responsible for adding and removing an entrant who has joined the waiting list
+as well as check their status to see if they are in the database.
+ */
 public class EntrantPool {
     private ArrayList<EntrantStatus> entrants;
 
+    /**
+     * EntrantPool constructor, no users in the pool by default
+     */
     public EntrantPool() {
         this.entrants = new ArrayList<EntrantStatus>();
-        // TODO update database
     }
 
     /**
@@ -32,6 +37,12 @@ public class EntrantPool {
         return null;
     }
 
+    /**
+     * add an entrant to the pool with default status "none"
+     * @param entrant
+     * @param joinedFrom
+     * @throws EntrantAlreadyInPool
+     */
     public void addEntrant(User entrant, LatLng joinedFrom) throws EntrantAlreadyInPool {
         if (entrant == null) {
             return;
@@ -43,9 +54,32 @@ public class EntrantPool {
         // joinedFrom can be null though
         EntrantStatus entrantStatus = new EntrantStatus(entrant, joinedFrom);
         this.entrants.add(entrantStatus);
-        // TODO update database
     }
 
+    /**
+     * add an entrant to the pool with a different status than the default
+     * @param entrant
+     * @param joinedFrom
+     * @param status
+     * @throws EntrantAlreadyInPool
+     */
+    public void addEntrant(User entrant, LatLng joinedFrom, Status status) throws EntrantAlreadyInPool {
+        if (entrant == null) {
+            return;
+        }
+        if (findEntrant(entrant) != null) {
+            // entrant is already in this pool, they cannot be added again
+            throw new EntrantAlreadyInPool("entrant cannot be added to pool that they are already in");
+        }
+        // joinedFrom can be null though
+        EntrantStatus entrantStatus = new EntrantStatus(entrant, joinedFrom, status);
+        this.entrants.add(entrantStatus);
+    }
+
+    /**
+     * remove an entrant from the pool
+     * @param entrant
+     */
     public void removeEntrant(User entrant) {
         if (entrant == null) {
             return; // nothing to do here
@@ -55,9 +89,13 @@ public class EntrantPool {
             return; // no entrant to remove
         }
         this.entrants.remove(entrantStatus);
-        // TODO update database
     }
 
+    /**
+     * set an entrant's status, if they are not in the pool, nothing happens
+     * @param entrant
+     * @param status
+     */
     public void setEntrantStatus(User entrant, Status status) {
         if (entrant == null) {
             return;
@@ -67,9 +105,12 @@ public class EntrantPool {
             return; // no entrant to change status of
         }
         entrantStatus.setStatus(status);
-        // TODO update database
     }
 
+    /**
+     * get a list of the entrants in the pool
+     * @return
+     */
     public ArrayList<User> getEntrants() {
         ArrayList<User> entrants = new ArrayList<User>();
         // add entrants from each entrant status into list
@@ -79,14 +120,22 @@ public class EntrantPool {
         return entrants;
     }
 
+    /**
+     * get a list of the EntrantStatuses in the pool
+     * @return
+     */
     public ArrayList<EntrantStatus> getEntrantStatuses() {
         return this.entrants;
     }
 
+    /**
+     * draw a number of entrants from the pool and return that list
+     * @param howMany
+     * @return
+     */
     public ArrayList<User> drawEntrants(int howMany) {
         // TODO implement this method
         // don't forget to update their statuses when drawing!
         return new ArrayList<User>(); // temporary
-        // TODO update database
     }
 }
