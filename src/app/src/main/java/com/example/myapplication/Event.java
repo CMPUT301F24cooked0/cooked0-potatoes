@@ -22,7 +22,8 @@ public class Event {
     private DocumentReference eventRef;
 
     /***
-     * Base constructor to consolidate code used by other constructors
+     * Base constructor to consolidate code used by other constructors.
+     * Note that this sets QRCode's text to null, but it should be set as soon as it is known
      * @param name
      * @param instant
      * @param eventPoster
@@ -32,14 +33,15 @@ public class Event {
         this.setName(name);
         this.setInstant(instant);
         this.setEventPoster(eventPoster);
-        this.qrCode = new QRCode(); // TODO auto-generate text for QR code?
+        this.qrCode = new QRCode();
         this.setQrCode(qrCode);
         this.entrantPool = new EntrantPool();
         this.setCapacity(null);
     }
 
     /**
-     * create an event with a capacity
+     * create an event with a capacity.
+     * Note that this sets QRCode's text to null, but it should be set as soon as it is known
      * @param capacity
     */
     public Event(String name, Instant instant, Bitmap eventPoster, Integer capacity) throws Exception {
@@ -68,8 +70,8 @@ public class Event {
     }
 
     /**
-     * invalidate the current QR code for this event. This sets the QR code text to null and updates the database
-     * which means that any future scans of the QR code will point to nothing, since it is no longer in the database
+     * invalidate the current QR code for this event. This sets the QR code text to null.
+     * This Event needs to be updated in the database after this
      */
     public void invalidateQRCode() {
         this.qrCode.setText(null);
@@ -147,7 +149,8 @@ public class Event {
     }
 
     /**
-     * set this event's QR code, throws an exception if null
+     * set this event's QR code, throws an exception if null.
+     * If this Event has no QR code, set QRCode text to null, but still provide a QRCode object
      * @param qrCode
      * @throws Exception
      */
