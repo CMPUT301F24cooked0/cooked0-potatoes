@@ -102,8 +102,9 @@ public class QRScannerFragment extends Fragment {
                 } else {
                     String eventName = (String) nameTemp;
                     Instant eventDate = (Instant) dateTemp;
-                    Bitmap eventPoster = (Bitmap) eventPosterTemp;
-                    int capacity = (int) capacityTemp;
+                    String encodedEventPoster = (String) eventPosterTemp;
+                    Bitmap eventPoster = BitmapConverter.StringToBitmap(encodedEventPoster);
+                    Integer capacity = (Integer) capacityTemp;
                     try {
                         return new Event(eventName, eventDate, eventPoster, capacity); // create event object
                     } catch (Exception e) {
