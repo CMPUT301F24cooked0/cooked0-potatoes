@@ -1,7 +1,5 @@
 package com.example.myapplication;
 
-import androidx.fragment.app.Fragment;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.DocumentReference;
 
