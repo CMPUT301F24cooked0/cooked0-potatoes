@@ -65,4 +65,16 @@ public class BitmapConverter {
 
         return encodedImage;
     }
+
+    /**
+     * Scales down a Bitmap to half of the resolution on each axis, for a total of 1/4 the pixels
+     */
+    public static Bitmap ScaledDownBitmap(Bitmap imageBitmap) {
+        int scalingFactor = 2;
+        int width = imageBitmap.getWidth();
+        int height = imageBitmap.getHeight();
+        Bitmap compressedImageBitmap = Bitmap.createScaledBitmap(imageBitmap, width/scalingFactor, height/scalingFactor, true);
+
+        return compressedImageBitmap;
+    }
 }
