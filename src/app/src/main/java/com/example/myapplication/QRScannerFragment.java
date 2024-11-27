@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -15,10 +16,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-import kotlin.annotation.Target;
+import java.time.Instant;
+import java.util.HashMap;
+
 
 /**
  * This fragment allows the user to scan a QR code that links to an event.
@@ -26,6 +31,10 @@ import kotlin.annotation.Target;
 public class QRScannerFragment extends Fragment {
     View view;
     Button scanBtn;
+    Event eventToView;
+    FirebaseFirestore db;
+    DocumentReference eventRef;
+    HashMap<String, Object> eventData;
 
 
     @Override
@@ -47,21 +56,63 @@ public class QRScannerFragment extends Fragment {
         ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(),
                 result -> {
                     if (result.getContents() == null) { // TODO handle other qr code texts (not in our database path format)
-                        Toast.makeText(requireContext(), "Unable to get event details", Toast.LENGTH_LONG).show();
+                        Toast.makeText(requireContext(), "QR code contents cannot be read", Toast.LENGTH_LONG).show();
                     } else {
-                        // pass event path to view event details fragment to populate fragment
-                        FragmentManager fragmentManager = getParentFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        ViewEventDetailsFragment viewEventDetailsFragment = new ViewEventDetailsFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("eventPath", result.getContents());
-                        viewEventDetailsFragment.setArguments(bundle);
-                        fragmentTransaction.replace(R.id.fragment_container, viewEventDetailsFragment);
-                        fragmentTransaction.commit();
+                        eventToView = loadEventDetails(result.getContents());
+                        if (eventToView == null) { // event not found in database or qr code is not correct
+                            Toast.makeText(requireContext(), "Event not found", Toast.LENGTH_LONG).show();
+                        } else {
+                            // navigate to view event details fragment to show event details
+                            FragmentManager fragmentManager = getParentFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            ViewEventDetailsFragment viewEventDetailsFragment = new ViewEventDetailsFragment();
+                            // TODO add event and event path to viewmodel
+                            fragmentTransaction.replace(R.id.fragment_container, viewEventDetailsFragment);
+                            fragmentTransaction.commit();
+
+                        }
 
                     }
                 });
         barcodeLauncher.launch(new ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setPrompt("Scan Event QR code")); // launch QR scanner
 
     }
+        public Event loadEventDetails(String eventPath) {
+            db = FirebaseFirestore.getInstance();
+            eventRef = db.document(eventPath);
+            eventRef.get().addOnSuccessListener(documentSnapshot -> {
+                // if the document exists, get the data otherwise set it to null
+                if (documentSnapshot.exists()) {
+                    eventData = (HashMap<String, Object>) documentSnapshot.getData();
+                } else {
+                    eventData = null;
+                }
+            });
+            if (eventData != null) {
+                // get event data from document
+                Object nameTemp = eventData.get(DatabaseEventFieldNames.name.name());
+                Object dateTemp = eventData.get(DatabaseEventFieldNames.instant.name());
+                Object eventPosterTemp = eventData.get(DatabaseEventFieldNames.eventPoster.name());
+                Object qrCodeTemp = eventData.get(DatabaseEventFieldNames.qrCode.name());
+                QRCode qrCode = (QRCode) qrCodeTemp; // QR Code converted to object to easily check for id later on if it is stored here
+                Object capacityTemp = eventData.get(DatabaseEventFieldNames.capacity.name());
+                // check if all required fields exist and qr code is correct
+                if (nameTemp == null || dateTemp == null || eventPosterTemp == null || qrCodeTemp == null) {
+                    return null;
+                } else {
+                    String eventName = (String) nameTemp;
+                    Instant eventDate = (Instant) dateTemp;
+                    Bitmap eventPoster = (Bitmap) eventPosterTemp;
+                    int capacity = (int) capacityTemp;
+                    try {
+                        return new Event(eventName, eventDate, eventPoster, capacity); // create event object
+                    } catch (Exception e) {
+                        return null;
+                    }
+
+                }
+
+            }
+            return null;
+        }
 }

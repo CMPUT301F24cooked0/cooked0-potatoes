@@ -51,9 +51,7 @@ public class ViewEventDetailsFragment extends Fragment {
         if (getArguments() == null) {
             Toast.makeText(requireContext(), "Unable to get event details", Toast.LENGTH_LONG).show();
         }
-        eventPath = (String) getArguments().get("eventPath");
-        db = FirebaseFirestore.getInstance();
-        eventRef = db.document(eventPath);
+        // TODO get event from viewmodel
         eventPoster = view.findViewById(R.id.event_poster_placeholder);
         eventName = view.findViewById(R.id.event_name_placeholder);
         eventDesc = view.findViewById(R.id.event_desc_placeholder);
@@ -63,21 +61,10 @@ public class ViewEventDetailsFragment extends Fragment {
         registerEnd = view.findViewById(R.id.register_end_placeholder);
         geolocation = view.findViewById(R.id.geolocation_notice_placeholder);
         joinWaitlistBtn = view.findViewById(R.id.join_waitlist_button);
-        // loadEventDetails();
 
 
 
 
     }
-//    public void loadEventDetails() {
-//        this.eventRef.get().addOnSuccessListener(documentSnapshot -> {
-//            if (documentSnapshot.exists()) {
-//                // TODO load event details from database
-//
-//            } else {
-//                Toast.makeText(requireContext(), "Could not find event in database", Toast.LENGTH_LONG).show();
-//            }
-//        });
-//    }
 
 }
