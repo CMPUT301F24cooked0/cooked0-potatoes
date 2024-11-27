@@ -45,7 +45,7 @@ public class FacilityFragment extends Fragment {
             }
 
         } catch (Exception e) {
-            Toast.makeText(this.requireContext(), "Unable to create user", Toast.LENGTH_SHORT).show();;
+            Toast.makeText(this.requireContext(), "Unable to create user", Toast.LENGTH_SHORT).show();
         }
 
 
