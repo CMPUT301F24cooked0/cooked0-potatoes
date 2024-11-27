@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.facility;
 
 import android.location.Address;
 import android.location.Geocoder;
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.myapplication.DatabaseManager;
+import com.example.myapplication.Facility;
+import com.example.myapplication.R;
+import com.example.myapplication.User;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
@@ -49,7 +54,9 @@ public class FacilityCreationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // facilityOwner = (User) getArguments().getSerializable("user"); // TODO get user from bundle once navigation complete
+        // facilityOwner = (User) getArguments().getSerializable("user");
+        FacilityViewModel facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
+        facilityOwner = facilityViewModel.getOrganizer();
         facilityNameInput = view.findViewById(R.id.addFacilityName);
         facilityAddressInput = view.findViewById(R.id.addFacilityAddress);
         createFacilityButton = view.findViewById(R.id.createFacilityButton);
@@ -80,7 +87,8 @@ public class FacilityCreationFragment extends Fragment {
         }
 
         facilityOwner.setFacility(facility); // set facility for user
-        databaseManager.createFacility(facilityOwner, facility); // add facility to database and set facility document reference
+        Toast.makeText(this.requireContext(), "Facility created", Toast.LENGTH_SHORT).show();
+        // databaseManager.createFacility(facilityOwner, facility); // add facility to database and set facility document reference
     }
 
     public LatLng getAddress(String address) {

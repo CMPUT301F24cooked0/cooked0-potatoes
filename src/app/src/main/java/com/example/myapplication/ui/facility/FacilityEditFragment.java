@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.facility;
 
 import android.location.Address;
 import android.location.Geocoder;
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.myapplication.DatabaseManager;
+import com.example.myapplication.Facility;
+import com.example.myapplication.R;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
@@ -50,6 +54,8 @@ public class FacilityEditFragment extends Fragment {
         facilityAddressInput = view.findViewById(R.id.editFacilityAddress);
         editButton = view.findViewById(R.id.editFacilityButton);
         databaseManager = new DatabaseManager();
+        FacilityViewModel facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
+        existingFacility = facilityViewModel.getOrganizer().getFacility();
         //existingFacility = (Facility) getArguments().getSerializable("facility"); // TODO get facility from bundle once navigation complete
         facilityNameInput.setText(existingFacility.getName()); // autofill existing facility name
         addressStr = existingFacility.getAddress(); // get existing facility address string
@@ -86,7 +92,7 @@ public class FacilityEditFragment extends Fragment {
             return;
         }
 
-        databaseManager.updateFacility(existingFacility); // update facility in database
+        //databaseManager.updateFacility(existingFacility); // update facility in database
 
 
     }
