@@ -128,17 +128,22 @@ public class Event {
      * @throws Exception
      */
     public void setEventPoster(Bitmap eventPoster) throws Exception {
-        //if (eventPoster == null) {
-        //    throw new Exception("event poster cannot be null");
-        //}
-        return; // FIXME temp
-        //if (eventPoster.getWidth() < 256 || eventPoster.getHeight() < 256) {
-        //    throw new Exception("event poster resolution too small (must be at least 256x256)");
-        //}
-        //if (eventPoster.getWidth() > 8192 || eventPoster.getHeight() > 8192) {
-        //    throw new Exception("event poster resolution too large (must be less than 8192x8192)"); // TODO auto-scale down instead of throwing
-        //}
-        //this.eventPoster = eventPoster;
+        if (eventPoster == null) {
+            throw new Exception("event poster cannot be null");
+        }
+        if (eventPoster.getWidth() < 256 || eventPoster.getHeight() < 256) {
+            throw new Exception("event poster resolution too small (must be at least 256x256)");
+        }
+        int scalingFactor = 1;
+        int width = eventPoster.getWidth();
+        int height = eventPoster.getHeight();
+        while (width/scalingFactor > 8192 || height/scalingFactor > 8192) {
+            scalingFactor += 1;
+        }
+        if (scalingFactor != 1) {
+            eventPoster = BitmapConverter.ScaledDownBitmap(eventPoster, scalingFactor); // scale down until it is small enough
+        }
+        this.eventPoster = eventPoster;
     }
 
     /**
