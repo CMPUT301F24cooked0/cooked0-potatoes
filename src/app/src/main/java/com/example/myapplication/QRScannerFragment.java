@@ -52,19 +52,6 @@ public class QRScannerFragment extends Fragment implements OnSingleEventFetchLis
                         Toast.makeText(requireContext(), "QR code contents cannot be read", Toast.LENGTH_LONG).show();
                     } else {
                         new DatabaseManager().getSingleEvent(result.getContents(), this); // get event from database
-                        if (this.eventToView == null) { // event not found in database or qr code is not correct
-                            Toast.makeText(requireContext(), "Event not found", Toast.LENGTH_LONG).show();
-                        } else {
-                            // navigate to view event details fragment to show event details
-                            FragmentManager fragmentManager = getParentFragmentManager();
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            ViewEventDetailsFragment viewEventDetailsFragment = new ViewEventDetailsFragment();
-                            // TODO add event and event path to qrscanner viewmodel
-                            fragmentTransaction.replace(R.id.fragment_container, viewEventDetailsFragment);
-                            fragmentTransaction.commit();
-
-                        }
-
                     }
                 });
         barcodeLauncher.launch(new ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setPrompt("Scan Event QR code")); // launch QR scanner
@@ -74,6 +61,19 @@ public class QRScannerFragment extends Fragment implements OnSingleEventFetchLis
     @Override
     public void onSingleEventFetch(Event event) {
         this.eventToView = event;
+        if (this.eventToView == null) { // event not found in database or qr code is not correct
+            Toast.makeText(requireContext(), "Event not found", Toast.LENGTH_LONG).show();
+        } else {
+            // navigate to view event details fragment to show event details
+            FragmentManager fragmentManager = getParentFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            ViewEventDetailsFragment viewEventDetailsFragment = new ViewEventDetailsFragment();
+            // TODO add event and event path to qrscanner viewmodel
+            fragmentTransaction.replace(R.id.fragment_container, viewEventDetailsFragment);
+            fragmentTransaction.commit();
+
+        }
+
     }
 
 }
