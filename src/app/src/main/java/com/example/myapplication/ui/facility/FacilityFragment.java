@@ -18,10 +18,23 @@ import com.example.myapplication.databinding.FacilityScreenFragmentBinding;
 public class FacilityFragment extends Fragment {
 
     private FacilityScreenFragmentBinding binding;
+    User user;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        User user;
+
+
+
+        binding = FacilityScreenFragmentBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
+
+//        final TextView textView = binding.textFacility;
+//        facilityViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        return root;
+    }
+    @Override
+    public void onViewCreated (@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         try {
             FacilityViewModel facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
             if (facilityViewModel.getOrganizer() == null) {
@@ -47,14 +60,6 @@ public class FacilityFragment extends Fragment {
         } catch (Exception e) {
             Toast.makeText(this.requireContext(), "Unable to create user", Toast.LENGTH_SHORT).show();
         }
-
-
-        binding = FacilityScreenFragmentBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-//        final TextView textView = binding.textFacility;
-//        facilityViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
     }
 
     @Override
