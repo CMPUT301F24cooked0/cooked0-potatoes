@@ -100,6 +100,19 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
     }
 
     /**
+     * Deletes the User (and everything about them, such as their facility, events, etc) in the database.
+     * @param user
+     * @return true if User was deleted, false if User could not be found or if they could not be deleted.
+     */
+    public Boolean deleteUser(User user) {
+        if (user == null || user.getUserReference() == null) {
+            return false;
+        }
+        // TODO implement the rest
+        return false;
+    }
+
+    /**
      * Requests to get a User from the database.
      * Once the User is fetched, which is done asynchronously, it will be returned
      * via the onUserFetchListener method.
@@ -246,6 +259,19 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
     }
 
     /**
+     * Deletes the Facility (and everything about them, such as events, etc) in the database.
+     * @param facility
+     * @return true if Facility was deleted, false if Facility could not be found or if it could not be deleted.
+     */
+    public Boolean deleteFacility(Facility facility) {
+        if (facility == null || facility.getFacilityReference() == null) {
+            return false;
+        }
+        // TODO implement the rest
+        return false;
+    }
+
+    /**
      * Requests to get a User's Facility from the database.
      * Once the Facility is fetched, which is done asynchronously, it will be returned
      * via the onFacilityFetchListener method.
@@ -389,6 +415,19 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         for (EntrantStatus entrantStatus : event.getEntrantStatuses()) {
             this.updateEntrantStatus(entrantStatus);
         }
+    }
+
+    /**
+     * Deletes the Event (and everything about them, such as entrantStatuses, etc) in the database.
+     * @param event
+     * @return true if Event was deleted, false if Event could not be found or if it could not be deleted.
+     */
+    public Boolean deleteEvent(Event event) {
+        if (event == null || event.getEventReference() == null) {
+            return false;
+        }
+        // TODO implement the rest
+        return false;
     }
 
     /**
@@ -602,6 +641,19 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         entrantStatusData.put(DatabaseEntrantStatusFieldNames.status.name(), entrantStatus.getStatus());
         DocumentReference entrantStatusRef = entrantStatus.getEntrantStatusReference();
         entrantStatusRef.update(entrantStatusData);
+    }
+
+    /**
+     * Deletes the EntrantStatus in the database.
+     * @param entrantStatus
+     * @return true if EntrantStatus was deleted, false if EntrantStatus could not be found or if it could not be deleted.
+     */
+    public Boolean deleteEntrantStatus(EntrantStatus entrantStatus) {
+        if (entrantStatus == null || entrantStatus.getEntrantStatusReference() == null) {
+            return false;
+        }
+        // TODO implement the rest
+        return false;
     }
 
     /**
