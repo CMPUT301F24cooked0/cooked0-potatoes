@@ -111,8 +111,9 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (user == null || user.getUserReference() == null) {
             return false;
         }
-        // TODO implement the rest
-        return false;
+        DocumentReference userRef = user.getUserReference();
+        userRef.delete(); // FIXME does not delete Facility, etc under the User document
+        return true;
     }
 
     /**
