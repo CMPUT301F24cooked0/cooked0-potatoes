@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /*This class is responsible for adding and removing an entrant who has joined the waiting list
 as well as check their status to see if they are in the database.
@@ -129,13 +130,83 @@ public class EntrantPool {
     }
 
     /**
-     * draw a number of entrants from the pool and return that list
+     * updates the Status of this EntrantStatus if they are to be drawn.
+     * If they had not been drawn before, their status becomes chosenAndPending.
+     * If they had been drawn before, their status does not change.
+     * @return true if the entrantStatus' status has been updated
+     */
+    private Boolean updateDrawnEntrantStatus(EntrantStatus entrantStatus) {
+        if (
+                entrantStatus.getStatus() == Status.none
+                || entrantStatus.getStatus() == Status.notChosen
+        ) {
+            entrantStatus.setStatus(Status.chosenAndPending);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * returns the number of entrants left in the pool that have not been drawn and can be drawn
+     * @return
+     */
+    private Integer entrantsLeftToDraw() {
+        Integer entrantsLeftToDraw = 0;
+        for (EntrantStatus entrantStatus : this.entrants) {
+            if (
+                    entrantStatus.getStatus() == Status.none
+                    || entrantStatus.getStatus() == Status.notChosen
+            ) {
+                entrantsLeftToDraw++;
+            }
+        }
+        return entrantsLeftToDraw;
+    }
+
+    /**
+     * draw a number of entrants from the pool and return that list.
+     * If entrants have already been drawn, only draws enough new entrants to reach
+     * the howMany limit again, if any. The list returned will contain all entrants.
      * @param howMany
      * @return
      */
     public ArrayList<User> drawEntrants(int howMany) {
-        // TODO implement this method
-        // don't forget to update their statuses when drawing!
-        return new ArrayList<User>(); // temporary
+        ArrayList<User> chosenEntrants = new ArrayList<User>();
+        if (this.entrants.size() <= howMany) {
+            chosenEntrants = this.getEntrants();
+            for (EntrantStatus entrantStatus : this.entrants) {
+                updateDrawnEntrantStatus(entrantStatus);
+            }
+            return chosenEntrants;
+        }
+        // otherwise we actually need to randomly pick some entrants
+        // count how many entrants are already drawn
+        int numberOfDrawnEntrants = 0;
+        for (EntrantStatus entrantStatus : this.entrants) {
+            if (
+                    entrantStatus.getStatus() == Status.chosenAndPending
+                    || entrantStatus.getStatus() == Status.chosenAndAccepted
+            ) {
+                numberOfDrawnEntrants++;
+                chosenEntrants.add(entrantStatus.getEntrant());
+            }
+        }
+        Random random = new Random();
+        int i;
+        EntrantStatus entrantStatus;
+        boolean newDraw;
+        // while we haven't drawn enough entrants AND there are still some entrants in the pool that we can draw
+        while (numberOfDrawnEntrants < howMany && this.entrantsLeftToDraw() > 0) {
+            i = random.nextInt(this.getEntrantStatuses().size());
+            entrantStatus = this.entrants.get(i);
+            newDraw = updateDrawnEntrantStatus(entrantStatus);
+            // only add entrant to chosen entrants if they are not already in there
+            if (newDraw) {
+                chosenEntrants.add(entrantStatus.getEntrant());
+            }
+        }
+        return chosenEntrants;
     }
 }
