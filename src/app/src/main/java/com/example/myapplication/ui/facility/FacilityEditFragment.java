@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ public class FacilityEditFragment extends Fragment {
     String facilityName;
     String facilityAddressStr;
     LatLng facilityLocation;
+    FacilityViewModel facilityViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,11 +51,12 @@ public class FacilityEditFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
+        existingFacility = facilityViewModel.getOrganizer().getFacility();
         facilityNameInput = view.findViewById(R.id.editFacilityName);
         facilityAddressInput = view.findViewById(R.id.editFacilityAddress);
         editButton = view.findViewById(R.id.editFacilityButton);
         databaseManager = new DatabaseManager();
-        //existingFacility = (Facility) getArguments().getSerializable("facility"); // TODO get facility from bundle once navigation complete
         facilityNameInput.setText(existingFacility.getName()); // autofill existing facility name
         addressStr = existingFacility.getAddress(); // get existing facility address string
         facilityAddressInput.setText(addressStr); // autofill existing facility address

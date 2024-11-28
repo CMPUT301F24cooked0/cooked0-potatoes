@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -34,16 +35,24 @@ public class FacilityFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
         user = (User) getArguments().getSerializable("user");
-        facilityViewModel.setOrganizer(user);
+        if (user != null) {
+            facilityViewModel.setOrganizer(user);
 
-        // change fragments depending on whether the user has a facility or not
-        if (user.getFacility() == null) {
-            FragmentManager fragmentManager = getParentFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new FacilityCreationFragment())
-                    .commit();
+            // change fragments depending on whether the user has a facility or not
+            if (user.getFacility() != null) {
+                // show facility view events page
+                Toast.makeText(this.requireContext(), "User has facility", Toast.LENGTH_SHORT).show(); // temporary until facility view events page is merged
+            } else {
+                FragmentManager fragmentManager = getParentFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, new FacilityCreationFragment())
+                        .commit();
+            }
 
+        } else {
+            Toast.makeText(this.requireContext(), "User not found", Toast.LENGTH_SHORT).show();
         }
+
 
     }
 
