@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.facility;
 
 import android.location.Address;
 import android.location.Geocoder;
@@ -15,46 +15,50 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.myapplication.DatabaseManager;
+import com.example.myapplication.Facility;
+import com.example.myapplication.R;
+import com.example.myapplication.User;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 /**
- * This class represents a page for editing an existing facility.
+ * This class represents the facility creation page.
  */
-public class FacilityEditFragment extends Fragment {
+
+public class FacilityCreationFragment extends Fragment {
+    // TODO get user from bundle
     View view;
     EditText facilityNameInput;
     EditText facilityAddressInput;
-    Button editButton;
-    Facility existingFacility;
+    Button createFacilityButton;
+    User facilityOwner;
     DatabaseManager databaseManager;
-    String addressStr;
     String facilityName;
     String facilityAddressStr;
-    LatLng facilityLocation;
+    Facility facility;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_facility_edit, container, false);
+        view =  inflater.inflate(R.layout.fragment_facility_creation, container, false);
+
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        facilityNameInput = view.findViewById(R.id.editFacilityName);
-        facilityAddressInput = view.findViewById(R.id.editFacilityAddress);
-        editButton = view.findViewById(R.id.editFacilityButton);
+        // facilityOwner = (User) getArguments().getSerializable("user"); // TODO get user from bundle once navigation complete
+        facilityNameInput = view.findViewById(R.id.addFacilityName);
+        facilityAddressInput = view.findViewById(R.id.addFacilityAddress);
+        createFacilityButton = view.findViewById(R.id.createFacilityButton);
         databaseManager = new DatabaseManager();
-        //existingFacility = (Facility) getArguments().getSerializable("facility"); // TODO get facility from bundle once navigation complete
-        facilityNameInput.setText(existingFacility.getName()); // autofill existing facility name
-        addressStr = existingFacility.getAddress(); // get existing facility address string
-        facilityAddressInput.setText(addressStr); // autofill existing facility address
-        editButton.setOnClickListener(this::onClick);
+        createFacilityButton.setOnClickListener(this::onClick);
     }
     public void onClick(View view) {
         // get facility name and address from input fields
@@ -65,32 +69,23 @@ public class FacilityEditFragment extends Fragment {
             return;
         }
 
-        // convert address to LatLng if it has changed otherwise use existing LatLng
-        if (addressStr.equals(facilityAddressStr)) {
-            facilityLocation = existingFacility.getLocation();
-        } else {
-            facilityLocation = getAddress(facilityAddressStr);
-            if (facilityLocation == null) {
-                Toast.makeText(this.requireContext(), "Invalid address", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        }
-
-        // set facility name, address, and location in existing facility object
-        try {
-            existingFacility.setName(facilityName);
-            existingFacility.setAddress(facilityAddressStr);
-            existingFacility.setLocation(facilityLocation);
-        } catch (Exception e) {
-            Toast.makeText(this.requireContext(), "Unable to update facility", Toast.LENGTH_SHORT).show();
+        LatLng facilityAddress = getAddress(facilityAddressStr); // convert address to LatLng
+        if (facilityAddress == null) {
+            Toast.makeText(this.requireContext(), "Invalid address", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        databaseManager.updateFacility(existingFacility); // update facility in database
+        // create facility object
+        try {
+            facility = new Facility(facilityName, facilityAddress, facilityAddressStr);
+        } catch (Exception e) {
+            Toast.makeText(this.requireContext(), "Unable to create facility", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-
+        facilityOwner.setFacility(facility); // set facility for user
+        databaseManager.createFacility(facilityOwner, facility); // add facility to database and set facility document reference
     }
-
 
     public LatLng getAddress(String address) {
         // converts string address given by user to LatLng
@@ -101,7 +96,7 @@ public class FacilityEditFragment extends Fragment {
                 Address location = addresses.get(0);
                 return new LatLng(location.getLatitude(), location.getLongitude());
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
