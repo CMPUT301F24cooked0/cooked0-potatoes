@@ -129,8 +129,6 @@ public class SignUpActivity extends AppCompatActivity {
      * @author Daniyal Abbas
      * @param name - String storing name of the user to perform profile picture generation with
      * @return
-     * @deprecated This code has been moved over to the User class, which now automatically generates
-     * the profile picture if none is given (or it is null)
      */
     private Bitmap generateProfileImage(String name) {
         String firstNameInitial = !name.isEmpty() ? name.substring(0, 1).toUpperCase() : "A";

@@ -1,10 +1,6 @@
 package com.example.myapplication;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 
 import com.google.firebase.firestore.DocumentReference;
 
@@ -179,30 +175,9 @@ public class User {
      */
     public void setProfilePicture(Bitmap profilePicture) {
         if (profilePicture == null) {
-            // generate profile picture automatically based of user's name
-            String firstNameInitial = !name.isEmpty() ? name.substring(0, 1).toUpperCase() : "A";
-
-            int size = 4096; // more than enough considering phone screen resolutions
-            profilePicture = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(profilePicture);
-
-            // Draw a circle
-            Paint paint = new Paint();
-            paint.setColor(Color.BLUE);  // Set background color
-            paint.setAntiAlias(true);
-            canvas.drawCircle(size / 2, size / 2, size / 2, paint);
-
-            paint.setColor(Color.WHITE);
-            paint.setTextSize(size/2);
-            paint.setTextAlign(Paint.Align.CENTER);
-
-            Rect textBounds = new Rect();
-            paint.getTextBounds(firstNameInitial, 0, firstNameInitial.length(), textBounds);
-            int x = size / 2;
-            int y = size / 2 + (textBounds.height() / 2);
-
-            canvas.drawText(firstNameInitial, x, y, paint);
-            // profile picture has now been generated
+            // this is ok,
+            // but it means we have to auto-generate a profile picture based on user's name
+            // TODO generate profile picture based on user's name
         }
         this.profilePicture = profilePicture;
     }
