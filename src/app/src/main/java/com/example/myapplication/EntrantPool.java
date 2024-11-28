@@ -183,13 +183,11 @@ public class EntrantPool {
         }
         // otherwise we actually need to randomly pick some entrants
         // count how many entrants are already drawn
-        int numberOfDrawnEntrants = 0;
         for (EntrantStatus entrantStatus : this.entrants) {
             if (
                     entrantStatus.getStatus() == Status.chosenAndPending
                     || entrantStatus.getStatus() == Status.chosenAndAccepted
             ) {
-                numberOfDrawnEntrants++;
                 chosenEntrants.add(entrantStatus.getEntrant());
             }
         }
@@ -198,7 +196,7 @@ public class EntrantPool {
         EntrantStatus entrantStatus;
         boolean newDraw;
         // while we haven't drawn enough entrants AND there are still some entrants in the pool that we can draw
-        while (numberOfDrawnEntrants < howMany && this.entrantsLeftToDraw() > 0) {
+        while (chosenEntrants.size() < howMany && this.entrantsLeftToDraw() > 0) {
             i = random.nextInt(this.getEntrantStatuses().size());
             entrantStatus = this.entrants.get(i);
             newDraw = updateDrawnEntrantStatus(entrantStatus);
