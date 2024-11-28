@@ -68,7 +68,7 @@ public class QRScannerFragment extends Fragment implements OnSingleEventFetchLis
                             FragmentManager fragmentManager = getParentFragmentManager();
                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                             ViewEventDetailsFragment viewEventDetailsFragment = new ViewEventDetailsFragment();
-                            // TODO add event and event path to viewmodel
+                            // TODO add event and event path to qrscanner viewmodel
                             fragmentTransaction.replace(R.id.fragment_container, viewEventDetailsFragment);
                             fragmentTransaction.commit();
 
@@ -79,49 +79,10 @@ public class QRScannerFragment extends Fragment implements OnSingleEventFetchLis
         barcodeLauncher.launch(new ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setPrompt("Scan Event QR code")); // launch QR scanner
 
     }
+
     @Override
     public void onSingleEventFetch(Event event) {
         this.eventToView = event;
     }
-
-//    public Event loadEventDetails(String eventPath) {
-//        db = FirebaseFirestore.getInstance();
-//        eventRef = db.document(eventPath);
-//        eventRef.get().addOnSuccessListener(documentSnapshot -> {
-//            // if the document exists, get the data otherwise set it to null
-//            if (documentSnapshot.exists()) {
-//                    eventData = (HashMap<String, Object>) documentSnapshot.getData();
-//            } else {
-//                eventData = null;
-//            }
-//            });
-//            if (eventData != null) {
-//                // get event data from document
-//                Object nameTemp = eventData.get(DatabaseEventFieldNames.name.name());
-//                Object dateTemp = eventData.get(DatabaseEventFieldNames.instant.name());
-//                Object eventPosterTemp = eventData.get(DatabaseEventFieldNames.eventPoster.name());
-//                Object qrCodeTemp = eventData.get(DatabaseEventFieldNames.qrCode.name());
-//                QRCode qrCode = (QRCode) qrCodeTemp; // QR Code converted to object to easily check for id later on if it is stored here
-//                Object capacityTemp = eventData.get(DatabaseEventFieldNames.capacity.name());
-//                // check if all required fields exist and qr code is correct
-//                if (nameTemp == null || dateTemp == null || eventPosterTemp == null || qrCodeTemp == null) {
-//                    return null;
-//                } else {
-//                    String eventName = (String) nameTemp;
-//                    Instant eventDate = (Instant) dateTemp;
-//                    String encodedEventPoster = (String) eventPosterTemp;
-//                    Bitmap eventPoster = BitmapConverter.StringToBitmap(encodedEventPoster);
-//                    Integer capacity = (Integer) capacityTemp;
-//                    try {
-//                        return new Event(eventName, eventDate, eventPoster, capacity); // create event object
-//                    } catch (Exception e) {
-//                        return null;
-//                    }
-//
-//                }
-//
-//            }
-//            return null;
-//        }
 
 }

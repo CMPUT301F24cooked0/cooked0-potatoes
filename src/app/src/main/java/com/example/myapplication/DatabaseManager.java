@@ -10,13 +10,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Array;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -490,6 +487,83 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         for (Event event : events) {
             facility.addEvent(event);
         }
+    }
+
+    /**
+     * Gets an Event from the database.
+     * Once the Event has been fetched, it will be returned
+     * via the onSingleEventFetchListener method (onSingleEventFetch)
+     * @param eventPath
+     * @param onSingleEventFetchListener
+     */
+
+    public void getSingleEvent(String eventPath, OnSingleEventFetchListener onSingleEventFetchListener) {
+        Thread thread = new Thread(() -> {
+            Event event = fetchSingleEvent(eventPath);
+            onSingleEventFetchListener.onSingleEventFetch(event);
+        });
+        thread.start();
+
+    }
+
+    private Event fetchSingleEvent(String eventPath) {
+        // TODO take qr path instead and validate it?
+        DocumentReference singleEventRef = db.document(eventPath);
+        Task<DocumentSnapshot> task = singleEventRef.get();
+        DocumentSnapshot documentSnapshot = null;
+        Event event = null;
+        try {
+            documentSnapshot = Tasks.await(task);
+        } catch (ExecutionException e) {
+            return null;
+        } catch (InterruptedException e) {
+            return null;
+        }
+
+        if (documentSnapshot == null) {
+            return null;
+        }
+        if (!documentSnapshot.exists()) {
+            return null;
+        }
+        HashMap<String, Object> singleEventData = (HashMap<String, Object>) documentSnapshot.getData();
+        if (singleEventData == null) {
+            return null;
+        }
+        Object nameTemp = singleEventData.get(DatabaseEventFieldNames.name.name());
+        if (nameTemp == null) {
+            return null;
+        }
+        String name = (String) nameTemp;
+
+        Object dateTemp = singleEventData.get(DatabaseEventFieldNames.instant.name());
+        if (dateTemp == null) {
+            return null;
+        }
+        Timestamp dateTimestamp = (Timestamp) dateTemp;
+        Instant instant = dateTimestamp.toInstant();
+
+        Object eventPosterTemp = singleEventData.get(DatabaseEventFieldNames.eventPoster.name());
+        if (eventPosterTemp == null) {
+            return null;
+        }
+        String encodedEventPoster = (String) eventPosterTemp;
+        Bitmap eventPoster = BitmapConverter.StringToBitmap(encodedEventPoster);
+
+        Object qrCodeTemp = singleEventData.get(DatabaseEventFieldNames.qrCode.name());
+        QRCode qrCode = new QRCode((String) qrCodeTemp);
+
+        Object capacityTemp = singleEventData.get(DatabaseEventFieldNames.capacity.name());
+        Integer capacity = (Integer) capacityTemp;
+
+        try {
+            event = new Event(name, instant, eventPoster, capacity, qrCode, new EntrantPool(), singleEventRef);
+        }
+        catch (Exception e) {
+            return null;
+        }
+        return event;
+
     }
 
     /**
