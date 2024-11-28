@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.myapplication.R;
 import com.example.myapplication.User;
 import com.example.myapplication.databinding.FacilityScreenFragmentBinding;
 
@@ -36,7 +38,10 @@ public class FacilityFragment extends Fragment {
 
         // change fragments depending on whether the user has a facility or not
         if (user.getFacility() == null) {
-            FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, new FacilityCreationFragment())
+                    .commit();
 
         }
 
