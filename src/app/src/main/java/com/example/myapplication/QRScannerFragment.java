@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -16,13 +15,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-import java.time.Instant;
-import java.util.HashMap;
 
 
 /**
@@ -32,10 +27,6 @@ public class QRScannerFragment extends Fragment implements OnSingleEventFetchLis
     View view;
     Button scanBtn;
     Event eventToView;
-    FirebaseFirestore db;
-    DocumentReference eventRef;
-    HashMap<String, Object> eventData;
-    DatabaseManager databaseManager;
 
 
     @Override
