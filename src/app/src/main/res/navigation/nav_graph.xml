@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigation_profile">
+
+    <fragment
+        android:id="@+id/navigation_inbox"
+        android:name="com.example.myapplication.ui.inbox.InboxFragment"
+        android:label="Inbox"
+        tools:layout="@layout/inbox_screen_fragment"
+        />
+
+    <fragment
+        android:id="@+id/navigation_facility"
+        android:name="com.example.myapplication.ui.facility.FacilityFragment"
+        android:label="Facility"
+        tools:layout="@layout/facility_screen_fragment"
+        />
+
+    <fragment
+        android:id="@+id/navigation_scanQR"
+        android:name="com.example.myapplication.ui.scanQR.ScanQRFragment"
+        android:label="Scan QR"
+        tools:layout="@layout/scan_qr_screen_fragment"
+        />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.example.myapplication.ui.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/profile_screen_fragment"
+        />
+
+</navigation>

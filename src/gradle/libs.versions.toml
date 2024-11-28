@@ -1,5 +1,6 @@
 [versions]
-agp = "8.7.1"
+
+agp = "8.7.2"
 firebaseBom = "33.5.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -10,9 +11,12 @@ activity = "1.9.3"
 constraintlayout = "2.2.0"
 mockitoCore = "5.7.0"
 qrGenerator = "4.3.0"
+navigationFragment = "2.8.3"
+navigationUi = "2.8.3"
 playServicesMaps = "19.0.0"
 
 [libraries]
+androidx-navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigationUi" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -24,6 +28,9 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 qr_generator = {group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "qrGenerator"}
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoCore" }
+navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigationFragment" }
+
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 
 [plugins]
