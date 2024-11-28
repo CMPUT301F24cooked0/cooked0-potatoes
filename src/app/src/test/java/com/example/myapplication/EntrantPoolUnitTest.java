@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class EntrantPoolUnitTest {
@@ -110,7 +111,36 @@ public class EntrantPoolUnitTest {
     @Test
     public void drawEntrantsNoEntrantsTest() throws Exception {
         EntrantPool entrantPool = new EntrantPool();
-        entrantPool.drawEntrants(0);
-        // TODO finish writing tests for drawEntrants when functionality is added
+        ArrayList<User> drawnEntrants = entrantPool.drawEntrants(0);
+        assertEquals(drawnEntrants.size(), 0);
+        drawnEntrants = entrantPool.drawEntrants(100);
+        assertEquals(drawnEntrants.size(), 0);
+    }
+
+    @Test
+    public void drawEntrantsNotEnoughTest() throws Exception {
+        EntrantPool entrantPool = new EntrantPool();
+        User entrant = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
+        LatLng location = new LatLng(69.420, 42.69);
+        entrantPool.addEntrant(entrant, location);
+        ArrayList<User> drawnEntrants = entrantPool.drawEntrants(100);
+        assertEquals(drawnEntrants.size(), 1);
+        assertEquals(drawnEntrants.get(0), entrant);
+    }
+
+    @Test
+    public void drawEntrantsTooManyTest() throws Exception {
+        EntrantPool entrantPool = new EntrantPool();
+        User entrant = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
+        LatLng location = new LatLng(69.420, 42.69);
+        User entrant2 = new UserMock(null, "name2", "email2@email.ca", (Bitmap) null);
+        LatLng location2 = new LatLng(69.421, 42.69);
+        User entrant3 = new UserMock(null, "name3", "email3@email.ca", (Bitmap) null);
+        LatLng location3 = new LatLng(69.422, 42.69);
+        entrantPool.addEntrant(entrant, location);
+        entrantPool.addEntrant(entrant2, location2);
+        entrantPool.addEntrant(entrant3, location3);
+        ArrayList<User> drawnEntrants = entrantPool.drawEntrants(2);
+        assertEquals(drawnEntrants.size(), 2);
     }
 }
