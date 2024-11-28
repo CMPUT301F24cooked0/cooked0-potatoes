@@ -45,18 +45,13 @@ public class AdministratorBrowseUsersFragment extends Fragment {
         userDataList = new ArrayList<>();
         userArrayAdapter = new UserArrayAdapter(requireContext(), userDataList);
         userList.setAdapter(userArrayAdapter);
-
-        User.fetchUsers(users -> {
-                    userDataList.clear();
-                    userDataList.addAll(users);
-                    userArrayAdapter.notifyDataSetChanged();
-                },
-                error->Log.w("Firestore","Error Fetching Users",error)
-        );
-
+        DatabaseManager databaseManager=new DatabaseManager();
+        //method from dbmanager to get all users to populate list.
         userList.setOnItemClickListener(((adapterView, view1, position, id) -> showDeletePage(position)));
         return view;
     }
+
+
 
     /***
      * Method to show the dialog page to confirm or cancel delete action.
