@@ -11,7 +11,14 @@ public class FacilityViewModel extends ViewModel {
     User organizer;
 
     public FacilityViewModel() {
+        organizer = null;
 
+    }
+    public void setOrganizer(User organizer) {
+        this.organizer = organizer;
+    }
+    public User getOrganizer() {
+        return organizer;
     }
 
 }

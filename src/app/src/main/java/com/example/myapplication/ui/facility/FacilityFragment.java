@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.User;
@@ -31,7 +32,13 @@ public class FacilityFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
         user = (User) getArguments().getSerializable("user");
+        facilityViewModel.setOrganizer(user);
 
+        // change fragments depending on whether the user has a facility or not
+        if (user.getFacility() == null) {
+            FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+
+        }
 
     }
 
