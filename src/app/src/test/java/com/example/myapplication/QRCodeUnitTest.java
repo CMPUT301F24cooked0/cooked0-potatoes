@@ -24,9 +24,4 @@ public class QRCodeUnitTest {
         qrCode.setText(text);
         assertEquals(qrCode.getText(), text);
     }
-
-    @Test
-    public void getImageTest() {
-        // TODO test once implementation is done
-    }
 }
