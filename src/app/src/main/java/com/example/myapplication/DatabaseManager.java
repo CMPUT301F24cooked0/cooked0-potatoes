@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
@@ -111,8 +112,23 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (user == null || user.getUserReference() == null) {
             return false;
         }
-        // TODO implement the rest
-        return false;
+        try{
+            Task<Void> deleteTask=user.getUserReference().delete();
+            Tasks.await(deleteTask);
+
+            if (deleteTask.isSuccessful()) {
+                Log.d("Delete User","Successfully deleted user");
+                return true;
+            }
+            else{
+                Log.w("Delete User","Failed to delete user");
+                return false;
+            }
+        }
+        catch (Exception e){
+            Log.e("Delete User","Error deleting user"+e.getMessage(),e);
+            return false;
+        }
     }
 
     /**
