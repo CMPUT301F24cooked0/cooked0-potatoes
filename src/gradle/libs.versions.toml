@@ -13,6 +13,7 @@ mockitoCore = "5.7.0"
 navigationFragment = "2.8.3"
 navigationUi = "2.8.3"
 playServicesMaps = "19.0.0"
+firebaseCommon = "21.0.0"
 
 [libraries]
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigationUi" }
@@ -30,6 +31,7 @@ mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "
 navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigationFragment" }
 
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+firebase-common = { group = "com.google.firebase", name = "firebase-common", version.ref = "firebaseCommon" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
