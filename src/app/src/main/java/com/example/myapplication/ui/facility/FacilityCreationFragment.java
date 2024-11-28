@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +41,7 @@ public class FacilityCreationFragment extends Fragment {
     String facilityName;
     String facilityAddressStr;
     Facility facility;
+    FacilityViewModel facilityViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,7 +55,8 @@ public class FacilityCreationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // facilityOwner = (User) getArguments().getSerializable("user"); // TODO get user from bundle once navigation complete
+        facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
+        facilityOwner = facilityViewModel.getOrganizer();
         facilityNameInput = view.findViewById(R.id.addFacilityName);
         facilityAddressInput = view.findViewById(R.id.addFacilityAddress);
         createFacilityButton = view.findViewById(R.id.createFacilityButton);
