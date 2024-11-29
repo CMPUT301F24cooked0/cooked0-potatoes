@@ -233,8 +233,44 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
     }
 
     private ArrayList<User> fetchAllUsers() {
-        // FIXME IMPLEMENT THIS
-        return new ArrayList<>();
+        ArrayList<User> users = new ArrayList<User>(this.users);
+
+        CollectionReference userCol = this.db.collection(DatabaseCollectionNames.users.name());
+
+        Task<QuerySnapshot> task = userCol.get();
+        QuerySnapshot queryDocumentSnapshots = null;
+        try {
+            queryDocumentSnapshots = Tasks.await(task);
+        } catch (ExecutionException e) {
+            return users;
+        } catch (InterruptedException e) {
+            return users;
+        }
+
+        if (queryDocumentSnapshots == null) {
+            return users;
+        }
+
+        List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+        if (documentSnapshots.isEmpty()) {
+            return users;
+        }
+        HashMap<String, Object> userData;
+        DocumentReference userRef;
+        String userID;
+
+        for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+            userData = (HashMap<String, Object>) documentSnapshot.getData();
+            if (userData == null) {
+                continue;
+            }
+            userRef = documentSnapshot.getReference();
+            userID = userRef.getId();
+
+            users.add(this.fetchUser(userID));
+        }
+
+        return users;
     }
 
     /**
