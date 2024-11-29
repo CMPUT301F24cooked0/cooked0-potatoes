@@ -489,6 +489,20 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         thread.start();
     }
 
+    /**
+     * Requests to get all Events from the database.
+     * Once the Events have all been fetched, which is done asynchronously, they will be returned
+     * via the onAllEventsFetchListener method.
+     * @param onAllEventsFetchListener
+     */
+    public void getAllEvents(OnAllEventsFetchListener onAllEventsFetchListener) {
+        Thread thread = new Thread(() -> {
+            ArrayList<Event> events = fetchAllEvents();
+            onAllEventsFetchListener.onAllEventsFetch(events);
+        });
+        thread.start();
+    }
+
     private ArrayList<Event> fetchEvents(Facility facility) {
         DocumentReference facilityRef = facility.getFacilityReference();
         CollectionReference eventCol = facilityRef.collection(DatabaseCollectionNames.events.name());
@@ -563,6 +577,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
 
         return events;
+    }
+
+    private ArrayList<Event> fetchAllEvents() {
+        // FIXME IMPLEMENT THIS
+        return new ArrayList<>();
     }
 
     @Override
