@@ -158,13 +158,6 @@ public class User {
     }
 
     /**
-     * delete this user's profile picture (resets it to the automatically generated one)
-     */
-    public void deleteProfilePicture() {
-        this.setProfilePicture(null); // deletes and generates from user's name
-    }
-
-    /**
      * set this user's facility (they are now an organizer)
      * @param facility
      */
