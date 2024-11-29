@@ -476,7 +476,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
 
     /**
      * Requests to get a Facility's Events from the database.
-     * Once the Events have all been fetched, which is done asynchronously, they wil be returned
+     * Once the Events have all been fetched, which is done asynchronously, they will be returned
      * via the onEventsFetchListener method.
      * @param facility
      * @param onEventsFetchListener
