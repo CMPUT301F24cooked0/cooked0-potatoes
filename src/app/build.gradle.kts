@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.qr.generator)
     implementation(libs.play.services.maps)
     implementation("androidx.fragment:fragment-testing:1.8.5")
+    implementation("com.google.firebase:firebase-firestore:25.1.1")
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
     androidTestImplementation(libs.ext.junit)

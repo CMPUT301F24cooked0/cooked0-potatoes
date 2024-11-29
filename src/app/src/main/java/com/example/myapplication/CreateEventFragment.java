@@ -10,101 +10,108 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.Toast;
-
-
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-/**
- * This fragment is used to create a new event.
- */
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 public class CreateEventFragment extends Fragment {
-    private DatabaseManager databaseManager;
-    private EditText eventName, eventDate, eventCapacity, eventDetails, eventStart, eventEnd;
+
+    public Bitmap eventPoster;
+    private EditText eventNameInput, eventStartInput, eventEndInput, eventCapacityInput, eventDetailsInput;
+    private ImageView eventPosterInput;
     private Button createEventButton;
-    private ImageView eventPoster;
-    private Switch geoLocation;
-    private Bitmap selectedPosterBitmap;
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-    private QRCode eventQrCode;
-    private Facility facility;
+    private Facility facility; // Facility object representing the facility this event belongs to
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withLocale(Locale.getDefault());
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_event, container, false);
 
+        // Initialize UI elements
+        eventNameInput = view.findViewById(R.id.eventNameInput);
+        eventStartInput = view.findViewById(R.id.eventStartInput);
+        eventEndInput = view.findViewById(R.id.eventEndInput);
+        eventCapacityInput = view.findViewById(R.id.eventCapInput);
+        eventDetailsInput = view.findViewById(R.id.eventDetInput);
+        eventPosterInput = view.findViewById(R.id.eventPosterPlaceholder);
 
-
-        eventName = view.findViewById(R.id.eventNameInput);
-        eventCapacity = view.findViewById(R.id.eventCapInput);
-        eventDetails = view.findViewById(R.id.eventDetInput);
-        eventStart = view.findViewById(R.id.eventStartInput);
-        eventEnd =view.findViewById(R.id.eventEndInput);
-        eventPoster = view.findViewById(R.id.eventPosterPlaceholder);
-        //facility = (facility) getArguments().getSerializable("facility"); // TODO get facility from previous activity/fragment once navigation complete
         createEventButton = view.findViewById(R.id.createEventButton);
-        createEventButton.setOnClickListener(this::onClick);
+        createEventButton.setOnClickListener(this::onCreateEventClick);
+
+        // Assume facility object is passed via arguments
+        if (getArguments() != null) {
+            facility = (Facility) getArguments().getSerializable("facility");
+        }
 
         return view;
-
     }
 
-    public Event createEvent(String name, String startDate, String endDate, int capacity, String details, Bitmap eventPoster) {
-        if (name.isEmpty() || startDate.isEmpty() || endDate.isEmpty() || details.isEmpty()) {
-            return null;  // Return null if fields are invalid
-        }
-
+    /**
+     * Handles the Create Event button click.
+     */
+    private void onCreateEventClick(View v) {
         try {
-            // Parse the start and end date strings into Date objects
-            Date start = dateFormat.parse(startDate);
-            Date end = dateFormat.parse(endDate);
+            String name = eventNameInput.getText().toString().trim();
+            String startDateTime = eventStartInput.getText().toString().trim();
+            String endDateTime = eventEndInput.getText().toString().trim();
+            String details = eventDetailsInput.getText().toString().trim();
+            Bitmap poster = ((BitmapDrawable) eventPosterInput.getDrawable()).getBitmap();
 
-            // Ensure the dates are valid
-            if (start == null || end == null) {
-                return null;  // Return null if parsing failed
+            Integer capacity = null;
+            if (!eventCapacityInput.getText().toString().isEmpty()) {
+                capacity = Integer.parseInt(eventCapacityInput.getText().toString().trim());
             }
 
-            // Create Event object
-            return new Event(name, start, eventPoster, capacity);
+            // Parse the dates
+            Instant startInstant = parseDateTime(startDateTime);
+            Instant endInstant = parseDateTime(endDateTime);
 
+            if (startInstant.isAfter(endInstant)) {
+                Toast.makeText(getActivity(), "Start time cannot be after end time", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Create the event
+            Event event = new Event(name, startInstant, poster, capacity);
+            event.setDetails(details);
+
+            // Add event to facility (if facility is available)
+            if (facility != null) {
+                facility.addEvent(event);
+                Log.d("CreateEventFragment", "Event added to facility: " + facility.getName());
+            }
+
+            Toast.makeText(getActivity(), "Event created successfully!", Toast.LENGTH_SHORT).show();
+            Log.d("CreateEventFragment", "Event created: " + event.getName());
 
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;  // Return null if there was an exception
+            Log.e("CreateEventFragment", "Error creating event", e);
+            Toast.makeText(getActivity(), "Error creating event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void onClick(View v) {
-
-        String name = eventName.getText().toString().trim();
-        Integer capacity = Integer.valueOf(eventCapacity.getText().toString().trim());
-        String details = eventDetails.getText().toString().trim();
-        String start = eventStart.getText().toString().trim();
-        String end = eventEnd.getText().toString().trim();
-        //boolean isGeoLocationEnabled = geoLocation.isChecked();
-        Bitmap eventPosterBitmap = ((BitmapDrawable) eventPoster.getDrawable()).getBitmap();
-
-        Event event = createEvent(name, start, end, capacity, details, eventPoster.getDrawingCache()); // TODO change how we store images?
-        // eventQrCode = event.getQrCode();
-        // eventQrCode.setText(eventId); // TODO Do we use an event Id? Set qr code text to event Id here or automatically inside event class?
-        // facility.addEvent(event);// TODO update facility array with event
-        // databaseManager.createEvent(facility, event);// TODO update event in database
-
-
-        if (event != null) {
-            // For now, just log the event or handle further operations
-            Log.d("CreateEvent", "Event created: " + event.getName());
-        } else {
-            Toast.makeText(getActivity(), "Invalid event data", Toast.LENGTH_SHORT).show();
+    /**
+     * Parses a date-time string into an Instant.
+     *
+     * @param dateTimeStr the date-time string in "dd/MM/yyyy HH:mm" format.
+     * @return an Instant representing the parsed date-time.
+     * @throws Exception if the input is invalid.
+     */
+    private Instant parseDateTime(String dateTimeStr) throws Exception {
+        try {
+            LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, dateFormatter);
+            return dateTime.atZone(ZoneId.systemDefault()).toInstant();
+        } catch (Exception e) {
+            throw new Exception("Invalid date-time format. Use dd/MM/yyyy HH:mm.");
         }
     }
 }
