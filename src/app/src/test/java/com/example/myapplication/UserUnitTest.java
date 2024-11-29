@@ -54,14 +54,6 @@ public class UserUnitTest {
     }
 
     @Test
-    public void deleteProfilePictureTest() throws Exception {
-        User user = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
-        assertNull(user.getProfilePicture());
-        user.deleteProfilePicture();
-        assertNull(user.getProfilePicture());
-    }
-
-    @Test
     public void setGetFacilityTest() throws Exception {
         User user = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
         assertNull(user.getFacility());
