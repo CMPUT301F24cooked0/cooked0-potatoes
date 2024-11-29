@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
@@ -578,7 +579,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
                 events.add(new Event(name, instant, eventPoster, capacity, qrCode, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
             }
             catch (Exception e) {
-                throw new RuntimeException(e);
+                continue;
             }
         }
 
