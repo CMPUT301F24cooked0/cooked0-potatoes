@@ -34,13 +34,14 @@ public class FacilityFragment extends Fragment {
     public void onViewCreated (@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
-        user = (User) getArguments().getSerializable("user");
+        user = facilityViewModel.getOrganizer(); // get user from view model
+//        user = (User) getArguments().getSerializable("user");
         if (user != null) {
             facilityViewModel.setOrganizer(user);
 
             // change fragments depending on whether the user has a facility or not
             if (user.getFacility() != null) {
-                // show facility view events page
+                // TODO show facility view events page once merged in
                 Toast.makeText(this.requireContext(), "User has facility", Toast.LENGTH_SHORT).show(); // temporary until facility view events page is merged
             } else {
                 FragmentManager fragmentManager = getParentFragmentManager();
