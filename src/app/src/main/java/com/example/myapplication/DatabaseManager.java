@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
@@ -20,6 +21,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchListener, OnEntrantStatusesFetchListener { // static class
     private final FirebaseFirestore db;
@@ -102,6 +104,23 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         this.updateFacility(user.getFacility());
     }
 
+    private Boolean deleteUserNoThread(User user) {
+        if (user == null || user.getUserReference() == null) {
+            return false;
+        }
+        this.deleteFacilityNoThread(user.getFacility());
+        DocumentReference userRef = user.getUserReference();
+        Task task = userRef.delete();
+        try {
+            Tasks.await(task);
+        } catch (ExecutionException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Deletes the User (and everything about them, such as their facility, events, etc) in the database.
      * @param user
@@ -111,8 +130,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (user == null || user.getUserReference() == null) {
             return false;
         }
-        // TODO implement the rest
-        return false;
+        Thread thread = new Thread(() -> {
+            this.deleteUserNoThread(user);
+        });
+        thread.start();
+        return true;
     }
 
     /**
@@ -129,6 +151,23 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         Thread thread = new Thread(() -> {
             User user = fetchUser(userID);
             onUserFetchListener.onUserFetch(user);
+        });
+        thread.start();
+    }
+
+    /**
+     * Requests to get all Users from the database.
+     * Once all Users are fetched, which is done asynchronously, they will be returned
+     * via the onAllUsersFetchListener method.
+     * IMPORTANT NOTE: The DatabaseManager will recursively build the Users
+     * and attach all objects that those Users are attached to (their Facility, Events, EntrantStatuses),
+     * however this MAY be done after the onAllUsersFetchListener has returned the users
+     * @param onAllUsersFetchListener
+     */
+    public void getAllUsers(OnAllUsersFetchListener onAllUsersFetchListener) {
+        Thread thread = new Thread(() -> {
+            ArrayList<User> users = fetchAllUsers();
+            onAllUsersFetchListener.onAllUsersFetch(users);
         });
         thread.start();
     }
@@ -215,6 +254,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         return user;
     }
 
+    private ArrayList<User> fetchAllUsers() {
+        // FIXME IMPLEMENT THIS
+        return new ArrayList<>();
+    }
+
     /**
      * Inserts a Facility into the database.
      * Recursively inserts all of the objects attached to the Facility (Events, EntrantStatuses)
@@ -261,6 +305,25 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
     }
 
+    private Boolean deleteFacilityNoThread(Facility facility) {
+        if (facility == null || facility.getFacilityReference() == null) {
+            return false;
+        }
+        for (Event event : facility.getEvents()) {
+            this.deleteEventNoThread(event);
+        }
+        DocumentReference facilityRef = facility.getFacilityReference();
+        Task task = facilityRef.delete();
+        try {
+            Tasks.await(task);
+        } catch (ExecutionException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Deletes the Facility (and everything about them, such as events, etc) in the database.
      * @param facility
@@ -270,8 +333,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (facility == null || facility.getFacilityReference() == null) {
             return false;
         }
-        // TODO implement the rest
-        return false;
+        Thread thread = new Thread(() -> {
+            this.deleteFacilityNoThread(facility);
+        });
+        thread.start();
+        return true;
     }
 
     /**
@@ -285,6 +351,20 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         Thread thread = new Thread(() -> {
             Facility facility = fetchFacility(organizer);
             onFacilityFetchListener.onFacilityFetch(organizer, facility);
+        });
+        thread.start();
+    }
+
+    /**
+     * Requests to get all Facilities from the database.
+     * Once the facilities are fetched, which is done asynchronously, they will be returned
+     * via the onAllFacilitiesFetchListener method.
+     * @param onAllFacilitiesFetchListener
+     */
+    public void getAllFacilities(OnAllFacilitiesFetchListener onAllFacilitiesFetchListener) {
+        Thread thread = new Thread(() -> {
+            ArrayList<Facility> facilities = fetchAllFacilities();
+            onAllFacilitiesFetchListener.onAllFacilitiesFetch(facilities);
         });
         thread.start();
     }
@@ -347,6 +427,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         this.getEvents(facility, this); // get facility's events
 
         return facility;
+    }
+
+    private ArrayList<Facility> fetchAllFacilities() {
+        // FIXME IMPLEMENT THIS
+        return new ArrayList<>();
     }
 
     @Override
@@ -420,6 +505,25 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
     }
 
+    private Boolean deleteEventNoThread(Event event) {
+        if (event == null || event.getEventReference() == null) {
+            return false;
+        }
+        for (EntrantStatus entrantStatus : event.getEntrantStatuses()) {
+            this.deleteEntrantStatusNoThread(entrantStatus);
+        }
+        DocumentReference eventRef = event.getEventReference();
+        Task task = eventRef.delete();
+        try {
+            Tasks.await(task);
+        } catch (ExecutionException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Deletes the Event (and everything about them, such as entrantStatuses, etc) in the database.
      * @param event
@@ -429,13 +533,16 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (event == null || event.getEventReference() == null) {
             return false;
         }
-        // TODO implement the rest
-        return false;
+        Thread thread = new Thread(() -> {
+            this.deleteEventNoThread(event);
+        });
+        thread.start();
+        return true;
     }
 
     /**
      * Requests to get a Facility's Events from the database.
-     * Once the Events have all been fetched, which is done asynchronously, they wil be returned
+     * Once the Events have all been fetched, which is done asynchronously, they will be returned
      * via the onEventsFetchListener method.
      * @param facility
      * @param onEventsFetchListener
@@ -444,6 +551,20 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         Thread thread = new Thread(() -> {
             ArrayList<Event> events = fetchEvents(facility);
             onEventsFetchListener.onEventsFetch(facility, events);
+        });
+        thread.start();
+    }
+
+    /**
+     * Requests to get all Events from the database.
+     * Once the Events have all been fetched, which is done asynchronously, they will be returned
+     * via the onAllEventsFetchListener method.
+     * @param onAllEventsFetchListener
+     */
+    public void getAllEvents(OnAllEventsFetchListener onAllEventsFetchListener) {
+        Thread thread = new Thread(() -> {
+            ArrayList<Event> events = fetchAllEvents();
+            onAllEventsFetchListener.onAllEventsFetch(events);
         });
         thread.start();
     }
@@ -513,7 +634,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
                 events.add(new Event(name, instant, eventPoster, capacity, qrCode, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
             }
             catch (Exception e) {
-                throw new RuntimeException(e);
+                continue;
             }
         }
 
@@ -522,6 +643,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
 
         return events;
+    }
+
+    private ArrayList<Event> fetchAllEvents() {
+        // FIXME IMPLEMENT THIS
+        return new ArrayList<>();
     }
 
     @Override
@@ -569,6 +695,22 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         entrantStatusRef.update(entrantStatusData);
     }
 
+    private Boolean deleteEntrantStatusNoThread(EntrantStatus entrantStatus) {
+        if (entrantStatus == null || entrantStatus.getEntrantStatusReference() == null) {
+            return false;
+        }
+        DocumentReference entrantStatusRef = entrantStatus.getEntrantStatusReference();
+        Task task = entrantStatusRef.delete();
+        try {
+            Tasks.await(task);
+        } catch (ExecutionException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Deletes the EntrantStatus in the database.
      * @param entrantStatus
@@ -578,8 +720,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (entrantStatus == null || entrantStatus.getEntrantStatusReference() == null) {
             return false;
         }
-        // TODO implement the rest
-        return false;
+        Thread thread = new Thread(() -> {
+            this.deleteEntrantStatusNoThread(entrantStatus);
+        });
+        thread.start();
+        return true;
     }
 
     /**
