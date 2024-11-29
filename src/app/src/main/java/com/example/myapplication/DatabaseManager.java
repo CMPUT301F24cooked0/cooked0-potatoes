@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
@@ -20,6 +21,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchListener, OnEntrantStatusesFetchListener { // static class
     private final FirebaseFirestore db;
@@ -102,6 +104,23 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         this.updateFacility(user.getFacility());
     }
 
+    private Boolean deleteUserNoThread(User user) {
+        if (user == null || user.getUserReference() == null) {
+            return false;
+        }
+        this.deleteFacilityNoThread(user.getFacility());
+        DocumentReference userRef = user.getUserReference();
+        Task task = userRef.delete();
+        try {
+            Tasks.await(task);
+        } catch (ExecutionException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Deletes the User (and everything about them, such as their facility, events, etc) in the database.
      * @param user
@@ -111,8 +130,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (user == null || user.getUserReference() == null) {
             return false;
         }
-        // TODO implement the rest
-        return false;
+        Thread thread = new Thread(() -> {
+            this.deleteUserNoThread(user);
+        });
+        thread.start();
+        return true;
     }
 
     /**
@@ -283,6 +305,25 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
     }
 
+    private Boolean deleteFacilityNoThread(Facility facility) {
+        if (facility == null || facility.getFacilityReference() == null) {
+            return false;
+        }
+        for (Event event : facility.getEvents()) {
+            this.deleteEventNoThread(event);
+        }
+        DocumentReference facilityRef = facility.getFacilityReference();
+        Task task = facilityRef.delete();
+        try {
+            Tasks.await(task);
+        } catch (ExecutionException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Deletes the Facility (and everything about them, such as events, etc) in the database.
      * @param facility
@@ -292,8 +333,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (facility == null || facility.getFacilityReference() == null) {
             return false;
         }
-        // TODO implement the rest
-        return false;
+        Thread thread = new Thread(() -> {
+            this.deleteFacilityNoThread(facility);
+        });
+        thread.start();
+        return true;
     }
 
     /**
@@ -461,6 +505,25 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
     }
 
+    private Boolean deleteEventNoThread(Event event) {
+        if (event == null || event.getEventReference() == null) {
+            return false;
+        }
+        for (EntrantStatus entrantStatus : event.getEntrantStatuses()) {
+            this.deleteEntrantStatusNoThread(entrantStatus);
+        }
+        DocumentReference eventRef = event.getEventReference();
+        Task task = eventRef.delete();
+        try {
+            Tasks.await(task);
+        } catch (ExecutionException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Deletes the Event (and everything about them, such as entrantStatuses, etc) in the database.
      * @param event
@@ -470,8 +533,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (event == null || event.getEventReference() == null) {
             return false;
         }
-        // TODO implement the rest
-        return false;
+        Thread thread = new Thread(() -> {
+            this.deleteEventNoThread(event);
+        });
+        thread.start();
+        return true;
     }
 
     /**
@@ -568,7 +634,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
                 events.add(new Event(name, instant, eventPoster, capacity, qrCode, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
             }
             catch (Exception e) {
-                throw new RuntimeException(e);
+                continue;
             }
         }
 
@@ -629,6 +695,22 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         entrantStatusRef.update(entrantStatusData);
     }
 
+    private Boolean deleteEntrantStatusNoThread(EntrantStatus entrantStatus) {
+        if (entrantStatus == null || entrantStatus.getEntrantStatusReference() == null) {
+            return false;
+        }
+        DocumentReference entrantStatusRef = entrantStatus.getEntrantStatusReference();
+        Task task = entrantStatusRef.delete();
+        try {
+            Tasks.await(task);
+        } catch (ExecutionException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Deletes the EntrantStatus in the database.
      * @param entrantStatus
@@ -638,8 +720,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (entrantStatus == null || entrantStatus.getEntrantStatusReference() == null) {
             return false;
         }
-        // TODO implement the rest
-        return false;
+        Thread thread = new Thread(() -> {
+            this.deleteEntrantStatusNoThread(entrantStatus);
+        });
+        thread.start();
+        return true;
     }
 
     /**
