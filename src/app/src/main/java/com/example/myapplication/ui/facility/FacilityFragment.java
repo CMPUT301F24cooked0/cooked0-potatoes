@@ -36,16 +36,18 @@ public class FacilityFragment extends Fragment {
     public void onViewCreated (@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         try {
+//            FacilityViewModel facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
+//            if (facilityViewModel.getOrganizer() == null) {
+//                user = new User("test", "test", "test@gmail.com");
+//                facilityViewModel.setOrganizer(user);
+//            } else {
+//                user = facilityViewModel.getOrganizer();
+//            }
             FacilityViewModel facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
-            if (facilityViewModel.getOrganizer() == null) {
-                user = new User("test", "test", "test@gmail.com");
-                facilityViewModel.setOrganizer(user);
-            } else {
-                user = facilityViewModel.getOrganizer();
-            }
-            Toast.makeText(this.requireContext(), "User created", Toast.LENGTH_SHORT).show();
+            user = facilityViewModel.getOrganizer();
+            Toast.makeText(this.requireContext(), "Hello" + user.getName(), Toast.LENGTH_SHORT).show();
             if (user.getFacility() == null) {
-                Toast.makeText(this.requireContext(), "Please create a facility", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this.requireContext(), "Please create a facility", Toast.LENGTH_SHORT).show();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new FacilityCreationFragment())

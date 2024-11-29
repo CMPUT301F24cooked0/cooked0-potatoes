@@ -15,14 +15,17 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.myapplication.databinding.ActivityMainBinding;
+import com.example.myapplication.ui.facility.FacilityViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
@@ -56,6 +59,13 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.bottomNav, navController);
+        try {
+            user = new User("test", "test", "test@gmail.com");
+        } catch (Exception e) {
+            Toast.makeText(this, "Unable to create user", Toast.LENGTH_SHORT).show();
+        }
+        FacilityViewModel facilityViewModel = new ViewModelProvider(this).get(FacilityViewModel.class);
+        facilityViewModel.setOrganizer(user);
 
 
         profileTextView = findViewById(R.id.profile_text);
