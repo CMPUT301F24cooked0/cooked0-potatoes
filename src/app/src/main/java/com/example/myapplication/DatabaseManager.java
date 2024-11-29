@@ -311,6 +311,12 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         thread.start();
     }
 
+    /**
+     * Requests to get all Facilities from the database.
+     * Once the facilities are fetched, which is done asynchronously, they will be returned
+     * via the onAllFacilitiesFetchListener method.
+     * @param onAllFacilitiesFetchListener
+     */
     public void getAllFacilities(OnAllFacilitiesFetchListener onAllFacilitiesFetchListener) {
         Thread thread = new Thread(() -> {
             ArrayList<Facility> facilities = fetchAllFacilities();
