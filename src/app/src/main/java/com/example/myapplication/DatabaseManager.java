@@ -311,6 +311,14 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         thread.start();
     }
 
+    public void getAllFacilities(OnAllFacilitiesFetchListener onAllFacilitiesFetchListener) {
+        Thread thread = new Thread(() -> {
+            ArrayList<Facility> facilities = fetchAllFacilities();
+            onAllFacilitiesFetchListener.onAllFacilitiesFetch(facilities);
+        });
+        thread.start();
+    }
+
     private Facility fetchFacility(User organizer) {
         DocumentReference userRef = organizer.getUserReference();
         CollectionReference facilityCol = userRef.collection(DatabaseCollectionNames.facilities.name());
@@ -369,6 +377,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         this.getEvents(facility, this); // get facility's events
 
         return facility;
+    }
+
+    private ArrayList<Facility> fetchAllFacilities() {
+        // FIXME IMPLEMENT THIS
+        return new ArrayList<>();
     }
 
     @Override
