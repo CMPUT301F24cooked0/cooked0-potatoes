@@ -133,6 +133,23 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         thread.start();
     }
 
+    /**
+     * Requests to get all Users from the database.
+     * Once all Users are fetched, which is done asynchronously, they will be returned
+     * via the onAllUsersFetchListener method.
+     * IMPORTANT NOTE: The DatabaseManager will recursively build the Users
+     * and attach all objects that those Users are attached to (their Facility, Events, EntrantStatuses),
+     * however this MAY be done after the onAllUsersFetchListener has returned the users
+     * @param onAllUsersFetchListener
+     */
+    public void getAllUsers(OnAllUsersFetchListener onAllUsersFetchListener) {
+        Thread thread = new Thread(() -> {
+            ArrayList<User> users = fetchAllUsers();
+            onAllUsersFetchListener.onAllUsersFetch(users);
+        });
+        thread.start();
+    }
+
     private User fetchUser(String userID) {
         // before creating a new user object from the database, we need to check if we already have a User object for this user
         for (User user : this.users) {
@@ -213,6 +230,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         this.getFacility(user, this); // get user's facility, which is automatically added to user
 
         return user;
+    }
+
+    private ArrayList<User> fetchAllUsers() {
+        // FIXME IMPLEMENT THIS
+        return new ArrayList<>();
     }
 
     /**
