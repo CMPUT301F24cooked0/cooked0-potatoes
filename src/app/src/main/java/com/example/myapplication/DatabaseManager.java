@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
@@ -10,16 +11,14 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Array;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchListener, OnEntrantStatusesFetchListener { // static class
     private final FirebaseFirestore db;
@@ -102,6 +101,23 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         this.updateFacility(user.getFacility());
     }
 
+    private Boolean deleteUserNoThread(User user) {
+        if (user == null || user.getUserReference() == null) {
+            return false;
+        }
+        this.deleteFacilityNoThread(user.getFacility());
+        DocumentReference userRef = user.getUserReference();
+        Task task = userRef.delete();
+        try {
+            Tasks.await(task);
+        } catch (ExecutionException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Deletes the User (and everything about them, such as their facility, events, etc) in the database.
      * @param user
@@ -111,8 +127,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (user == null || user.getUserReference() == null) {
             return false;
         }
-        // TODO implement the rest
-        return false;
+        Thread thread = new Thread(() -> {
+            this.deleteUserNoThread(user);
+        });
+        thread.start();
+        return true;
     }
 
     /**
@@ -319,6 +338,25 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
     }
 
+    private Boolean deleteFacilityNoThread(Facility facility) {
+        if (facility == null || facility.getFacilityReference() == null) {
+            return false;
+        }
+        for (Event event : facility.getEvents()) {
+            this.deleteEventNoThread(event);
+        }
+        DocumentReference facilityRef = facility.getFacilityReference();
+        Task task = facilityRef.delete();
+        try {
+            Tasks.await(task);
+        } catch (ExecutionException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Deletes the Facility (and everything about them, such as events, etc) in the database.
      * @param facility
@@ -328,8 +366,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (facility == null || facility.getFacilityReference() == null) {
             return false;
         }
-        // TODO implement the rest
-        return false;
+        Thread thread = new Thread(() -> {
+            this.deleteFacilityNoThread(facility);
+        });
+        thread.start();
+        return true;
     }
 
     /**
@@ -497,6 +538,25 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
     }
 
+    private Boolean deleteEventNoThread(Event event) {
+        if (event == null || event.getEventReference() == null) {
+            return false;
+        }
+        for (EntrantStatus entrantStatus : event.getEntrantStatuses()) {
+            this.deleteEntrantStatusNoThread(entrantStatus);
+        }
+        DocumentReference eventRef = event.getEventReference();
+        Task task = eventRef.delete();
+        try {
+            Tasks.await(task);
+        } catch (ExecutionException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Deletes the Event (and everything about them, such as entrantStatuses, etc) in the database.
      * @param event
@@ -506,8 +566,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (event == null || event.getEventReference() == null) {
             return false;
         }
-        // TODO implement the rest
-        return false;
+        Thread thread = new Thread(() -> {
+            this.deleteEventNoThread(event);
+        });
+        thread.start();
+        return true;
     }
 
     /**
@@ -604,7 +667,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
                 events.add(new Event(name, instant, eventPoster, capacity, qrCode, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
             }
             catch (Exception e) {
-                throw new RuntimeException(e);
+                continue;
             }
         }
 
@@ -625,6 +688,86 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         for (Event event : events) {
             facility.addEvent(event);
         }
+    }
+
+    /**
+     * Gets an Event from the database.
+     * Once the Event has been fetched, it will be returned
+     * via the onSingleEventFetchListener method (onSingleEventFetch)
+     * @param eventPath
+     * @param onSingleEventFetchListener
+     */
+
+    public void getSingleEvent(String eventPath, OnSingleEventFetchListener onSingleEventFetchListener) {
+        Thread thread = new Thread(() -> {
+            Event event = fetchSingleEvent(eventPath);
+            onSingleEventFetchListener.onSingleEventFetch(event);
+        });
+        thread.start();
+
+    }
+
+    private Event fetchSingleEvent(String eventPath) {
+        // TODO take qr path instead and validate it?
+        DocumentReference singleEventRef = db.document(eventPath);
+        Task<DocumentSnapshot> task = singleEventRef.get();
+        DocumentSnapshot documentSnapshot = null;
+        Event event = null;
+        try {
+            documentSnapshot = Tasks.await(task);
+        } catch (ExecutionException e) {
+            return null;
+        } catch (InterruptedException e) {
+            return null;
+        }
+
+        if (documentSnapshot == null) {
+            return null;
+        }
+        if (!documentSnapshot.exists()) {
+            return null;
+        }
+        HashMap<String, Object> singleEventData = (HashMap<String, Object>) documentSnapshot.getData();
+        if (singleEventData == null) {
+            return null;
+        }
+        Object nameTemp = singleEventData.get(DatabaseEventFieldNames.name.name());
+        if (nameTemp == null) {
+            return null;
+        }
+        String name = (String) nameTemp;
+
+        Object dateTemp = singleEventData.get(DatabaseEventFieldNames.instant.name());
+        if (dateTemp == null) {
+            return null;
+        }
+        Timestamp dateTimestamp = (Timestamp) dateTemp;
+        Instant instant = dateTimestamp.toInstant();
+
+        Object eventPosterTemp = singleEventData.get(DatabaseEventFieldNames.eventPoster.name());
+        if (eventPosterTemp == null) {
+            return null;
+        }
+        String encodedEventPoster = (String) eventPosterTemp;
+        Bitmap eventPoster = BitmapConverter.StringToBitmap(encodedEventPoster);
+
+        Object qrCodeTemp = singleEventData.get(DatabaseEventFieldNames.qrCode.name());
+        if (qrCodeTemp == null) {
+            return null;
+        }
+        QRCode qrCode = new QRCode((String) qrCodeTemp);
+
+        Object capacityTemp = singleEventData.get(DatabaseEventFieldNames.capacity.name());
+        Integer capacity = (Integer) capacityTemp;
+
+        try {
+            event = new Event(name, instant, eventPoster, capacity, qrCode, new EntrantPool(), singleEventRef);
+        }
+        catch (Exception e) {
+            return null;
+        }
+        return event;
+
     }
 
     /**
@@ -665,6 +808,22 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         entrantStatusRef.update(entrantStatusData);
     }
 
+    private Boolean deleteEntrantStatusNoThread(EntrantStatus entrantStatus) {
+        if (entrantStatus == null || entrantStatus.getEntrantStatusReference() == null) {
+            return false;
+        }
+        DocumentReference entrantStatusRef = entrantStatus.getEntrantStatusReference();
+        Task task = entrantStatusRef.delete();
+        try {
+            Tasks.await(task);
+        } catch (ExecutionException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Deletes the EntrantStatus in the database.
      * @param entrantStatus
@@ -674,8 +833,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (entrantStatus == null || entrantStatus.getEntrantStatusReference() == null) {
             return false;
         }
-        // TODO implement the rest
-        return false;
+        Thread thread = new Thread(() -> {
+            this.deleteEntrantStatusNoThread(entrantStatus);
+        });
+        thread.start();
+        return true;
     }
 
     /**
