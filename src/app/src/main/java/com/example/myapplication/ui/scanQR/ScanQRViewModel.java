@@ -4,16 +4,37 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.myapplication.Event;
+import com.example.myapplication.User;
+
 public class ScanQRViewModel extends ViewModel {
 
-    private final MutableLiveData<String> mText;
+    private User user;
+    private Event eventToView;
+    private String eventPath;
 
     public ScanQRViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is dashboard fragment");
+        user = null;
+        eventToView = null;
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public void setUser(User user) {
+        this.user = user;
     }
+    public User getUser() {
+        return this.user;
+    }
+    public void setEventToView(Event event) {
+        this.eventToView = event;
+    }
+    public Event getEventToView() {
+        return this.eventToView;
+    }
+    public void setEventPath(String path) {
+        this.eventPath = path;
+    }
+    public String getEventPath() {
+        return this.eventPath;
+    }
+
 }
