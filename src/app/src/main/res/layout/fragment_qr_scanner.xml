@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/appBackground"
     android:orientation="vertical"
-    tools:context=".QRScannerFragment">
+    tools:context=".ui.scanQR.QRScannerFragment">
 
     <TextView
         android:id="@+id/scan_qr_header"
