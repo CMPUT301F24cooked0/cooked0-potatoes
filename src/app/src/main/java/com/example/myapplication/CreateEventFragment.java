@@ -93,6 +93,25 @@ public class CreateEventFragment extends Fragment {
             Toast.makeText(getActivity(), "Event created successfully!", Toast.LENGTH_SHORT).show();
             Log.d("CreateEventFragment", "Event created: " + event.getName());
 
+            // Pass event data to EventDetailsFragment
+            Bundle bundle = new Bundle();
+            bundle.putString("eventName", event.getName());
+            bundle.putString("eventDate", startDateTime);
+            bundle.putString("eventTime", endDateTime);
+            bundle.putString("eventDetails", event.getDetails());
+            bundle.putInt("eventCapacity", event.getCapacity());
+            //bundle.putParcelable("eventPoster", event.getPoster());  // Assuming eventPoster is a Bitmap
+
+            // Create an instance of EventDetailsFragment
+            EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
+            eventDetailsFragment.setArguments(bundle);
+
+            // Replace the current fragment with EventDetailsFragment
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, eventDetailsFragment)  // Make sure R.id.fragment_container is correct
+                    .addToBackStack(null)  // Optional: adds to back stack for navigation
+                    .commit();
+
         } catch (Exception e) {
             Log.e("CreateEventFragment", "Error creating event", e);
             Toast.makeText(getActivity(), "Error creating event: " + e.getMessage(), Toast.LENGTH_SHORT).show();

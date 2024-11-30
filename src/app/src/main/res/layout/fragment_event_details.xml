@@ -30,7 +30,7 @@
                 android:id="@+id/eventPoster"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:src="@drawable/default_event_poster"  <!-- Replace with your event poster source -->
+                android:src="@drawable/default_event_poster"
                 android:scaleType="centerCrop"
                 android:layout_marginBottom="20dp"/>
 
@@ -57,13 +57,13 @@
             <!-- Edit Event Button -->
             <Button
                 android:id="@+id/editEventButton"
-                android:layout_width="wrap_content"
+                android:layout_width="131dp"
                 android:layout_height="wrap_content"
-                android:text="Edit Event"
                 android:layout_gravity="center"
-                android:textColor="@color/primaryColor"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/edit_button_background"
-                android:layout_marginBottom="20dp"/>
+                android:text="Edit Event"
+                android:textColor="@color/primaryColor" />
 
             <!-- Time -->
             <TextView
