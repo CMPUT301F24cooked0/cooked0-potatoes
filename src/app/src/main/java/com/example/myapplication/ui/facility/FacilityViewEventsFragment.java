@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.myapplication.CreateEventFragment;
 import com.example.myapplication.EditEventFragment;
 import com.example.myapplication.EventArrayAdapter;
 import com.example.myapplication.Facility;

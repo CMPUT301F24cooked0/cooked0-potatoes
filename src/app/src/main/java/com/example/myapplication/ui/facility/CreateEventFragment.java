@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.facility;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -16,6 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.Event;
+import com.example.myapplication.Facility;
+import com.example.myapplication.R;
+import com.example.myapplication.User;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -28,8 +33,10 @@ public class CreateEventFragment extends Fragment {
     private EditText eventNameInput, eventStartInput, eventEndInput, eventCapacityInput, eventDetailsInput;
     private ImageView eventPosterInput;
     private Button createEventButton;
+    private User user;
     private Facility facility; // Facility object representing the facility this event belongs to
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withLocale(Locale.getDefault());
+    private FacilityViewModel facilityViewModel;
 
     @Nullable
     @Override
@@ -47,10 +54,16 @@ public class CreateEventFragment extends Fragment {
         createEventButton = view.findViewById(R.id.createEventButton);
         createEventButton.setOnClickListener(this::onCreateEventClick);
 
-        // Assume facility object is passed via arguments
-        if (getArguments() != null) {
-            facility = (Facility) getArguments().getSerializable("facility");
+        // Get the user's facility
+        facilityViewModel = new FacilityViewModel();
+        user = facilityViewModel.getOrganizer();
+        if (user != null) {
+            facility = user.getFacility();
+        } else {
+            Toast.makeText(getActivity(), "User is not an organizer", Toast.LENGTH_SHORT).show();
         }
+
+
 
         return view;
     }
@@ -72,8 +85,13 @@ public class CreateEventFragment extends Fragment {
             }
 
             // Parse the dates
+
             Instant startInstant = parseDateTime(startDateTime);
             Instant endInstant = parseDateTime(endDateTime);
+            if (startInstant == null || endInstant == null) {
+                Toast.makeText(getActivity(), "Invalid date-time format. Use DD/MM/YYYY HH:mm", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             if (startInstant.isAfter(endInstant)) {
                 Toast.makeText(getActivity(), "Start time cannot be after end time", Toast.LENGTH_SHORT).show();
@@ -111,7 +129,7 @@ public class CreateEventFragment extends Fragment {
             LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, dateFormatter);
             return dateTime.atZone(ZoneId.systemDefault()).toInstant();
         } catch (Exception e) {
-            throw new Exception("Invalid date-time format. Use dd/MM/yyyy HH:mm.");
+            return null;
         }
     }
 }

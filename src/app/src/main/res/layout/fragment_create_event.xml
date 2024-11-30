@@ -9,18 +9,16 @@
     <TextView
         android:id="@+id/createEventTitle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginStart="84dp"
-        android:layout_marginTop="41dp"
         android:layout_marginEnd="84dp"
-        android:layout_marginBottom="15dp"
         android:fontFamily="sans-serif"
+        android:gravity="center"
         android:text="Create An Event"
         android:textColor="@color/black"
         android:textSize="34sp"
         android:textStyle="bold"
         android:translationY="-10dp"
-        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/scrollView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -31,8 +29,7 @@
         android:id="@+id/scrollView2"
         style="@android:style/Widget.DeviceDefault.Light.ScrollView"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="450dp"
         android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -224,7 +221,7 @@
                     android:id="@+id/eventStartHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Event Start Date*"
+                    android:text="Event Start Date and Time*"
                     android:textStyle="bold"
                     android:translationX="30dp"
                     android:translationY="30dp" />
@@ -236,7 +233,7 @@
                     android:background="@drawable/edit_text_box"
                     android:backgroundTintMode="add"
                     android:drawableTint="#00865353"
-                    android:hint=" DD/MM/YYYY"
+                    android:hint=" DD/MM/YYYY HH:mm"
                     android:translationX="30dp"
                     android:translationY="60dp" />
             </FrameLayout>
@@ -250,7 +247,7 @@
                     android:id="@+id/eventEndHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Event End Date*"
+                    android:text="Event End Date and Time*"
                     android:textStyle="bold"
                     android:translationX="30dp" />
 
@@ -261,7 +258,7 @@
                     android:background="@drawable/edit_text_box"
                     android:backgroundTintMode="add"
                     android:drawableTint="#00865353"
-                    android:hint=" DD/MM/YYYY"
+                    android:hint=" DD/MM/YYYY HH:mm"
                     android:translationX="30dp"
                     android:translationY="30dp" />
             </FrameLayout>
@@ -273,91 +270,6 @@
                 android:background="@drawable/cookeddivider"
                 android:translationX="25dp"
                 android:translationY="-20dp" />
-
-            <FrameLayout
-                android:id="@+id/timeSelectFrame"
-                android:layout_width="match_parent"
-                android:layout_height="400dp">
-
-                <TextView
-                    android:id="@+id/selectStartTimeHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Select a Start Time*"
-                    android:textStyle="bold"
-                    android:translationX="130dp" />
-
-                <TimePicker
-                    android:id="@+id/startTimePicker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleX="0.8"
-                    android:scaleY="0.8"
-                    android:timePickerMode="spinner"
-                    android:translationX="65dp" />
-
-                <View
-                    android:id="@+id/timeDivider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    android:translationY="200dp" />
-
-                <TextView
-                    android:id="@+id/selectEndTimeHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Select an End Time*"
-                    android:textStyle="bold"
-                    android:translationX="130dp"
-                    android:translationY="225dp" />
-
-                <TimePicker
-                    android:id="@+id/endTimePicker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleX="0.8"
-                    android:scaleY="0.8"
-                    android:timePickerMode="spinner"
-                    android:translationX="65dp"
-                    android:translationY="225dp" />
-
-            </FrameLayout>
-
-            <View
-                android:id="@+id/divider3"
-                android:layout_width="350dp"
-                android:layout_height="11dp"
-                android:background="@drawable/cookeddivider"
-                android:translationX="25dp"
-                android:translationY="5dp" />
-
-            <FrameLayout
-                android:id="@+id/weeklyFrame"
-                android:layout_width="match_parent"
-                android:layout_height="100dp">
-
-                <Switch
-                    android:id="@+id/setWeeklySwitch"
-                    android:layout_width="330dp"
-                    android:layout_height="39dp"
-                    android:text="Weekly"
-                    android:textColor="@color/defaultButtonColor"
-                    android:textSize="25dp"
-                    android:textStyle="bold"
-                    android:thumbTint="#FFFFFF"
-                    android:trackTint="#4E4397"
-                    android:translationX="30dp"
-                    android:translationY="10dp" />
-
-                <TextView
-                    android:id="@+id/weeklyDesc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Event is held on a weekly basis"
-                    android:translationX="30dp"
-                    android:translationY="55dp" />
-            </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/regStartFrame"

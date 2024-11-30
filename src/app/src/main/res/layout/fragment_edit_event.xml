@@ -235,7 +235,7 @@
                     android:background="@drawable/edit_text_box"
                     android:backgroundTintMode="add"
                     android:drawableTint="#00865353"
-                    android:hint=" DD/MM/YYYY"
+                    android:hint=" DD/MM/YYYY HH:mm"
                     android:translationX="30dp"
                     android:translationY="60dp" />
             </FrameLayout>
@@ -260,7 +260,7 @@
                     android:background="@drawable/edit_text_box"
                     android:backgroundTintMode="add"
                     android:drawableTint="#00865353"
-                    android:hint=" DD/MM/YYYY"
+                    android:hint=" DD/MM/YYYY HH:mm"
                     android:translationX="30dp"
                     android:translationY="30dp" />
             </FrameLayout>
@@ -273,56 +273,6 @@
                 android:translationX="25dp"
                 android:translationY="-20dp" />
 
-            <FrameLayout
-                android:id="@+id/editTimeSelectFrame"
-                android:layout_width="match_parent"
-                android:layout_height="400dp">
-
-                <TextView
-                    android:id="@+id/editSelectStartTimeHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Select a Start Time*"
-                    android:textStyle="bold"
-                    android:translationX="130dp" />
-
-                <TimePicker
-                    android:id="@+id/editStartTimePicker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleX="0.8"
-                    android:scaleY="0.8"
-                    android:timePickerMode="spinner"
-                    android:translationX="65dp" />
-
-                <View
-                    android:id="@+id/timeDivider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    android:translationY="200dp" />
-
-                <TextView
-                    android:id="@+id/editSelectEndTimeHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Select an End Time*"
-                    android:textStyle="bold"
-                    android:translationX="130dp"
-                    android:translationY="225dp" />
-
-                <TimePicker
-                    android:id="@+id/editEndTimePicker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleX="0.8"
-                    android:scaleY="0.8"
-                    android:timePickerMode="spinner"
-                    android:translationX="65dp"
-                    android:translationY="225dp" />
-
-            </FrameLayout>
-
             <View
                 android:id="@+id/divider3"
                 android:layout_width="350dp"
@@ -330,33 +280,6 @@
                 android:background="@drawable/cookeddivider"
                 android:translationX="25dp"
                 android:translationY="5dp" />
-
-            <FrameLayout
-                android:id="@+id/editWeeklyFrame"
-                android:layout_width="match_parent"
-                android:layout_height="100dp">
-
-                <Switch
-                    android:id="@+id/editWeeklySwitch"
-                    android:layout_width="330dp"
-                    android:layout_height="39dp"
-                    android:text="Weekly"
-                    android:textColor="@color/defaultButtonColor"
-                    android:textSize="25dp"
-                    android:textStyle="bold"
-                    android:thumbTint="#FFFFFF"
-                    android:trackTint="#4E4397"
-                    android:translationX="30dp"
-                    android:translationY="10dp" />
-
-                <TextView
-                    android:id="@+id/weeklyDesc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Event is held on a weekly basis"
-                    android:translationX="30dp"
-                    android:translationY="55dp" />
-            </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/editRegStartFrame"

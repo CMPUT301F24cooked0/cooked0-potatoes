@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -89,6 +90,12 @@ public class FacilityCreationFragment extends Fragment {
         facilityOwner.setFacility(facility); // set facility for user
         Toast.makeText(this.requireContext(), "Facility created", Toast.LENGTH_SHORT).show();
         // databaseManager.createFacility(facilityOwner, facility); // add facility to database and set facility document reference
+
+        // Navigate to view events
+        FragmentManager fragmentManager = getParentFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, new FacilityViewEventsFragment())
+                .commit();
     }
 
     public LatLng getAddress(String address) {
