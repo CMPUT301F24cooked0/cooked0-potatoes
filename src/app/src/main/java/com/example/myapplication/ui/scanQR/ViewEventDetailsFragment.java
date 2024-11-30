@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.scanQR;
 
 import android.os.Bundle;
 
@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.myapplication.Event;
+import com.example.myapplication.R;
 
 /**
  * This fragment allows a user to view the details of an event after scanning a QR code.

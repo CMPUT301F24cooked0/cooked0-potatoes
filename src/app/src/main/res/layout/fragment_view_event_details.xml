@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/appBackground"
-    tools:context=".ViewEventDetailsFragment">
+    tools:context=".ui.scanQR.ViewEventDetailsFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/event_poster_crop"
