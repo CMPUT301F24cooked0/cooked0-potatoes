@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.myapplication.EditEventFragment;
+import com.example.myapplication.Event;
 import com.example.myapplication.EventArrayAdapter;
 import com.example.myapplication.Facility;
 import com.example.myapplication.R;
@@ -73,9 +73,8 @@ public class FacilityViewEventsFragment extends Fragment {
             FragmentManager fragmentManager = getParentFragmentManager();
             EditEventFragment editEventFragment = new EditEventFragment();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("eventIndex", position);
-            editEventFragment.setArguments(bundle);
+            Event event = facilityViewModel.getEvents().getValue().get(position);
+            facilityViewModel.setEventToManage(event);
             fragmentTransaction.replace(R.id.fragment_container, editEventFragment); // TODO have this redirect to event managing page first
             fragmentTransaction.commit();
 

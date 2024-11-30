@@ -56,7 +56,6 @@ public class FacilityEditFragment extends Fragment {
         databaseManager = new DatabaseManager();
         FacilityViewModel facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
         existingFacility = facilityViewModel.getOrganizer().getFacility();
-        //existingFacility = (Facility) getArguments().getSerializable("facility"); // TODO get facility from bundle once navigation complete
         facilityNameInput.setText(existingFacility.getName()); // autofill existing facility name
         addressStr = existingFacility.getAddress(); // get existing facility address string
         facilityAddressInput.setText(addressStr); // autofill existing facility address

@@ -14,10 +14,12 @@ public class FacilityViewModel extends ViewModel {
 
     private User organizer;
     MutableLiveData<ArrayList<Event>> events;
+    private Event eventToManage;
 
     public FacilityViewModel() {
         organizer = null;
         events = null;
+        eventToManage = null;
 
     }
     public User getOrganizer() {
@@ -30,7 +32,7 @@ public class FacilityViewModel extends ViewModel {
 
     public void setEvents() {
         events = new MutableLiveData<>();
-        Facility facility = this.organizer.getFacility();
+        Facility facility = organizer.getFacility();
         events.setValue(facility.getEvents());
 
     }
@@ -39,6 +41,13 @@ public class FacilityViewModel extends ViewModel {
         return events;
 
     }
+    public void setEventToManage(Event event) {
+        eventToManage = event;
+    }
+    public Event getEventToManage() {
+        return eventToManage;
+    }
+
 
 
 }

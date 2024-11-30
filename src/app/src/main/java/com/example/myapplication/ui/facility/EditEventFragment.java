@@ -1,7 +1,9 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.facility;
 
 import android.app.DatePickerDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,6 +15,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.myapplication.Event;
+import com.example.myapplication.R;
+
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -22,12 +28,13 @@ import java.util.Date;
 
 public class EditEventFragment extends Fragment {
 
-    private EditText eventNameEditText, eventCapacityEditText;
+    private EditText eventNameEditText, eventCapacityEditText, eventStartEditText;
     private ImageView eventPosterImageView;
     private Button saveButton, dateButton;
-    private Date eventDate;
+    private Instant eventDate;
     private Bitmap eventPoster;
     private Event event;
+    private FacilityViewModel facilityViewModel;
 
 
     @Override
@@ -36,15 +43,17 @@ public class EditEventFragment extends Fragment {
 
         eventNameEditText = view.findViewById(R.id.editEventNameInput);
         eventCapacityEditText = view.findViewById(R.id.editEventCapInput);
-        // TODO get event from previous activity
+        eventStartEditText = view.findViewById(R.id.editEventStartInput);
         //dateButton = view.findViewById(R.id.editEventStartInput);
         saveButton = view.findViewById(R.id.editEventButton);
+        facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
+        event = facilityViewModel.getEventToManage();
 
         // Pre-fill fields with existing event data
         eventNameEditText.setText(event.getName());
         eventCapacityEditText.setText(event.getCapacity() != null ? String.valueOf(event.getCapacity()) : "");
         eventPosterImageView.setImageBitmap(event.getEventPoster());
-        eventDate = event.getDate();
+        eventDate = event.getInstant();
 
         // Set up date button to show a date picker
         dateButton.setOnClickListener(v -> showDatePickerDialog());
@@ -82,7 +91,7 @@ public class EditEventFragment extends Fragment {
 
         // Apply updates using Event class validation methods
         event.setName(name);
-        event.setDate(eventDate);
+        event.setInstant(eventDate);
         event.setCapacity(capacity);
 
         // Set the poster (update this as per your logic for changing the poster, e.g., via an image picker)
