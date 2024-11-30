@@ -59,18 +59,18 @@ public class ViewEventDetailsFragment extends Fragment {
         joinWaitlistBtn = view.findViewById(R.id.join_waitlist_button);
         eventToView = scanQRViewModel.getEventToView();
 
-        // set event details
-        eventName.setText(eventToView.getName());
+        eventName.setText(eventToView.getName()); // set event name
+        // set event date
         String eventStartStr = eventToView.getInstant().toString();
         // String eventEndStr = eventToView.getInstant().toString(); // TODO get end date when available in base class
         eventDate.setText(eventStartStr + " - end"); // TODO add end date
         // eventDesc.setText(eventToView.getDescription()); // TODO add description
         // registerStart.setText(eventToView.getInstant().toString()); // TODO add register start date
         // registerEnd.setText(eventToView.getInstant().toString()); // TODO add register end date
+
+        // set event poster
         Bitmap eventPosterBitmap = eventToView.getEventPoster();
-        if (eventPosterBitmap != null) {
-            eventPoster.setImageBitmap(eventPosterBitmap);
-        }
+        eventPoster.setImageBitmap(eventPosterBitmap);
         // TODO add boolean check for geolocation
         // TODO add button to join/leave waitlist
 
