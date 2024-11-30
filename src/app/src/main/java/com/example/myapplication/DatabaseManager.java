@@ -690,8 +690,18 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
     }
 
     private ArrayList<Event> fetchAllEvents() {
-        // FIXME IMPLEMENT THIS
-        return new ArrayList<>();
+        ArrayList<Facility> facilities = this.fetchAllFacilities();
+        ArrayList<Event> allEvents = new ArrayList<Event>();
+
+        ArrayList<Event> events = new ArrayList<Event>();
+        for (Facility facility: facilities) {
+            events = this.fetchEvents(facility); // FIXME convert this to facility.getEvents() once things car run on a single thread
+            if (events != null && !events.isEmpty()) {
+                allEvents.addAll(events);
+            }
+        }
+
+        return events;
     }
 
     @Override
