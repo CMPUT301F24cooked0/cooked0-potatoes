@@ -36,54 +36,25 @@ public class User implements Serializable {
     private DocumentReference userRef;
 
     /**
-     * Simplest constructor for the User class
-     * This constructor **creates a new user** and adds it to the database
-     * Profile picture will automatically be generated based on user's name
-     * User will not be admin by default
-     * everything else is set to null
-     * @param name
-     * @param email
-     * @throws Exception
-     */
-    public User(String uniqueID, String name, String email) throws Exception {
-        this.uniqueID = uniqueID;
-        this.setName(name); // it is important that name is set before profile picture
-        this.setEmail(email);
-        this.setPhoneNumber(null);
-        this.setProfilePicture(null);
-        this.isAdmin = false;
-        this.setFacility(null);
-        this.setReceivesOrgAdmNotifications(true);
-    }
-
-    /**
-     * This constructor is the same as the simplest one, but allows defining a phone number as well
-     * @param name
-     * @param email
-     * @param phoneNumber
-     * @throws Exception
-     */
-    public User(String uniqueID, String name, String email, Long phoneNumber) throws Exception {
-        this(uniqueID, name, email);
-        this.setPhoneNumber(phoneNumber);
-    }
-
-    /**
-     * This constructor is the same as the simplest one, but allows defining a profile picture as well
+     * Basic User constructor, no phoneNumber provided
      * @param name
      * @param email
      * @param profilePicture
      * @throws Exception
      */
     public User(String uniqueID, String name, String email, Bitmap profilePicture) throws Exception {
-        this(uniqueID, name, email);
+        this.uniqueID = uniqueID;
+        this.setName(name);
+        this.setEmail(email);
+        this.setPhoneNumber(null);
         this.setProfilePicture(profilePicture);
+        this.isAdmin = false;
+        this.setFacility(null);
+        this.setReceivesOrgAdmNotifications(true);
     }
 
     /**
-     * This constructor essentially a combination of:
-     * - the one that allows a phone number and
-     * - the one that allows a profile picture
+     * Basic User constructor with phoneNumber provided
      * @param name
      * @param email
      * @param phoneNumber
@@ -91,8 +62,14 @@ public class User implements Serializable {
      * @throws Exception
      */
     public User(String uniqueID, String name, String email, Long phoneNumber, Bitmap profilePicture) throws Exception {
-        this(uniqueID, name, email, phoneNumber);
+        this.uniqueID = uniqueID;
+        this.setName(name);
+        this.setEmail(email);
+        this.setPhoneNumber(phoneNumber);
         this.setProfilePicture(profilePicture);
+        this.isAdmin = false;
+        this.setFacility(null);
+        this.setReceivesOrgAdmNotifications(true);
     }
 
     /***
@@ -191,23 +168,14 @@ public class User implements Serializable {
     }
 
     /**
-     * set this user's profile picture, generates a profile picture if it's null
+     * set this user's profile picture. Cannot be null
      * @param profilePicture
      */
     public void setProfilePicture(Bitmap profilePicture) {
         if (profilePicture == null) {
-            // this is ok,
-            // but it means we have to auto-generate a profile picture based on user's name
-            // TODO generate profile picture based on user's name
+            throw new RuntimeException("User profilePicture cannot be null");
         }
         this.profilePicture = profilePicture;
-    }
-
-    /**
-     * delete this user's profile picture (resets it to the automatically generated one)
-     */
-    public void deleteProfilePicture() {
-        this.setProfilePicture(null); // deletes and generates from user's name
     }
 
     /**
