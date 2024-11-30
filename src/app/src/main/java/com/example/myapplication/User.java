@@ -8,6 +8,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import com.google.firebase.firestore.DocumentReference;
 
@@ -21,7 +22,7 @@ It also tracks if the user has created a facility or if they have any events.
 Additional functionalities including managing notification preferences and storage of information
 provided by the user
  */
-public class User {
+public class User implements Serializable {
     private static final FirebaseFirestore db=FirebaseFirestore.getInstance();
     protected static final CollectionReference userRef=db.collection("Users");
     private String uniqueID;

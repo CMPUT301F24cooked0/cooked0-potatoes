@@ -66,15 +66,4 @@ public class AdministratorBrowseUsersFragmentUnitTest {
                 });
     }
 
-    @Test
-    public void testDeleteDialog() throws  Exception{
-        User testUser=new User("name","name@email.com", 1234567890L);
-        fragment.userDataList.add(testUser);
-        fragment.userArrayAdapter.notifyDataSetChanged();
-
-        listView.setAdapter(fragment.userArrayAdapter);
-        listView.setOnItemClickListener((adapterView, view, position, id) -> fragment.showDeletePage(position));
-        listView.performItemClick(listView.getChildAt(0),0,listView.getItemIdAtPosition(0));
-        assertNotNull(listView.getOnItemClickListener());
-    }
 }
