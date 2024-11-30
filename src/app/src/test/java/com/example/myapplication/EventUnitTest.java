@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 
+import android.graphics.Bitmap;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import org.junit.Test;
@@ -91,7 +93,7 @@ public class EventUnitTest {
     @Test
     public void addEntrantTest() throws Exception {
         Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
-        User entrant = new User(null, "name", "email@email.ca");
+        User entrant = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
         LatLng joinedFrom = new LatLng(42.69, 69.42);
         assertEquals(event.getEntrants().size(), 0);
         event.addEntrant(entrant, joinedFrom);
@@ -102,7 +104,7 @@ public class EventUnitTest {
     @Test
     public void addDuplicateEntrantTest() throws Exception {
         Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
-        User entrant = new User(null, "name", "email@email.ca");
+        User entrant = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
         LatLng joinedFrom = new LatLng(42.69, 69.42);
         event.addEntrant(entrant, joinedFrom);
         assertThrows(EntrantAlreadyInPool.class, () -> {event.addEntrant(entrant, joinedFrom);});
@@ -112,7 +114,7 @@ public class EventUnitTest {
     @Test
     public void removeEntrantTest() throws Exception {
         Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
-        User entrant = new User(null, "name", "email@email.ca");
+        User entrant = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
         LatLng joinedFrom = new LatLng(42.69, 69.42);
         assertEquals(event.getEntrants().size(), 0);
         event.addEntrant(entrant, joinedFrom);
@@ -125,7 +127,7 @@ public class EventUnitTest {
     @Test
     public void removeEntrantNotInTest() throws Exception {
         Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
-        User entrant = new User(null, "name", "email@email.ca");
+        User entrant = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
         assertEquals(event.getEntrants().size(), 0);
         event.removeEntrant(entrant);
         assertEquals(event.getEntrants().size(), 0);
@@ -134,7 +136,7 @@ public class EventUnitTest {
     @Test
     public void getEntrantsTest() throws Exception {
         Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
-        User entrant = new User(null, "name", "email@email.ca");
+        User entrant = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
         LatLng joinedFrom = new LatLng(42.69, 69.42);
         assertEquals(event.getEntrants().size(), 0);
         event.addEntrant(entrant, joinedFrom);
@@ -145,7 +147,7 @@ public class EventUnitTest {
     @Test
     public void getEntrantStatusesTest() throws Exception {
         Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
-        User entrant = new User(null, "name", "email@email.ca");
+        User entrant = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
         LatLng joinedFrom = new LatLng(42.69, 69.42);
         assertEquals(event.getEntrantStatuses().size(), 0);
         event.addEntrant(entrant, joinedFrom);
