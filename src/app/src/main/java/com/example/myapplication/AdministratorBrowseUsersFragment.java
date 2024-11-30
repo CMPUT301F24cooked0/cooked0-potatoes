@@ -4,6 +4,7 @@ package com.example.myapplication;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.icu.text.Transliterator;
 import android.os.Bundle;
 import android.text.Layout;
@@ -46,8 +47,25 @@ public class AdministratorBrowseUsersFragment extends Fragment {
         userArrayAdapter = new UserArrayAdapter(requireContext(), userDataList);
         userList.setAdapter(userArrayAdapter);
         DatabaseManager databaseManager=new DatabaseManager();
-        //method from dbmanager to get all users to populate list.
-        userList.setOnItemClickListener(((adapterView, view1, position, id) -> showDeletePage(position)));
+        databaseManager.getAllUsers(users -> {
+            if(users!=null && !users.isEmpty()){
+                requireActivity().runOnUiThread(()->{
+                    userDataList.clear();
+                    userDataList.addAll(users);
+                    userArrayAdapter.notifyDataSetChanged();
+                    Log.d("Fetch Users","Success");
+                });
+            }
+            else{
+                requireActivity().runOnUiThread(()->{
+                    Log.w("Fetch Users", "No Users Found");
+                    Toast.makeText(requireContext(),"No Users Found",Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+        userList.setOnItemClickListener((adapterView, view1, position, id) -> {
+            User selectedUser=userDataList.get(position);
+        });
         return view;
     }
 
