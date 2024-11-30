@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.qr.generator)
     implementation(libs.play.services.maps)
     testImplementation(libs.junit)
     testImplementation(libs.core)
