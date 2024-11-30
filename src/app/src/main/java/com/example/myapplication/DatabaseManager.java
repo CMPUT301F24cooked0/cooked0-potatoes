@@ -672,7 +672,14 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             QRCode qrCode = new QRCode((String) qrCodeTemp);
 
             Object capacityTemp = eventData.get(DatabaseEventFieldNames.capacity.name());
-            Integer capacity = (Integer) capacityTemp;
+            Long capacityLong = (Long) capacityTemp;
+            Integer capacity;
+            if (capacityLong == null) {
+                capacity = null;
+            }
+            else {
+                capacity = capacityLong.intValue();
+            }
 
             try {
                 events.add(new Event(name, instant, eventPoster, capacity, qrCode, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
