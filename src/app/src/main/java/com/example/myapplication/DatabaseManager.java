@@ -590,6 +590,9 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         Bitmap eventPoster = BitmapConverter.StringToBitmap(encodedEventPoster);
 
         Object qrCodeTemp = singleEventData.get(DatabaseEventFieldNames.qrCode.name());
+        if (qrCodeTemp == null) {
+            return null;
+        }
         QRCode qrCode = new QRCode((String) qrCodeTemp);
 
         Object capacityTemp = singleEventData.get(DatabaseEventFieldNames.capacity.name());
