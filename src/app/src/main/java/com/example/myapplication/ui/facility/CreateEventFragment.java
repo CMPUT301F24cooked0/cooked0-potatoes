@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,7 +30,7 @@ import java.util.Locale;
 
 public class CreateEventFragment extends Fragment {
 
-    public Bitmap eventPoster;
+    private Bitmap eventPoster;
     private EditText eventNameInput, eventStartInput, eventEndInput, eventCapacityInput, eventDetailsInput;
     private ImageView eventPosterInput;
     private Button createEventButton;
@@ -52,6 +53,7 @@ public class CreateEventFragment extends Fragment {
         eventPosterInput = view.findViewById(R.id.eventPosterPlaceholder);
 
         createEventButton = view.findViewById(R.id.createEventButton);
+        eventPoster = null;
         createEventButton.setOnClickListener(this::onCreateEventClick);
 
         // Get the user's facility
@@ -62,6 +64,8 @@ public class CreateEventFragment extends Fragment {
         } else {
             Toast.makeText(getActivity(), "User is not an organizer", Toast.LENGTH_SHORT).show();
         }
+
+        // add image adding functionality (update eventposter and imageview)
 
 
 
@@ -77,12 +81,27 @@ public class CreateEventFragment extends Fragment {
             String startDateTime = eventStartInput.getText().toString().trim();
             String endDateTime = eventEndInput.getText().toString().trim();
             String details = eventDetailsInput.getText().toString().trim();
-            Bitmap poster = ((BitmapDrawable) eventPosterInput.getDrawable()).getBitmap();
+            // Bitmap poster = ((BitmapDrawable) eventPosterInput.getDrawable()).getBitmap();
+
+            if (name.isEmpty()) {
+                Toast.makeText(getActivity(), "Event name cannot be empty", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (startDateTime.isEmpty()) {
+                Toast.makeText(getActivity(), "Start date-time cannot be empty", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (endDateTime.isEmpty()) {
+                Toast.makeText(getActivity(), "End date-time cannot be empty", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
 
             Integer capacity = null;
             if (!eventCapacityInput.getText().toString().isEmpty()) {
                 capacity = Integer.parseInt(eventCapacityInput.getText().toString().trim());
             }
+
 
             // Parse the dates
 
@@ -98,9 +117,14 @@ public class CreateEventFragment extends Fragment {
                 return;
             }
 
+            if (eventPoster == null) {
+                Toast.makeText(getActivity(), "Event poster cannot be empty", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             // Create the event
-            Event event = new Event(name, startInstant, poster, capacity);
-            event.setDetails(details);
+            Event event = new Event(name, startInstant, eventPoster, capacity);
+            // event.setDetails(details);
 
             // Add event to facility (if facility is available)
             if (facility != null) {
@@ -125,7 +149,7 @@ public class CreateEventFragment extends Fragment {
      * @return an Instant representing the parsed date-time.
      * @throws Exception if the input is invalid.
      */
-    private Instant parseDateTime(String dateTimeStr) throws Exception {
+    private Instant parseDateTime(String dateTimeStr) {
         try {
             LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, dateFormatter);
             return dateTime.atZone(ZoneId.systemDefault()).toInstant();

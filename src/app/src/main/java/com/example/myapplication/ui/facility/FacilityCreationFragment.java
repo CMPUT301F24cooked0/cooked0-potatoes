@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.myapplication.DatabaseManager;
@@ -42,7 +43,6 @@ public class FacilityCreationFragment extends Fragment {
     String facilityName;
     String facilityAddressStr;
     Facility facility;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,7 +55,6 @@ public class FacilityCreationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // facilityOwner = (User) getArguments().getSerializable("user");
         FacilityViewModel facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
         facilityOwner = facilityViewModel.getOrganizer();
         facilityNameInput = view.findViewById(R.id.addFacilityName);
@@ -63,6 +62,7 @@ public class FacilityCreationFragment extends Fragment {
         createFacilityButton = view.findViewById(R.id.createFacilityButton);
         databaseManager = new DatabaseManager();
         createFacilityButton.setOnClickListener(this::onClick);
+
     }
     public void onClick(View view) {
         // get facility name and address from input fields
