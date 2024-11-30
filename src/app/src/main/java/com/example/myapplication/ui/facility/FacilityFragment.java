@@ -45,7 +45,6 @@ public class FacilityFragment extends Fragment {
 //            }
             FacilityViewModel facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
             user = facilityViewModel.getOrganizer();
-            Toast.makeText(this.requireContext(), "Hello" + user.getName(), Toast.LENGTH_SHORT).show();
             if (user.getFacility() == null) {
                 //Toast.makeText(this.requireContext(), "Please create a facility", Toast.LENGTH_SHORT).show();
                 FragmentManager fragmentManager = getParentFragmentManager();
@@ -55,12 +54,12 @@ public class FacilityFragment extends Fragment {
             } else {
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, new FacilityEditFragment())
+                        .replace(R.id.fragment_container, new FacilityViewEventsFragment())
                         .commit();
             }
 
         } catch (Exception e) {
-            Toast.makeText(this.requireContext(), "Unable to create user", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.requireContext(), "Unable to get user", Toast.LENGTH_SHORT).show();
         }
     }
 
