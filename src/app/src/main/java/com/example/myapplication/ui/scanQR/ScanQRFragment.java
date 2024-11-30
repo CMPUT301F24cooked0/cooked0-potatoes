@@ -26,7 +26,7 @@ public class ScanQRFragment extends Fragment {
 
         binding = ScanQrScreenFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
+        // FIXME ideally we wouldnt use this extra fragment but this is a quick fix as the fragments arent being replaced properly/don't cover the screen entirely
         FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, new QRScannerFragment());
         fragmentTransaction.commit();

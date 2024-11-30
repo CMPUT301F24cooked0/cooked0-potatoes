@@ -48,8 +48,6 @@ public class SearchEventFragment extends Fragment implements OnSingleEventFetchL
         databaseManager = new DatabaseManager();
         databaseManager.getSingleEvent(scanQRViewModel.getEventPath(), this);
 
-
-
     }
 
     @Override
