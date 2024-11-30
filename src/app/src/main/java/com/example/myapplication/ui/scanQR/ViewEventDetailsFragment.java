@@ -1,10 +1,12 @@
 package com.example.myapplication.ui.scanQR;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +23,7 @@ import com.example.myapplication.R;
  */
 public class ViewEventDetailsFragment extends Fragment {
     View view;
-    Event event;
+    Event eventToView;
     ImageView eventPoster;
     TextView eventName;
     TextView eventDesc;
@@ -31,7 +33,7 @@ public class ViewEventDetailsFragment extends Fragment {
     TextView registerEnd;
     TextView geolocation;
     Button joinWaitlistBtn;
-
+    ScanQRViewModel scanQRViewModel;
 
 
     @Override
@@ -42,34 +44,35 @@ public class ViewEventDetailsFragment extends Fragment {
         return view;
 
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // TODO get event from viewmodel
+        scanQRViewModel = new ViewModelProvider(requireActivity()).get(ScanQRViewModel.class);
         eventPoster = view.findViewById(R.id.event_poster_placeholder);
         eventName = view.findViewById(R.id.event_name_placeholder);
         eventDesc = view.findViewById(R.id.event_desc_placeholder);
-        eventTime = view.findViewById(R.id.event_time_placeholder);
         eventDate = view.findViewById(R.id.event_date_placeholder);
         registerStart = view.findViewById(R.id.register_start_placeholder);
         registerEnd = view.findViewById(R.id.register_end_placeholder);
         geolocation = view.findViewById(R.id.geolocation_notice_placeholder);
         joinWaitlistBtn = view.findViewById(R.id.join_waitlist_button);
+        eventToView = scanQRViewModel.getEventToView();
 
         // set event details
-        eventPoster.setImageBitmap(event.getEventPoster());
-        eventName.setText(event.getName());
-        eventTime.setText(event.getInstant().toString());
-        eventDate.setText(event.getInstant().toString());
-        // TODO set other event details once available in Event class
-
-        // set join waitlist button
-        // TODO add functionality to join/leave waitlist
-
-
-
-
+        eventName.setText(eventToView.getName());
+        String eventStartStr = eventToView.getInstant().toString();
+        // String eventEndStr = eventToView.getInstant().toString(); // TODO get end date when available in base class
+        eventDate.setText(eventStartStr + " - end"); // TODO add end date
+        // eventDesc.setText(eventToView.getDescription()); // TODO add description
+        // registerStart.setText(eventToView.getInstant().toString()); // TODO add register start date
+        // registerEnd.setText(eventToView.getInstant().toString()); // TODO add register end date
+        Bitmap eventPosterBitmap = eventToView.getEventPoster();
+        if (eventPosterBitmap != null) {
+            eventPoster.setImageBitmap(eventPosterBitmap);
+        }
+        // TODO add boolean check for geolocation
+        // TODO add button to join/leave waitlist
 
     }
-
 }
