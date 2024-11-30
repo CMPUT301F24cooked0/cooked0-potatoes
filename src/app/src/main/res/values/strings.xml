@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="edit_facility_str"><u>Edit Facility</u></string>
+    <string name="edit_event_str"><u>Edit Event</u></string>
 </resources>
