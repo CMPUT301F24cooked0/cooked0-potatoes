@@ -65,4 +65,15 @@ public class BitmapConverter {
 
         return encodedImage;
     }
+
+    /**
+     * Scales down input Bitmap by scalingFactor (> 1 scales down, < 1 scales up)
+     */
+    public static Bitmap ScaledDownBitmap(Bitmap imageBitmap, int scalingFactor) {
+        int width = imageBitmap.getWidth();
+        int height = imageBitmap.getHeight();
+        Bitmap compressedImageBitmap = Bitmap.createScaledBitmap(imageBitmap, width/scalingFactor, height/scalingFactor, true);
+
+        return compressedImageBitmap;
+    }
 }

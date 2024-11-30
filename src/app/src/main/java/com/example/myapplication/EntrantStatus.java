@@ -19,7 +19,10 @@ public class EntrantStatus {
      * @param entrant
      * @param joinedFrom
      */
-    public EntrantStatus(User entrant, LatLng joinedFrom) { // FIXME assert that entrant is not null!
+    public EntrantStatus(User entrant, LatLng joinedFrom) {
+        if (entrant == null) {
+            throw new RuntimeException("EntrantStatus entrant cannot be null");
+        }
         this.entrant = entrant;
         this.joinedFrom = joinedFrom;
         this.setStatus(Status.none); // starting status is none (no draw has occurred yet)
