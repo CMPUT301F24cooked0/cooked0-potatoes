@@ -41,10 +41,15 @@ public class AdminUserProfile extends AppCompatActivity{
         profileEmail.setText(selectedUser.getEmail());
         profileNumber.setText(String.valueOf(selectedUser.getPhoneNumber()));
         //TODO profile image
+
+        removeButton.setOnClickListener(view -> showDeletePage());
+        returnButton.setOnClickListener(view -> finish());
     }
 
 
-
+    /***
+     * Method to show the dialog page to confirm or cancel the delete action
+     */
     public void showDeletePage() {
         LayoutInflater inflater= LayoutInflater.from(this);
         View dialogView = inflater.inflate(R.layout.delete_dialog,null);
