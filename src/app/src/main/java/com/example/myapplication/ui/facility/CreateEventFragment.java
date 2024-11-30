@@ -105,6 +105,7 @@ public class CreateEventFragment extends Fragment {
             // Add event to facility (if facility is available)
             if (facility != null) {
                 facility.addEvent(event);
+                facilityViewModel.setEvents(); // Update the events in the ViewModel
                 Log.d("CreateEventFragment", "Event added to facility: " + facility.getName());
             }
 

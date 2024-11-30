@@ -96,5 +96,7 @@ public class EditEventFragment extends Fragment {
 
         // Set the poster (update this as per your logic for changing the poster, e.g., via an image picker)
         event.setEventPoster(eventPoster);
+        // update the event in the ViewModel
+        facilityViewModel.setEvents();
     }
 }
