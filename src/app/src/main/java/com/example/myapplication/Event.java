@@ -83,7 +83,7 @@ public class Event {
      */
     public Event(String name, String description, Instant startInstant, Instant endInstant, Instant registrationStartInstant, Instant registrationEndInstant, Bitmap eventPoster, Boolean geolocationRequired) throws Exception {
         this(name, startInstant, endInstant, registrationStartInstant, registrationEndInstant, eventPoster, geolocationRequired);
-        this.setDescription(description );
+        this.setDescription(description);
     }
 
     /**
@@ -418,14 +418,5 @@ public class Event {
      */
     public DocumentReference getEventReference() {
         return this.eventRef; // return reference to event in database
-    }
-
-    // Getter and setter for details
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
     }
 }
