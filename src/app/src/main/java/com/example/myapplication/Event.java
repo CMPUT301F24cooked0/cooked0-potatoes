@@ -424,24 +424,6 @@ public class Event implements Serializable {
         return this.entrantPool.getEntrantStatuses();
     }
 
-    /***
-     * Method to delete an Event which is called from the eventdetails page
-     * @param onSuccessListener
-     * @param onFailureListener
-     * @deprecated please DO NOT use this method, use DatabaseManager instead. // TODO create method in DatabaseManager to delete event
-     */
-    public void deleteEvent(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
-        if (eventId != null && !eventId.isEmpty()) {
-            FirebaseFirestore.getinstance().collection("Events").document(eventId).delete()
-                    .addOnSuccessListener(onSuccessListener)
-                    .addOnFailureListener(onFailureListener);
-        } else {
-            onFailureListener.onFailure(new Exception("Cannot Delete Event"));
-        }
-
-    public void setEventReference(DocumentReference eventRef) {
-        this.eventRef = eventRef;
-    }
 
     /**
      * get aDocumentReference to this event in the database
