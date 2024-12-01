@@ -1,7 +1,10 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -22,26 +25,31 @@ public class AdminUserProfile extends AppCompatActivity{
         setContentView(R.layout.user_profile_summary);
 
         Intent intent=getIntent();
-        selectedUser=(User) intent.getSerializableExtra("user");
+        String name=getIntent().getStringExtra("name");
+        String email=getIntent().getStringExtra("email");
+        Long phoneNumber=getIntent().getLongExtra("phoneNumber",0L);
+        String encodedImage=getIntent().getStringExtra("profilePicture");
 
-        if(selectedUser==null){
-            Toast.makeText(this,"User Data Unavailable",Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-
-        ImageView profilePicture=findViewById(R.id.user_profile_image);
+        ImageView profileImageView=findViewById(R.id.user_profile_image);
         TextView profileName=findViewById(R.id.user_profile_name);
         TextView profileEmail=findViewById(R.id.user_profile_email);
         TextView profileNumber=findViewById(R.id.user_profile_phonenumber);
         Button removeButton=findViewById(R.id.remove_user_button);
         Button returnButton=findViewById(R.id.return_user_button);
 
-        profileName.setText(selectedUser.getName());
-        profileEmail.setText(selectedUser.getEmail());
-        profileNumber.setText(String.valueOf(selectedUser.getPhoneNumber()));
-        //TODO profile image
+        profileName.setText(name);
+        profileEmail.setText(email);
+        profileNumber.setText(String.valueOf(phoneNumber));
 
+        if(encodedImage!=null){
+            byte[] decodedBytes= Base64.decode(encodedImage,Base64.DEFAULT);
+            Bitmap profilePicture= BitmapFactory.decodeByteArray(decodedBytes,0, decodedBytes.length);
+            profileImageView.setImageBitmap(profilePicture);
+        }
+        else{
+            Bitmap generatedPicture=generateProfileImage(name);
+            profileImageView.setImageBitmap(generatedPicture);
+        }
         removeButton.setOnClickListener(view -> showDeletePage());
         returnButton.setOnClickListener(view -> finish());
     }
@@ -86,4 +94,6 @@ public class AdminUserProfile extends AppCompatActivity{
         });
         dialog.show();
     }
+
+
 }

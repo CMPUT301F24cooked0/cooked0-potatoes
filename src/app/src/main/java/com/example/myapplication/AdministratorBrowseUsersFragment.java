@@ -3,6 +3,7 @@ package com.example.myapplication;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +15,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import android.util.Base64;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+
 
 
 public class AdministratorBrowseUsersFragment extends Fragment {
@@ -51,7 +56,17 @@ public class AdministratorBrowseUsersFragment extends Fragment {
         userList.setOnItemClickListener((adapterView, view1, position, id) -> {
             User selectedUser=userDataList.get(position);
             Intent intent=new Intent(requireContext(), AdminUserProfile.class);
-            intent.putExtra("user",selectedUser);
+            intent.putExtra("name",selectedUser.getName());
+            intent.putExtra("email",selectedUser.getEmail());
+            intent.putExtra("phoneNumber",selectedUser.getPhoneNumber());
+
+            if(selectedUser.getProfilePicture()!=null){
+                ByteArrayOutputStream stream=new ByteArrayOutputStream();
+                selectedUser.getProfilePicture().compress(Bitmap.CompressFormat.PNG,100,stream);
+                byte[] bytes= stream.toByteArray();
+                String encodedImage=Base64.encodeToString(bytes,Base64.DEFAULT);
+                intent.putExtra("profilePicture",encodedImage);
+            }
             startActivity(intent);
         });
         return view;
