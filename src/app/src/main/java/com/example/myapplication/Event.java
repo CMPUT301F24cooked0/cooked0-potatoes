@@ -14,6 +14,7 @@ the event and also gets information about the event.
  */
 public class Event {
     private String name;
+    private String description;
     private Instant instant;
     private Integer capacity;
     private Bitmap eventPoster;
@@ -27,7 +28,6 @@ public class Event {
      * @param name
      * @param instant
      * @param eventPoster
-     * @throws Exception
      */
     public Event(String name, Instant instant, Bitmap eventPoster) throws Exception {
         this.setName(name);
@@ -42,11 +42,27 @@ public class Event {
     /**
      * create an event with a capacity.
      * Note that this sets QRCode's text to null, but it should be set as soon as it is known
+     * @param name
+     * @param instant
+     * @param eventPoster
      * @param capacity
     */
     public Event(String name, Instant instant, Bitmap eventPoster, Integer capacity) throws Exception {
         this(name, instant, eventPoster);
         this.setCapacity(capacity);
+    }
+
+    /**
+     * create an event with a description.
+     * Note that this sets QRCode's text to null, but it should be set as soon as it is known
+     * @param name
+     * @param description
+     * @param instant
+     * @param eventPoster
+     */
+    public Event(String name, String description, Instant instant, Bitmap eventPoster) throws Exception {
+        this(name, instant, eventPoster);
+        this.setDescription(description );
     }
 
     /**
@@ -59,8 +75,9 @@ public class Event {
      * @param entrantPool
      * @param eventRef
      */
-    public Event(String name, Instant instant, Bitmap eventPoster, Integer capacity, QRCode qrCode, EntrantPool entrantPool, DocumentReference eventRef) throws Exception {
+    public Event(String name, String description, Instant instant, Bitmap eventPoster, Integer capacity, QRCode qrCode, EntrantPool entrantPool, DocumentReference eventRef) throws Exception {
         this.setName(name);
+        this.setDescription(description);
         this.setInstant(instant);
         this.setEventPoster(eventPoster);
         this.setCapacity(capacity);
@@ -90,6 +107,14 @@ public class Event {
             throw new Exception("cannot set event name to empty string");
         }
         this.name = name;
+    }
+
+    /**
+     * set this event's description. can be null
+     * @param description
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
@@ -208,6 +233,14 @@ public class Event {
      */
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * get this event's description
+     * @return
+     */
+    public String getDescription() {
+        return this.description;
     }
 
     /**

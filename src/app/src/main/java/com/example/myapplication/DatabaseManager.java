@@ -451,6 +451,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         DocumentReference eventRef = facilityRef.collection(DatabaseCollectionNames.events.name()).document();
         HashMap<String, Object> eventData = new HashMap<>();
         eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
+        eventData.put(DatabaseEventFieldNames.description.name(), event.getDescription());
         eventData.put(DatabaseEventFieldNames.instant.name(), new Timestamp(event.getInstant()));
         String encodedEventPoster = null;
         try {
@@ -483,6 +484,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
         HashMap<String, Object> eventData = new HashMap<>();
         eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
+        eventData.put(DatabaseEventFieldNames.description.name(), event.getDescription());
         eventData.put(DatabaseEventFieldNames.instant.name(), new Timestamp(event.getInstant()));
         String encodedEventPoster = null;
         try {
@@ -606,6 +608,9 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
                 throw new EventDoesNotExist("this event was missing the name field");
             }
             String name = (String) nameTemp;
+            
+            Object descriptionTemp = eventData.get(DatabaseEventFieldNames.description.name());
+            String description = (String) descriptionTemp;
 
             Object dateTemp = eventData.get(DatabaseEventFieldNames.instant.name());
             if (dateTemp == null) {
@@ -628,7 +633,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             Integer capacity = (Integer) capacityTemp;
 
             try {
-                events.add(new Event(name, instant, eventPoster, capacity, qrCode, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
+                events.add(new Event(name, description, instant, eventPoster, capacity, qrCode, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
             }
             catch (Exception e) {
                 continue;
@@ -701,6 +706,9 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
         String name = (String) nameTemp;
 
+        Object descriptionTemp = singleEventData.get(DatabaseEventFieldNames.description.name());
+        String description = (String) descriptionTemp;
+
         Object dateTemp = singleEventData.get(DatabaseEventFieldNames.instant.name());
         if (dateTemp == null) {
             return null;
@@ -725,7 +733,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         Integer capacity = (Integer) capacityTemp;
 
         try {
-            event = new Event(name, instant, eventPoster, capacity, qrCode, new EntrantPool(), singleEventRef);
+            event = new Event(name, description, instant, eventPoster, capacity, qrCode, new EntrantPool(), singleEventRef);
         }
         catch (Exception e) {
             return null;
