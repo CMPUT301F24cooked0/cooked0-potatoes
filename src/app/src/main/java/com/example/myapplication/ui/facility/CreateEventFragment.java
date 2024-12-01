@@ -33,6 +33,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.UUID;
 
 public class CreateEventFragment extends Fragment {
 
@@ -62,7 +63,6 @@ public class CreateEventFragment extends Fragment {
         eventRegStartInput = view.findViewById(R.id.regOpenInput);
         eventRegEndInput = view.findViewById(R.id.regEndInput);
         geoRequiredSwitch = view.findViewById(R.id.enableGeoSwitch);
-        geoRequired = false;
         createEventButton = view.findViewById(R.id.createEventButton);
         eventPoster = null;
         createEventButton.setOnClickListener(this::onCreateEventClick);
@@ -113,6 +113,7 @@ public class CreateEventFragment extends Fragment {
             String regStartDateTime = eventRegStartInput.getText().toString().trim();
             String regEndDateTime = eventRegEndInput.getText().toString().trim();
             String details = eventDetailsInput.getText().toString().trim();
+            String capacityStr = eventCapacityInput.getText().toString().trim();
             geoRequired = geoRequiredSwitch.isChecked();
 
             // check if required fields are filled
@@ -139,13 +140,22 @@ public class CreateEventFragment extends Fragment {
 
             // check if event capacity is valid
             Integer capacity = null;
-            if (!eventCapacityInput.getText().toString().isEmpty()) {
-                try{
-                    capacity = Integer.parseInt(eventCapacityInput.getText().toString().trim());}
-                catch (NumberFormatException e){
-                    Toast.makeText(getActivity(), "Capacity must be a number", Toast.LENGTH_SHORT).show();
+            if (!capacityStr.isEmpty()) {
+                try {
+                    capacity = Integer.parseInt(capacityStr);
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(), "Capacity must be an integer", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if (capacity <= 0) {
+                    Toast.makeText(getActivity(), "Capacity must be greater than 0", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            // check if event details are empty
+            if (details.isEmpty()) {
+                details = null;
             }
 
 
@@ -188,10 +198,17 @@ public class CreateEventFragment extends Fragment {
             }
 
             // Create the event
-            Event event = new Event(name, startInstant, eventPoster, capacity);
+            Event event = new Event(name, details, startInstant, endInstant, regStartInstant, regEndInstant, eventPoster, geoRequired); // Create the event
+            event.setCapacity(capacity);
+
             // TODO add event to database
-            event.getQrCode().setText("test"); // FIXME change this to the actual path
-            //event.getQrCode().setText(event.getEventReference().getpath()); // once event is added to database, this will be set
+            event.getQrCode().setText("test"); // FIXME change this to the actual path with unique id
+            // TODO add qrpath to event once added to database
+            //String qrID = UUID.randomUUID().toString();
+            //String eventPath = event.getEventReference().getPath();
+            //String qrPath = eventPath + "/" + qrID;
+            //event.getQrCode().setText(qrPath);
+            // TODO update event in database once qrpath added
             facilityViewModel.setEventToManage(event); // set event to manage in FacilityViewModel
 
             // Add event to facility (if facility is available)

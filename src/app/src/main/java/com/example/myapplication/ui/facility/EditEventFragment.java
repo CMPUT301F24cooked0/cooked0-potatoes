@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.myapplication.Event;
@@ -35,10 +36,12 @@ import java.util.Locale;
 
 public class EditEventFragment extends Fragment {
 
-    private EditText eventNameEditText, eventCapacityEditText, eventStartEditText, eventEndEditText, eventDetailsEditText;
+    private EditText eventNameEditText, eventCapacityEditText, eventStartEditText, eventEndEditText, eventRegStartEditText, eventRegEndEditText, eventDetailsEditText;
     private ImageView eventPosterImageView;
     private Button saveButton;
     private Bitmap eventPoster;
+    private Switch geoRequiredSwitch;
+    private Boolean geoRequired;
     private Event event;
     private FacilityViewModel facilityViewModel;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withLocale(Locale.getDefault());
@@ -55,19 +58,27 @@ public class EditEventFragment extends Fragment {
         eventStartEditText = view.findViewById(R.id.editEventStartInput);
         eventEndEditText = view.findViewById(R.id.editEventEndInput);
         eventDetailsEditText = view.findViewById(R.id.editEventDetInput);
+        eventRegStartEditText = view.findViewById(R.id.editRegOpenInput);
+        eventRegEndEditText = view.findViewById(R.id.editRegEndInput);
         eventPosterImageView = view.findViewById(R.id.eventPosterPlaceholder);
         eventPoster = event.getEventPoster();
         saveButton = view.findViewById(R.id.editEventButton);
+        geoRequiredSwitch = view.findViewById(R.id.editGeoSwitch);
 
 
 
         // Pre-fill fields with existing event data
         eventNameEditText.setText(event.getName());
         eventCapacityEditText.setText(event.getCapacity() != null ? String.valueOf(event.getCapacity()) : "");
-        eventStartEditText.setText(event.getInstant().toString());
+        eventStartEditText.setText(event.getStartInstant().toString());
+        eventEndEditText.setText(event.getEndInstant().toString());
+        eventDetailsEditText.setText(event.getDescription());
+        eventRegStartEditText.setText(event.getRegistrationStartInstant().toString());
+        eventRegEndEditText.setText(event.getRegistrationEndInstant().toString());
+        geoRequiredSwitch.setChecked(event.getGeolocationRequired());
         eventPosterImageView.setImageBitmap(eventPoster);
 
-        // add image adding functionality for event poster
+        // Add image adding functionality for event poster
         ActivityResultLauncher<Intent> imagePickerLauncher =
                 registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                     if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
@@ -106,7 +117,10 @@ public class EditEventFragment extends Fragment {
         String capacityStr = eventCapacityEditText.getText().toString().trim();
         String startDateTime = eventStartEditText.getText().toString().trim();
         String endDateTime = eventEndEditText.getText().toString().trim();
-        Integer capacity = TextUtils.isEmpty(capacityStr) ? null : Integer.parseInt(capacityStr);
+        String details = eventDetailsEditText.getText().toString().trim();
+        String regStartDateTime = eventRegStartEditText.getText().toString().trim();
+        String regEndDateTime = eventRegEndEditText.getText().toString().trim();
+        geoRequired = geoRequiredSwitch.isChecked();
 
         if (name.isEmpty()) {
             Toast.makeText(getActivity(), "Event name cannot be empty", Toast.LENGTH_SHORT).show();
@@ -121,27 +135,68 @@ public class EditEventFragment extends Fragment {
             return;
         }
 
-
+        // Parse start and end date-time strings for Instant conversion
         Instant startInstant = parseDateTime(startDateTime);
         Instant endInstant = parseDateTime(endDateTime);
+
+        // Check if start and end date-time are in valid format
         if (startInstant == null || endInstant == null) {
             Toast.makeText(getActivity(), "Invalid date-time format. Use DD/MM/YYYY HH:mm", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // Check if start date-time is before end date-time
         if (startInstant.isAfter(endInstant)) {
             Toast.makeText(getActivity(), "Start time cannot be after end time", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Parse registration start and end date-time strings for Instant conversion
+        Instant regStartInstant = parseDateTime(regStartDateTime);
+        Instant regEndInstant = parseDateTime(regEndDateTime);
+
+        // Check if registration start and end date-time are in valid format
+        if (regStartInstant == null || regEndInstant == null) {
+            Toast.makeText(getActivity(), "Invalid date-time format for registration dates. Use DD/MM/YYYY HH:mm", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check if registration start date-time is before end date-time
+        if (regStartInstant.isAfter(regEndInstant)) {
+            Toast.makeText(getActivity(), "Registration start time cannot be after end time", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Validate capacity
+        Integer capacity = null;
+        if (!capacityStr.isEmpty()) {
+            try {
+                capacity = Integer.parseInt(capacityStr);
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "Capacity must be an integer", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (capacity <= 0) {
+                Toast.makeText(getActivity(), "Capacity must be greater than 0", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        if (details.isEmpty()) {
+            details = null;
+        }
+
         // Apply updates using Event class validation methods
         event.setName(name);
-        event.setInstant(startInstant);
+        event.setStartInstant(startInstant);
+        event.setEndInstant(endInstant);
+        event.setRegistrationStartInstant(regStartInstant);
+        event.setRegistrationEndInstant(regEndInstant);
+        event.setDescription(details);
         event.setCapacity(capacity);
         event.setEventPoster(eventPoster);
 
         // TODO update the event in the database
-
-        // update the event in the ViewModel
     }
 
     /**
@@ -159,4 +214,5 @@ public class EditEventFragment extends Fragment {
             return null;
         }
     }
+
 }

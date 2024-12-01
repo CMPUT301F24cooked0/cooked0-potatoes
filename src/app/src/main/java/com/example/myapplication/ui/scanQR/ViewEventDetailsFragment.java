@@ -61,7 +61,7 @@ public class ViewEventDetailsFragment extends Fragment {
 
         eventName.setText(eventToView.getName()); // set event name
         // set event date
-        String eventStartStr = eventToView.getInstant().toString();
+        String eventStartStr = eventToView.getStartInstant().toString();
         // String eventEndStr = eventToView.getInstant().toString(); // TODO get end date when available in base class
         eventDate.setText(eventStartStr + " - end"); // TODO add end date
         // eventDesc.setText(eventToView.getDescription()); // TODO add description
