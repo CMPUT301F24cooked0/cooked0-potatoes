@@ -2,65 +2,68 @@ package com.example.myapplication.ui.facility;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.example.myapplication.Event;
 import com.example.myapplication.R;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ManageEventFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This fragment allows an organizer to view, edit, and manage an event. It allows the organizer to
+ * download a QR code that can be used to sign up for the event.
  */
 public class ManageEventFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public ManageEventFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ManageEventFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ManageEventFragment newInstance(String param1, String param2) {
-        ManageEventFragment fragment = new ManageEventFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    View view;
+    private FacilityViewModel facilityViewModel;
+    private Event event;
+    private TextView eventName;
+    private TextView eventDesc;
+    private TextView eventDate;
+    private TextView registerStart;
+    private TextView registerEnd;
+    private TextView downloadQRLink;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_manage_event, container, false);
+        view = inflater.inflate(R.layout.fragment_manage_event, container, false);
+        return view;
     }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // Initialize variables
+        facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
+        event = facilityViewModel.getEventToManage();
+        eventName = view.findViewById(R.id.event_name_placeholder);
+        eventDesc = view.findViewById(R.id.event_desc_placeholder);
+        eventDate = view.findViewById(R.id.event_date_placeholder);
+        registerStart = view.findViewById(R.id.register_start_placeholder);
+        registerEnd = view.findViewById(R.id.register_end_placeholder);
+        downloadQRLink = view.findViewById(R.id.download_QR_link);
+
+        // Set text for event details
+        // TODO update when new fields are added in event class
+        eventName.setText(event.getName());
+        eventDate.setText(event.getInstant() + "- end"); // TODO add start and end
+        downloadQRLink.setOnClickListener(this::onClickDownloadQR);
+
+
+    }
+    public void onClickDownloadQR (View view) {
+        // Navigate to the download QR code page
+        FragmentManager fragmentManager = getParentFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, new DownloadQRFragment()).commit();
+
+    }
+
 }

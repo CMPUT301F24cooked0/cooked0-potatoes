@@ -55,7 +55,7 @@ public class ViewEventDetailsFragment extends Fragment {
         eventDate = view.findViewById(R.id.event_date_placeholder);
         registerStart = view.findViewById(R.id.register_start_placeholder);
         registerEnd = view.findViewById(R.id.register_end_placeholder);
-        geolocation = view.findViewById(R.id.geolocation_notice_placeholder);
+        geolocation = view.findViewById(R.id.download_QR_link);
         joinWaitlistBtn = view.findViewById(R.id.join_waitlist_button);
         eventToView = scanQRViewModel.getEventToView();
 
