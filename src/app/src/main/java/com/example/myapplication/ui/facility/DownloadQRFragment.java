@@ -1,9 +1,10 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.facility;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.myapplication.Event;
+import com.example.myapplication.QRCode;
+import com.example.myapplication.R;
+import com.google.zxing.WriterException;
+
 
 /**
  * This fragment is used to notify the user that the QR code has been generated and stored in the database.
@@ -19,10 +25,12 @@ import android.widget.Toast;
  */
 public class DownloadQRFragment extends Fragment {
     View view;
+    Event event;
     QRCode eventQRCode;
     Button downloadBtn;
     Button continueBtn;
     ImageView qrCodeImage;
+    FacilityViewModel facilityViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,17 +43,19 @@ public class DownloadQRFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
+        event = facilityViewModel.getEventToManage();
+        eventQRCode = event.getQrCode();
         downloadBtn = view.findViewById(R.id.downloadButton);
         continueBtn = view.findViewById(R.id.continueButton);
         qrCodeImage = view.findViewById(R.id.qrCodeImage);
-        // Notify the user that the QR code has been generated
-        Toast.makeText(requireContext(), "QR Code Generated and Stored", Toast.LENGTH_SHORT).show(); // TODO change style of pop up message
-        // eventQRCode = (QRCode) getArguments().getSerializable("qrCode"); // TODO get qr code from bundle once navigation is completed
-//        try { // TODO set qr image once navigation complete
-//            qrCodeImage.setImageBitmap(eventQRCode.getImage());
-//        } catch (WriterException e) {
-//            throw new RuntimeException(e);
-//        }
+
+        try {
+            qrCodeImage.setImageBitmap(eventQRCode.getImage());
+            Toast.makeText(requireContext(), "QR Code Generated and Stored", Toast.LENGTH_SHORT).show(); // Notify the user that the QR code has been generated
+        } catch (WriterException e) {
+            Toast.makeText(requireContext(), "Error generating QR code", Toast.LENGTH_SHORT).show();
+        }
         downloadBtn.setOnClickListener(this::onClickDownload);
         continueBtn.setOnClickListener(this::onClickContinue);
 
@@ -56,9 +66,10 @@ public class DownloadQRFragment extends Fragment {
 
     }
     public void onClickContinue (View view) {
-//        Fragment fragment = new FacilityViewEventsFragment();
-//        FragmentManager fragmentManager = getParentFragmentManager();
-//        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit(); // TODO continue to view events page when navigation complete
+        // Navigate to the view events page
+        Fragment fragment = new FacilityViewEventsFragment();
+        FragmentManager fragmentManager = getParentFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, new FacilityViewEventsFragment()).commit();
     }
 
 }

@@ -125,17 +125,21 @@ public class CreateEventFragment extends Fragment {
             // Create the event
             Event event = new Event(name, startInstant, eventPoster, capacity);
             // TODO add event to database
+            event.getQrCode().setText("test"); // FIXME change this to the actual path
             //event.getQrCode().setText(event.getEventReference().getpath()); // once event is added to database, this will be set
 
             // Add event to facility (if facility is available)
             if (facility != null) {
                 facility.addEvent(event);
                 facilityViewModel.setEvents(); // Update the events in the ViewModel
+                facilityViewModel.setEventToManage(event);
                 Log.d("CreateEventFragment", "Event added to facility: " + facility.getName());
             }
 
             Toast.makeText(getActivity(), "Event created successfully!", Toast.LENGTH_SHORT).show();
             Log.d("CreateEventFragment", "Event created: " + event.getName());
+            facilityViewModel.setEvents(); // Update the events in the ViewModel
+
 
         } catch (Exception e) {
             Log.e("CreateEventFragment", "Error creating event", e);
