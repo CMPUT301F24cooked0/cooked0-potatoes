@@ -67,8 +67,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="#A03232"
-                    android:translationX="330dp"
-                    android:translationY="120dp"
+                    android:layout_marginStart="325dp"
+                    android:layout_marginTop="110dp"
                     app:srcCompat="@drawable/cameraicon" />
 
 
@@ -268,7 +268,7 @@
                     android:background="@drawable/edit_text_box"
                     android:backgroundTintMode="add"
                     android:drawableTint="#00865353"
-                    android:hint=" DD/MM/YYYY"
+                    android:hint="DD/MM/YYYY HH:mm"
                     android:translationX="30dp"
                     android:translationY="40dp" />
 
@@ -294,7 +294,7 @@
                     android:background="@drawable/edit_text_box"
                     android:backgroundTintMode="add"
                     android:drawableTint="#00865353"
-                    android:hint=" DD/MM/YYYY"
+                    android:hint=" DD/MM/YYYY HH:mm"
                     android:translationX="30dp"
                     android:translationY="30dp" />
             </FrameLayout>
