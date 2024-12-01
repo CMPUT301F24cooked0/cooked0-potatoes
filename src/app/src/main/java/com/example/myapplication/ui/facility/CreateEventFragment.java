@@ -37,7 +37,9 @@ import java.util.Locale;
 public class CreateEventFragment extends Fragment {
 
     private Bitmap eventPoster;
-    private EditText eventNameInput, eventStartInput, eventEndInput, eventCapacityInput, eventDetailsInput;
+    private EditText eventNameInput, eventStartInput, eventEndInput, eventCapacityInput, eventDetailsInput, eventRegStartInput, eventRegEndInput;
+    private Switch geoRequiredSwitch;
+    private Boolean geoRequired;
     private ImageView eventPosterInput;
     private Button createEventButton;
     private User user;
@@ -57,7 +59,10 @@ public class CreateEventFragment extends Fragment {
         eventCapacityInput = view.findViewById(R.id.eventCapInput);
         eventDetailsInput = view.findViewById(R.id.eventDetInput);
         eventPosterInput = view.findViewById(R.id.eventPosterPlaceholder);
-
+        eventRegStartInput = view.findViewById(R.id.regOpenInput);
+        eventRegEndInput = view.findViewById(R.id.regEndInput);
+        geoRequiredSwitch = view.findViewById(R.id.enableGeoSwitch);
+        geoRequired = false;
         createEventButton = view.findViewById(R.id.createEventButton);
         eventPoster = null;
         createEventButton.setOnClickListener(this::onCreateEventClick);
@@ -105,9 +110,12 @@ public class CreateEventFragment extends Fragment {
             String name = eventNameInput.getText().toString().trim();
             String startDateTime = eventStartInput.getText().toString().trim();
             String endDateTime = eventEndInput.getText().toString().trim();
+            String regStartDateTime = eventRegStartInput.getText().toString().trim();
+            String regEndDateTime = eventRegEndInput.getText().toString().trim();
             String details = eventDetailsInput.getText().toString().trim();
-            // Bitmap poster = ((BitmapDrawable) eventPosterInput.getDrawable()).getBitmap();
+            geoRequired = geoRequiredSwitch.isChecked();
 
+            // check if required fields are filled
             if (name.isEmpty()) {
                 Toast.makeText(getActivity(), "Event name cannot be empty", Toast.LENGTH_SHORT).show();
                 return;
@@ -120,28 +128,60 @@ public class CreateEventFragment extends Fragment {
                 Toast.makeText(getActivity(), "End date-time cannot be empty", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-
-            Integer capacity = null;
-            if (!eventCapacityInput.getText().toString().isEmpty()) {
-                capacity = Integer.parseInt(eventCapacityInput.getText().toString().trim());
+            if (regStartDateTime.isEmpty()) {
+                Toast.makeText(getActivity(), "Registration start date-time cannot be empty", Toast.LENGTH_SHORT).show();
+                return;
             }
-
-
-            // Parse the dates
-            Toast.makeText(getActivity(), startDateTime, Toast.LENGTH_SHORT).show();
-            Instant startInstant = parseDateTime(startDateTime);
-            Instant endInstant = parseDateTime(endDateTime);
-            if (startInstant == null || endInstant == null) {
-                Toast.makeText(getActivity(), "Invalid date-time format. Use DD/MM/YYYY HH:mm", Toast.LENGTH_SHORT).show();
+            if (regEndDateTime.isEmpty()) {
+                Toast.makeText(getActivity(), "Registration end date-time cannot be empty", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            // check if event capacity is valid
+            Integer capacity = null;
+            if (!eventCapacityInput.getText().toString().isEmpty()) {
+                try{
+                    capacity = Integer.parseInt(eventCapacityInput.getText().toString().trim());}
+                catch (NumberFormatException e){
+                    Toast.makeText(getActivity(), "Capacity must be a number", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+
+            // Parse start and end date-time strings for Instant conversion
+            Instant startInstant = parseDateTime(startDateTime);
+            Instant endInstant = parseDateTime(endDateTime);
+
+            // Check if start and end date-time are in valid format
+            if (startInstant == null || endInstant == null) {
+                Toast.makeText(getActivity(), "Invalid date-time format for event dates. Use DD/MM/YYYY HH:mm", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Check if start date-time is before end date-time
             if (startInstant.isAfter(endInstant)) {
                 Toast.makeText(getActivity(), "Start time cannot be after end time", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            // Parse registration start and end date-time strings for Instant conversion
+            Instant regStartInstant = parseDateTime(regStartDateTime);
+            Instant regEndInstant = parseDateTime(regEndDateTime);
+
+            // Check if registration start and end date-time are in valid format
+            if (regStartInstant == null || regEndInstant == null) {
+                Toast.makeText(getActivity(), "Invalid date-time format for registration dates. Use DD/MM/YYYY HH:mm", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Check if registration start date-time is before end date-time
+            if (regStartInstant.isAfter(regEndInstant)) {
+                Toast.makeText(getActivity(), "Registration start time cannot be after end time", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Check if event poster has been added
             if (eventPoster == null) {
                 Toast.makeText(getActivity(), "Event poster cannot be empty", Toast.LENGTH_SHORT).show();
                 return;
@@ -152,7 +192,8 @@ public class CreateEventFragment extends Fragment {
             // TODO add event to database
             event.getQrCode().setText("test"); // FIXME change this to the actual path
             //event.getQrCode().setText(event.getEventReference().getpath()); // once event is added to database, this will be set
-            facilityViewModel.setEventToManage(event);
+            facilityViewModel.setEventToManage(event); // set event to manage in FacilityViewModel
+
             // Add event to facility (if facility is available)
             if (facility != null) {
                 facility.addEvent(event);
