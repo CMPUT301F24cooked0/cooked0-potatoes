@@ -202,6 +202,9 @@ public class EditEventFragment extends Fragment {
         event.setDescription(details);
         event.setCapacity(capacity);
         event.setEventPoster(eventPoster);
+        event.setGeolocationRequired(geoRequired);
+
+        // Navigate to manage event fragment
 
         // TODO update the event in the database
     }

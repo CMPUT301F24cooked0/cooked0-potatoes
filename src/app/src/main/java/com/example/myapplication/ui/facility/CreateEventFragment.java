@@ -21,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.Event;
@@ -222,6 +223,11 @@ public class CreateEventFragment extends Fragment {
 
             Toast.makeText(getActivity(), "Event created successfully!", Toast.LENGTH_SHORT).show();
             Log.d("CreateEventFragment", "Event created: " + event.getName());
+
+            // Navigate to the download QR code page
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, new DownloadQRFragment()).commit();
+
 
 
         } catch (Exception e) {
