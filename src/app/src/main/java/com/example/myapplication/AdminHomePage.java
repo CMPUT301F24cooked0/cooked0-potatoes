@@ -18,7 +18,7 @@ public class AdminHomePage extends AppCompatActivity {
         Button manageUsersBtn=findViewById(R.id.manage_users_button);
 
         manageFacilitiesBtn.setOnClickListener(view -> {
-            Intent intent=new Intent(this,AdministratorBrowseFacilities.class);
+            Intent intent=new Intent(this,AdministratorBrowseFacilitiesFragment.class);
             startActivity(intent);
         });
 
