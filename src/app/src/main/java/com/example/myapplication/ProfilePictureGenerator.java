@@ -14,7 +14,7 @@ public class ProfilePictureGenerator {
      * @param name - String storing name of the user to perform profile picture generation with
      * @return
      */
-    public Bitmap generateProfileImage(String name) {
+    public static Bitmap generateProfileImage(String name) {
         String firstNameInitial = !name.isEmpty() ? name.substring(0, 1).toUpperCase() : "A";
 
         int size = 1024;

@@ -105,8 +105,7 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         if (selectedImageBitmap == null) {
-            ProfilePictureGenerator PFPgenerator = new ProfilePictureGenerator();
-            selectedImageBitmap = PFPgenerator.generateProfileImage(name);
+            selectedImageBitmap = ProfilePictureGenerator.generateProfileImage(name);
         }
 
         // Convert bitmap to Base64 if a new image is selected

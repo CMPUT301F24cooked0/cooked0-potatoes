@@ -99,8 +99,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         if (selectedImageBitmap == null) {
-            ProfilePictureGenerator PFPgenerator = new ProfilePictureGenerator();
-            selectedImageBitmap = PFPgenerator.generateProfileImage(name);
+            selectedImageBitmap = ProfilePictureGenerator.generateProfileImage(name);
         }
 
         // Converting bitmap to Base64
