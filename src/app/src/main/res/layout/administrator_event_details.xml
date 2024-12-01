@@ -3,11 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp">
+    android:orientation="vertical">
     <TextView
-        android:layout_width=""
-        android:layout_height=""/>
+        android:id="@+id/event_view_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/event_view"/>
     <ImageView
         android:id="@+id/event_detail_poster"
         android:layout_width="match_parent"
@@ -53,23 +54,23 @@
         android:textSize="20sp"/>
     <Button
         android:id="@+id/remove_event_button"
-        android:layout_width="match_parent"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:text="Remove Event"
+        android:text="@string/remove_event"
         android:layout_marginTop="15dp"
         android:backgroundTint="#DA313C"/>
     <Button
         android:id="@+id/remove_qr_button"
-        android:layout_width="match_parent"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:text="Remove QR Code Data"
+        android:text="@string/remove_qr_code_data"
         android:layout_marginTop="5dp"
         android:backgroundTint="#DA313C"/>
     <Button
         android:id="@+id/event_detail_return_button"
-        android:layout_width="match_parent"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:text="Return"
+        android:text="@string/Return"
         android:layout_marginTop="5dp"/>
 
 </LinearLayout>

@@ -3,4 +3,9 @@
     <string name="administrator_browse_users_title">Browse Profiles</string>
     <string name="profile_picture">profile_picture</string>
     <string name="administrator_browse_events_title">administrator_browse_events_title</string>
+    <string name="event_poster">event_poster</string>
+    <string name="remove_qr_code_data">Remove QR Code Data</string>
+    <string name="remove_event">Remove Event</string>
+    <string name="Return">Return</string>
+    <string name="event_view">Event View</string>
 </resources>
