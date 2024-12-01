@@ -29,10 +29,8 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 qr_generator = {group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "qrGenerator"}
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoCore" }
-qr_generator = {group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "qrGenerator"}
 navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigationFragment" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-

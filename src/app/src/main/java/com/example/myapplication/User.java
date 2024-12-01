@@ -27,12 +27,12 @@ public class User {
 
     /**
      * Basic User constructor, no phoneNumber provided
+     *
      * @param name
      * @param email
-     * @param profilePicture
      * @throws Exception
      */
-    public User(String uniqueID, String name, String email, Bitmap profilePicture) throws Exception {
+    public User(String uniqueID, String name, String email) throws Exception {
         this.uniqueID = uniqueID;
         this.setName(name);
         this.setEmail(email);
