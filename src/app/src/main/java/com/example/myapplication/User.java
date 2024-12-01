@@ -2,14 +2,6 @@ package com.example.myapplication;
 
 import android.graphics.Bitmap;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 import com.google.firebase.firestore.DocumentReference;
 
 // import java.util.UUID;
@@ -22,9 +14,7 @@ It also tracks if the user has created a facility or if they have any events.
 Additional functionalities including managing notification preferences and storage of information
 provided by the user
  */
-public class User{
-    private static final FirebaseFirestore db=FirebaseFirestore.getInstance();
-    protected static final CollectionReference userRef=db.collection("Users");
+public class User {
     private String uniqueID;
     private String name;
     private String email;
@@ -70,17 +60,6 @@ public class User{
         this.isAdmin = false;
         this.setFacility(null);
         this.setReceivesOrgAdmNotifications(true);
-    }
-
-    /***
-     * Method to delete user from database and is called in AdministratorBrowseUsersFragment when admin confirms the deletion of the user.
-     * @param onSuccessListener
-     * @param onFailureListener
-     */
-    public void deleteUser(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener){
-        userRef.document(this.name).delete()
-                .addOnSuccessListener(onSuccessListener)
-                .addOnFailureListener(onFailureListener);
     }
 
     /**
@@ -264,7 +243,6 @@ public class User{
     public boolean getReceivesOrgAdmNotifications() {
         return this.receivesOrgAdmNotifications;
     }
-
 
     public void setUserReference(DocumentReference userRef) {
         this.userRef = userRef;
