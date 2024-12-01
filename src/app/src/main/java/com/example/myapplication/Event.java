@@ -101,9 +101,6 @@ public class Event {
         if (instant == null) {
             throw new Exception("cannot set event instant to null");
         }
-        if (instant.isBefore(Instant.now())) {
-            throw new Exception("cannot set event instant in the past");
-        }
         this.instant = instant;
     }
 
