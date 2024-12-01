@@ -708,7 +708,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             }
         }
 
-        return events;
+        return allEvents;
     }
 
     @Override
