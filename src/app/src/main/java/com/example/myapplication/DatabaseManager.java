@@ -252,8 +252,44 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
     }
 
     private ArrayList<User> fetchAllUsers() {
-        // FIXME IMPLEMENT THIS
-        return new ArrayList<>();
+        ArrayList<User> users = new ArrayList<User>(this.users);
+
+        CollectionReference userCol = this.db.collection(DatabaseCollectionNames.users.name());
+
+        Task<QuerySnapshot> task = userCol.get();
+        QuerySnapshot queryDocumentSnapshots = null;
+        try {
+            queryDocumentSnapshots = Tasks.await(task);
+        } catch (ExecutionException e) {
+            return users;
+        } catch (InterruptedException e) {
+            return users;
+        }
+
+        if (queryDocumentSnapshots == null) {
+            return users;
+        }
+
+        List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+        if (documentSnapshots.isEmpty()) {
+            return users;
+        }
+        HashMap<String, Object> userData;
+        DocumentReference userRef;
+        String userID;
+
+        for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+            userData = (HashMap<String, Object>) documentSnapshot.getData();
+            if (userData == null) {
+                continue;
+            }
+            userRef = documentSnapshot.getReference();
+            userID = userRef.getId();
+
+            users.add(this.fetchUser(userID));
+        }
+
+        return users;
     }
 
     /**
@@ -427,8 +463,19 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
     }
 
     private ArrayList<Facility> fetchAllFacilities() {
-        // FIXME IMPLEMENT THIS
-        return new ArrayList<>();
+        ArrayList<User> users = this.fetchAllUsers();
+        ArrayList<Facility> facilities = new ArrayList<Facility>();
+
+        Facility facility;
+        for (User user : users) {
+            facility = this.fetchFacility(user); // FIXME convert this to user.getFacility() once things can run on a single thread
+            if (facility != null) {
+                assert !facilities.contains(facility);
+                facilities.add(facility);
+            }
+        }
+
+        return facilities;
     }
 
     @Override
@@ -665,7 +712,14 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             QRCode qrCode = new QRCode((String) qrCodeTemp);
 
             Object capacityTemp = eventData.get(DatabaseEventFieldNames.capacity.name());
-            Integer capacity = (Integer) capacityTemp;
+            Long capacityLong = (Long) capacityTemp;
+            Integer capacity;
+            if (capacityLong == null) {
+                capacity = null;
+            }
+            else {
+                capacity = capacityLong.intValue();
+            }
 
             try {
                 events.add(new Event(name, description, startInstant, endInstant, registrationStartInstant, registrationEndInstant, eventPoster, capacity, qrCode, geolocationRequired, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
@@ -683,8 +737,18 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
     }
 
     private ArrayList<Event> fetchAllEvents() {
-        // FIXME IMPLEMENT THIS
-        return new ArrayList<>();
+        ArrayList<Facility> facilities = this.fetchAllFacilities();
+        ArrayList<Event> allEvents = new ArrayList<Event>();
+
+        ArrayList<Event> events = new ArrayList<Event>();
+        for (Facility facility: facilities) {
+            events = this.fetchEvents(facility); // FIXME convert this to facility.getEvents() once things car run on a single thread
+            if (events != null && !events.isEmpty()) {
+                allEvents.addAll(events);
+            }
+        }
+
+        return allEvents;
     }
 
     @Override
