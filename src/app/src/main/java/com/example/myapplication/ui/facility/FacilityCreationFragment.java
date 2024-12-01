@@ -89,6 +89,7 @@ public class FacilityCreationFragment extends Fragment {
 
         facilityOwner.setFacility(facility); // set facility for user
         Toast.makeText(this.requireContext(), "Facility created", Toast.LENGTH_SHORT).show();
+        // TODO add facility to database
         // databaseManager.createFacility(facilityOwner, facility); // add facility to database and set facility document reference
 
         // Navigate to view events

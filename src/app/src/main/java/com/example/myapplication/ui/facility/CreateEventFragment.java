@@ -124,7 +124,8 @@ public class CreateEventFragment extends Fragment {
 
             // Create the event
             Event event = new Event(name, startInstant, eventPoster, capacity);
-            // event.setDetails(details);
+            // TODO add event to database
+            //event.getQrCode().setText(event.getEventReference().getpath()); // once event is added to database, this will be set
 
             // Add event to facility (if facility is available)
             if (facility != null) {

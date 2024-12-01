@@ -119,6 +119,8 @@ public class EditEventFragment extends Fragment {
         event.setCapacity(capacity);
         event.setEventPoster(eventPoster);
 
+        // TODO update the event in the database
+
         // update the event in the ViewModel
         facilityViewModel.setEvents();
     }

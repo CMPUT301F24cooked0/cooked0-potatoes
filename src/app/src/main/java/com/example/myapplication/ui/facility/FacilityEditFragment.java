@@ -91,6 +91,7 @@ public class FacilityEditFragment extends Fragment {
             return;
         }
 
+        // TODO update facility in database
         //databaseManager.updateFacility(existingFacility); // update facility in database
 
 
