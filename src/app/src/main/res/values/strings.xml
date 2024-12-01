@@ -2,4 +2,8 @@
     <string name="app_name">My Application</string>
     <string name="administrator_browse_users_title">Browse Profiles</string>
     <string name="profile_picture">profile_picture</string>
+    <string name="remove_user">Remove User</string>
+    <string name="are_you_sure_you_want_to_remove_this_user">Are you sure you want to remove this user?</string>
+    <string name="remove_profile_picture">Remove Profile Picture</string>
+    <string name="are_you_sure_you_want_to_remove_this_photo">Are you sure you want to remove this photo?</string>
 </resources>
