@@ -17,6 +17,8 @@ public class Event {
     private String description;
     private Instant startInstant;
     private Instant endInstant;
+    private Instant registrationStartInstant;
+    private Instant registrationEndInstant;
     private Integer capacity;
     private Bitmap eventPoster;
     private QRCode qrCode;
@@ -30,14 +32,18 @@ public class Event {
      * @param name
      * @param startInstant
      * @param endInstant
+     * @param registrationStartInstant
+     * @param registrationEndInstant
      * @param eventPoster
      * @param geolocationRequired
      */
-    public Event(String name, Instant startInstant, Instant endInstant, Bitmap eventPoster, Boolean geolocationRequired) throws Exception {
+    public Event(String name, Instant startInstant, Instant endInstant, Instant registrationStartInstant, Instant registrationEndInstant, Bitmap eventPoster, Boolean geolocationRequired) throws Exception {
         this.setName(name);
         this.setGeolocationRequired(geolocationRequired);
         this.setStartInstant(startInstant);
         this.setEndInstant(endInstant);
+        this.setRegistrationStartInstant(registrationStartInstant);
+        this.setRegistrationEndInstant(registrationEndInstant);
         this.setEventPoster(eventPoster);
         this.qrCode = new QRCode();
         this.setQrCode(qrCode);
@@ -51,12 +57,14 @@ public class Event {
      * @param name
      * @param startInstant
      * @param endInstant
+     * @param registrationStartInstant
+     * @param registrationEndInstant
      * @param eventPoster
      * @param capacity
      * @param geolocationRequired
     */
-    public Event(String name, Instant startInstant, Instant endInstant, Bitmap eventPoster, Integer capacity, Boolean geolocationRequired) throws Exception {
-        this(name, startInstant, endInstant, eventPoster, geolocationRequired);
+    public Event(String name, Instant startInstant, Instant endInstant, Instant registrationStartInstant, Instant registrationEndInstant, Bitmap eventPoster, Integer capacity, Boolean geolocationRequired) throws Exception {
+        this(name, startInstant, endInstant, registrationStartInstant, registrationEndInstant, eventPoster, geolocationRequired);
         this.setCapacity(capacity);
     }
 
@@ -67,11 +75,13 @@ public class Event {
      * @param description
      * @param startInstant
      * @param endInstant
+     * @param registrationStartInstant
+     * @param registrationEndInstant
      * @param eventPoster
      * @param geolocationRequired
      */
-    public Event(String name, String description, Instant startInstant, Instant endInstant, Bitmap eventPoster, Boolean geolocationRequired) throws Exception {
-        this(name, startInstant, endInstant, eventPoster, geolocationRequired);
+    public Event(String name, String description, Instant startInstant, Instant endInstant, Instant registrationStartInstant, Instant registrationEndInstant, Bitmap eventPoster, Boolean geolocationRequired) throws Exception {
+        this(name, startInstant, endInstant, registrationStartInstant, registrationEndInstant, eventPoster, geolocationRequired);
         this.setDescription(description );
     }
 
@@ -81,6 +91,8 @@ public class Event {
      * @param description
      * @param startInstant
      * @param endInstant
+     * @param registrationStartInstant
+     * @param registrationEndInstant
      * @param eventPoster
      * @param capacity
      * @param qrCode
@@ -88,12 +100,14 @@ public class Event {
      * @param entrantPool
      * @param eventRef
      */
-    public Event(String name, String description, Instant startInstant, Instant endInstant, Bitmap eventPoster, Integer capacity, QRCode qrCode, Boolean geolocationRequired, EntrantPool entrantPool, DocumentReference eventRef) throws Exception {
+    public Event(String name, String description, Instant startInstant, Instant endInstant, Instant registrationStartInstant, Instant registrationEndInstant, Bitmap eventPoster, Integer capacity, QRCode qrCode, Boolean geolocationRequired, EntrantPool entrantPool, DocumentReference eventRef) throws Exception {
         this.setName(name);
         this.setDescription(description);
         this.setGeolocationRequired(geolocationRequired);
         this.setStartInstant(startInstant);
         this.setEndInstant(endInstant);
+        this.setRegistrationStartInstant(registrationStartInstant);
+        this.setRegistrationEndInstant(registrationEndInstant);
         this.setEventPoster(eventPoster);
         this.setCapacity(capacity);
         this.setQrCode(qrCode);
@@ -173,6 +187,26 @@ public class Event {
         this.endInstant = endInstant;
     }
 
+    public void setRegistrationStartInstant(Instant registrationStartInstant) throws Exception {
+        if (registrationStartInstant == null) {
+            throw new Exception("cannot set event registrationStartInstant to null");
+        }
+        if (this.registrationEndInstant != null && this.registrationEndInstant.isBefore(registrationStartInstant)) {
+            throw new Exception("cannot set event registrationStartInstant to after registrationEndInstant");
+        }
+        this.registrationStartInstant = registrationStartInstant;
+    }
+
+    public void setRegistrationEndInstant(Instant registrationEndInstant) throws Exception {
+        if (registrationEndInstant == null) {
+            throw new Exception("cannot set event registrationEndInstant to null");
+        }
+        if (this.registrationStartInstant != null && registrationEndInstant.isBefore(this.registrationStartInstant)) {
+            throw new Exception("cannot set event registrationEndInstant to before registrationStartInstant");
+        }
+        this.registrationEndInstant = registrationEndInstant;
+    }
+
     /**
      * set this event's capacity, throws an exception if the capacity is 0 or negative
      * A capacity of null is valid, and means that the event has no capacity
@@ -236,7 +270,13 @@ public class Event {
      * @param joinedFrom
      * @throws EntrantAlreadyInPool
      */
-    public void addEntrant(User entrant, LatLng joinedFrom) throws EntrantAlreadyInPool {
+    public void addEntrant(User entrant, LatLng joinedFrom) throws Exception {
+        if (Instant.now().isAfter(this.registrationEndInstant)) {
+            throw new Exception("cannot register user, registration has ended");
+        }
+        if (Instant.now().isBefore(this.registrationStartInstant)) {
+            throw new Exception("cannot register user, registration has not begun");
+        }
         this.entrantPool.addEntrant(entrant, joinedFrom); // entrantPool does validation for us
     }
 
@@ -247,7 +287,13 @@ public class Event {
      * @param status
      * @throws EntrantAlreadyInPool
      */
-    public void addEntrant(User entrant, LatLng joinedFrom, Status status) throws EntrantAlreadyInPool {
+    public void addEntrant(User entrant, LatLng joinedFrom, Status status) throws Exception {
+        if (Instant.now().isAfter(this.registrationEndInstant)) {
+            throw new Exception("cannot register user, registration has ended");
+        }
+        if (Instant.now().isBefore(this.registrationStartInstant)) {
+            throw new Exception("cannot register user, registration has not begun");
+        }
         this.entrantPool.addEntrant(entrant, joinedFrom, status);
     }
 
@@ -306,6 +352,22 @@ public class Event {
      */
     public Instant getEndInstant() {
         return this.endInstant;
+    }
+
+    /**
+     * get this event's registration start instant
+     * @return
+     */
+    public Instant getRegistrationStartInstant() {
+        return this.registrationStartInstant;
+    }
+
+    /**
+     * get this event's registration end instant
+     * @return
+     */
+    public Instant getRegistrationEndInstant() {
+        return this.registrationEndInstant;
     }
 
     /**

@@ -455,6 +455,8 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         eventData.put(DatabaseEventFieldNames.geolocationRequired.name(), event.getGeolocationRequired());
         eventData.put(DatabaseEventFieldNames.startInstant.name(), new Timestamp(event.getStartInstant()));
         eventData.put(DatabaseEventFieldNames.endInstant.name(), new Timestamp(event.getEndInstant()));
+        eventData.put(DatabaseEventFieldNames.registrationStartInstant.name(), new Timestamp(event.getRegistrationStartInstant()));
+        eventData.put(DatabaseEventFieldNames.registrationEndInstant.name(), new Timestamp(event.getRegistrationEndInstant()));
         String encodedEventPoster = null;
         try {
             encodedEventPoster = BitmapConverter.BitmapToCompressedString(event.getEventPoster(), this.stringMaximumLength);
@@ -490,6 +492,8 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         eventData.put(DatabaseEventFieldNames.geolocationRequired.name(), event.getGeolocationRequired());
         eventData.put(DatabaseEventFieldNames.startInstant.name(), new Timestamp(event.getStartInstant()));
         eventData.put(DatabaseEventFieldNames.endInstant.name(), new Timestamp(event.getEndInstant()));
+        eventData.put(DatabaseEventFieldNames.registrationStartInstant.name(), new Timestamp(event.getRegistrationStartInstant()));
+        eventData.put(DatabaseEventFieldNames.registrationEndInstant.name(), new Timestamp(event.getRegistrationEndInstant()));
         String encodedEventPoster = null;
         try {
             encodedEventPoster = BitmapConverter.BitmapToCompressedString(event.getEventPoster(), this.stringMaximumLength);
@@ -636,6 +640,20 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             Timestamp endInstantTimestamp = (Timestamp) endInstantTemp;
             Instant endInstant = endInstantTimestamp.toInstant();
 
+            Object registrationStartInstantTemp = eventData.get(DatabaseEventFieldNames.registrationStartInstant.name());
+            if (registrationStartInstantTemp == null) {
+                throw new EventDoesNotExist("this event was missing the registrationStartInstant field");
+            }
+            Timestamp registrationStartInstantTimestamp = (Timestamp) registrationStartInstantTemp;
+            Instant registrationStartInstant = registrationStartInstantTimestamp.toInstant();
+
+            Object registrationEndInstantTemp = eventData.get(DatabaseEventFieldNames.registrationEndInstant.name());
+            if (registrationEndInstantTemp == null) {
+                throw new EventDoesNotExist("this event was missing the registrationEndInstant field");
+            }
+            Timestamp registrationEndInstantTimestamp = (Timestamp) registrationEndInstantTemp;
+            Instant registrationEndInstant = registrationEndInstantTimestamp.toInstant();
+
             Object eventPosterTemp = eventData.get(DatabaseEventFieldNames.eventPoster.name());
             if (eventPosterTemp == null) {
                 throw new EventDoesNotExist("this event was missing the eventPoster field");
@@ -650,7 +668,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             Integer capacity = (Integer) capacityTemp;
 
             try {
-                events.add(new Event(name, description, startInstant, endInstant, eventPoster, capacity, qrCode, geolocationRequired, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
+                events.add(new Event(name, description, startInstant, endInstant, registrationStartInstant, registrationEndInstant, eventPoster, capacity, qrCode, geolocationRequired, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
             }
             catch (Exception e) {
                 continue;
@@ -746,6 +764,20 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         Timestamp endInstantTimestamp = (Timestamp) endInstantTemp;
         Instant endInstant = endInstantTimestamp.toInstant();
 
+        Object registrationStartInstantTemp = singleEventData.get(DatabaseEventFieldNames.registrationStartInstant.name());
+        if (registrationStartInstantTemp == null) {
+            throw new EventDoesNotExist("this event was missing the registrationStartInstant field");
+        }
+        Timestamp registrationStartInstantTimestamp = (Timestamp) registrationStartInstantTemp;
+        Instant registrationStartInstant = registrationStartInstantTimestamp.toInstant();
+
+        Object registrationEndInstantTemp = singleEventData.get(DatabaseEventFieldNames.registrationEndInstant.name());
+        if (registrationEndInstantTemp == null) {
+            throw new EventDoesNotExist("this event was missing the registrationEndInstant field");
+        }
+        Timestamp registrationEndInstantTimestamp = (Timestamp) registrationEndInstantTemp;
+        Instant registrationEndInstant = registrationEndInstantTimestamp.toInstant();
+
         Object eventPosterTemp = singleEventData.get(DatabaseEventFieldNames.eventPoster.name());
         if (eventPosterTemp == null) {
             return null;
@@ -763,7 +795,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         Integer capacity = (Integer) capacityTemp;
 
         try {
-            event = new Event(name, description, startInstant, endInstant, eventPoster, capacity, qrCode, geolocationRequired, new EntrantPool(), singleEventRef);
+            event = new Event(name, description, startInstant, endInstant, registrationStartInstant, registrationEndInstant, eventPoster, capacity, qrCode, geolocationRequired, new EntrantPool(), singleEventRef);
         }
         catch (Exception e) {
             return null;
@@ -926,7 +958,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
     @Override
     public void onEntrantStatusesFetch(Event event, ArrayList<EntrantStatus> entrantStatuses) {
         for (EntrantStatus entrantStatus : entrantStatuses) {
-            event.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
+            try {
+                event.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

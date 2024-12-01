@@ -6,6 +6,8 @@ public enum DatabaseEventFieldNames {
     geolocationRequired,
     startInstant,
     endInstant,
+    registrationStartInstant,
+    registrationEndInstant,
     eventPoster,
     qrCode,
     capacity;
