@@ -469,7 +469,7 @@ public class DatabaseManager {
 
         Facility facility;
         for (User user : users) {
-            facility = this.fetchFacility(user); // FIXME convert this to user.getFacility() once things can run on a single thread
+            facility = user.getFacility();
             if (facility != null) {
                 assert !facilities.contains(facility);
                 facilities.add(facility);
@@ -702,7 +702,7 @@ public class DatabaseManager {
 
         ArrayList<Event> events = new ArrayList<Event>();
         for (Facility facility: facilities) {
-            events = this.fetchEvents(facility); // FIXME convert this to facility.getEvents() once things car run on a single thread
+            events = facility.getEvents();
             if (events != null && !events.isEmpty()) {
                 allEvents.addAll(events);
             }
