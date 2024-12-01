@@ -26,7 +26,7 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
             convertView= LayoutInflater.from(context).inflate(R.layout.user_profile_summary,parent,false);
         }
         User currentUser=users.get(position);
-        TextView userName=convertView.findViewById(R.id.user_profile_username);
+        TextView userName=convertView.findViewById(R.id.user_profile_name);
         userName.setText(currentUser.getName());
         return convertView;
     }
