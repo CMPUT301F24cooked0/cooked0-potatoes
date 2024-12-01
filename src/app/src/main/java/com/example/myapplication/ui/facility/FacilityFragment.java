@@ -28,21 +28,12 @@ public class FacilityFragment extends Fragment {
         binding = FacilityScreenFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-//        final TextView textView = binding.textFacility;
-//        facilityViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
     @Override
     public void onViewCreated (@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         try {
-//            FacilityViewModel facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
-//            if (facilityViewModel.getOrganizer() == null) {
-//                user = new User("test", "test", "test@gmail.com");
-//                facilityViewModel.setOrganizer(user);
-//            } else {
-//                user = facilityViewModel.getOrganizer();
-//            }
             FacilityViewModel facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
             user = facilityViewModel.getOrganizer();
             if (user.getFacility() == null) {

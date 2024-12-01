@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myapplication.Event;
 import com.example.myapplication.Facility;
@@ -68,14 +69,22 @@ public class FacilityViewEventsFragment extends Fragment {
 
         // Set click listener for event list items
         eventList.setOnItemClickListener((parent, v, position, id) -> {
-            // TODO Link with event managing page once navigation (and event managing page) is completed
-            FragmentManager fragmentManager = getParentFragmentManager();
-            EditEventFragment editEventFragment = new EditEventFragment();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            Event event = facilityViewModel.getEvents().getValue().get(position);
-            facilityViewModel.setEventToManage(event);
-            fragmentTransaction.replace(R.id.fragment_container, editEventFragment); // TODO have this redirect to event managing page first
-            fragmentTransaction.commit();
+            Event event;
+            try {
+                event = facilityViewModel.getEvents().getValue().get(position);
+            } catch (Exception e) {
+                event = null;
+            }
+            if (event != null) {
+                facilityViewModel.setEventToManage(event);
+                FragmentManager fragmentManager = getParentFragmentManager();
+                ManageEventFragment manageEventFragment = new ManageEventFragment();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, manageEventFragment); // TODO have this redirect to event managing page first
+                fragmentTransaction.commit();
+            } else {
+                Toast.makeText(getActivity(), "Unable to load event", Toast.LENGTH_SHORT).show();
+            }
 
         });
 
@@ -87,8 +96,8 @@ public class FacilityViewEventsFragment extends Fragment {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, createEventFragment);
         fragmentTransaction.commit();
-
     }
+
     // Navigate to edit facility page
     public void onClickEditFacility(View view) {
         FragmentManager fragmentManager = getParentFragmentManager();
@@ -96,8 +105,6 @@ public class FacilityViewEventsFragment extends Fragment {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, facilityEditFragment);
         fragmentTransaction.commit();
-
-
     }
 
 }

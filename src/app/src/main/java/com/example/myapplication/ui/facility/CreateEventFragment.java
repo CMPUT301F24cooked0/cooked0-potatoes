@@ -1,7 +1,10 @@
 package com.example.myapplication.ui.facility;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -65,7 +70,25 @@ public class CreateEventFragment extends Fragment {
             Toast.makeText(getActivity(), "User is not an organizer", Toast.LENGTH_SHORT).show();
         }
 
-        // add image adding functionality (update eventposter and imageview)
+        // add image adding functionality for event poster
+        ActivityResultLauncher<Intent> imagePickerLauncher =
+                registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
+                        Uri imageUri = result.getData().getData();
+                        try {
+                            eventPoster = BitmapFactory.decodeStream(requireActivity().getContentResolver().openInputStream(imageUri));
+                            eventPosterInput.setImageBitmap(eventPoster);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+        eventPosterInput.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            imagePickerLauncher.launch(intent);
+        });
 
 
 

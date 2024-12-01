@@ -1,11 +1,15 @@
 package com.example.myapplication.ui.facility;
 
-import android.app.DatePickerDialog;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -23,8 +27,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -65,7 +67,25 @@ public class EditEventFragment extends Fragment {
         eventStartEditText.setText(event.getInstant().toString());
         eventPosterImageView.setImageBitmap(eventPoster);
 
-        // add image adding functionality (update eventposter and imageview)
+        // add image adding functionality for event poster
+        ActivityResultLauncher<Intent> imagePickerLauncher =
+                registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
+                        Uri imageUri = result.getData().getData();
+                        try {
+                            eventPoster = BitmapFactory.decodeStream(requireActivity().getContentResolver().openInputStream(imageUri));
+                            eventPosterImageView.setImageBitmap(eventPoster);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+        eventPosterImageView.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            imagePickerLauncher.launch(intent);
+        });
 
 
         // Save button to validate and save updated event details

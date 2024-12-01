@@ -49,6 +49,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/edit_event_link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:text="@string/edit_event_str" />
+
             <LinearLayout
                 android:id="@+id/EventDateDisplayLayout"
                 android:layout_width="match_parent"

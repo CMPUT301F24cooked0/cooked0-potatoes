@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.myapplication.Event;
@@ -30,6 +31,9 @@ public class ManageEventFragment extends Fragment {
     private TextView registerStart;
     private TextView registerEnd;
     private TextView downloadQRLink;
+    private TextView editEventLink;
+    private TextView eventCapacity;
+    private ImageView eventPosterImageView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,12 +54,18 @@ public class ManageEventFragment extends Fragment {
         registerStart = view.findViewById(R.id.register_start_placeholder);
         registerEnd = view.findViewById(R.id.register_end_placeholder);
         downloadQRLink = view.findViewById(R.id.download_QR_link);
+        editEventLink = view.findViewById(R.id.edit_event_link);
+        eventCapacity = view.findViewById(R.id.event_capacity_placeholder);
+        eventPosterImageView = view.findViewById(R.id.event_poster_placeholder);
 
         // Set text for event details
         // TODO update when new fields are added in event class
+        eventPosterImageView.setImageBitmap(event.getEventPoster());
         eventName.setText(event.getName());
         eventDate.setText(event.getInstant() + "- end"); // TODO add start and end
         downloadQRLink.setOnClickListener(this::onClickDownloadQR);
+        editEventLink.setOnClickListener(this::onClickEditEvent);
+        eventCapacity.setText("Spots Created -- " + event.getCapacity());
 
 
     }
@@ -64,6 +74,12 @@ public class ManageEventFragment extends Fragment {
         FragmentManager fragmentManager = getParentFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.fragment_container, new DownloadQRFragment()).commit();
 
+    }
+
+    public void onClickEditEvent (View view) {
+        // Navigate to edit event page
+        FragmentManager fragmentManager = getParentFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, new EditEventFragment()).commit();
     }
 
 }
