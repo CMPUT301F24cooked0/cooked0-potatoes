@@ -18,7 +18,7 @@ public class FacilityViewModel extends ViewModel {
 
     public FacilityViewModel() {
         organizer = null;
-        events = null;
+        events = new MutableLiveData<>(new ArrayList<>());
         eventToManage = null;
 
     }

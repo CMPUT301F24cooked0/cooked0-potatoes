@@ -21,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.Event;
 import com.example.myapplication.Facility;
@@ -62,7 +63,7 @@ public class CreateEventFragment extends Fragment {
         createEventButton.setOnClickListener(this::onCreateEventClick);
 
         // Get the user's facility
-        facilityViewModel = new FacilityViewModel();
+        facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
         user = facilityViewModel.getOrganizer();
         if (user != null) {
             facility = user.getFacility();

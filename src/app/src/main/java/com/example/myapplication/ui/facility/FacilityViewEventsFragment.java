@@ -52,6 +52,7 @@ public class FacilityViewEventsFragment extends Fragment {
         facility = user.getFacility();
         facilityName = view.findViewById(R.id.facilityNamePlaceholder);
         facilityLink = view.findViewById(R.id.editFacilityLink);
+        facilityName.setText(facility.getName());
         eventList = view.findViewById(R.id.eventList);
         addEventButton = view.findViewById(R.id.addBtn);
         eventAdapter = new EventArrayAdapter(this.requireContext(), facilityViewModel.getEvents().getValue());
