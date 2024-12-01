@@ -21,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.Event;
 import com.example.myapplication.Facility;
@@ -62,13 +63,14 @@ public class CreateEventFragment extends Fragment {
         createEventButton.setOnClickListener(this::onCreateEventClick);
 
         // Get the user's facility
-        facilityViewModel = new FacilityViewModel();
+        facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
         user = facilityViewModel.getOrganizer();
         if (user != null) {
             facility = user.getFacility();
         } else {
             Toast.makeText(getActivity(), "User is not an organizer", Toast.LENGTH_SHORT).show();
         }
+
 
         // add image adding functionality for event poster
         ActivityResultLauncher<Intent> imagePickerLauncher =
@@ -127,7 +129,7 @@ public class CreateEventFragment extends Fragment {
 
 
             // Parse the dates
-
+            Toast.makeText(getActivity(), startDateTime, Toast.LENGTH_SHORT).show();
             Instant startInstant = parseDateTime(startDateTime);
             Instant endInstant = parseDateTime(endDateTime);
             if (startInstant == null || endInstant == null) {
@@ -150,18 +152,18 @@ public class CreateEventFragment extends Fragment {
             // TODO add event to database
             event.getQrCode().setText("test"); // FIXME change this to the actual path
             //event.getQrCode().setText(event.getEventReference().getpath()); // once event is added to database, this will be set
-
+            facilityViewModel.setEventToManage(event);
             // Add event to facility (if facility is available)
             if (facility != null) {
                 facility.addEvent(event);
-                facilityViewModel.setEvents(); // Update the events in the ViewModel
-                facilityViewModel.setEventToManage(event);
                 Log.d("CreateEventFragment", "Event added to facility: " + facility.getName());
+            } else {
+                Toast.makeText(getActivity(), "Facility not found", Toast.LENGTH_SHORT).show();
+                return;
             }
 
             Toast.makeText(getActivity(), "Event created successfully!", Toast.LENGTH_SHORT).show();
             Log.d("CreateEventFragment", "Event created: " + event.getName());
-            facilityViewModel.setEvents(); // Update the events in the ViewModel
 
 
         } catch (Exception e) {

@@ -52,16 +52,11 @@ public class FacilityViewEventsFragment extends Fragment {
         facility = user.getFacility();
         facilityName = view.findViewById(R.id.facilityNamePlaceholder);
         facilityLink = view.findViewById(R.id.editFacilityLink);
+        facilityName.setText(facility.getName());
         eventList = view.findViewById(R.id.eventList);
         addEventButton = view.findViewById(R.id.addBtn);
-        eventAdapter = new EventArrayAdapter(this.requireContext(), facilityViewModel.getEvents().getValue());
+        eventAdapter = new EventArrayAdapter(this.requireContext(), facility.getEvents());
         eventList.setAdapter(eventAdapter);
-        facilityViewModel.setEvents();
-        facilityViewModel.getEvents().observe(getViewLifecycleOwner(), events -> {
-            eventAdapter.clear();
-            eventAdapter.addAll(events);
-            eventAdapter.notifyDataSetChanged();
-        });
 
         // Set click listeners for buttons
         addEventButton.setOnClickListener(this::onClickAddEvent);
@@ -71,7 +66,7 @@ public class FacilityViewEventsFragment extends Fragment {
         eventList.setOnItemClickListener((parent, v, position, id) -> {
             Event event;
             try {
-                event = facilityViewModel.getEvents().getValue().get(position);
+                event = facility.getEvents().get(position);
             } catch (Exception e) {
                 event = null;
             }

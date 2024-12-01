@@ -27,10 +27,11 @@
 
     <ScrollView
         android:id="@+id/scrollView2"
-        style="@android:style/Widget.DeviceDefault.Light.ScrollView"
+        style="@android:style/Widget.ScrollView"
         android:layout_width="match_parent"
         android:layout_height="450dp"
         android:layout_marginBottom="1dp"
+        android:focusableInTouchMode="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
