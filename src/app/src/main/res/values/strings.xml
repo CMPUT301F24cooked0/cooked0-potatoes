@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="welcome_admin">Welcome Admin!</string>
+    <string name="manage_users">Manage Users</string>
+    <string name="manage_events">Manage Events</string>
+    <string name="manage_facilities">Manage Facilities</string>
 </resources>
