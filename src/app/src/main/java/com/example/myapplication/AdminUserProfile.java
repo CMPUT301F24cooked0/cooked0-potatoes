@@ -1,5 +1,8 @@
 package com.example.myapplication;
 
+import static com.example.myapplication.BitmapConverter.BitmapToString;
+import static com.example.myapplication.ProfilePictureGenerator.generateProfileImage;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,6 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AdminUserProfile extends AppCompatActivity{
+    private String userUniqueID;
     private User selectedUser;
 
     @Override
@@ -25,10 +29,8 @@ public class AdminUserProfile extends AppCompatActivity{
         setContentView(R.layout.user_profile_summary);
 
         Intent intent=getIntent();
-        String name=getIntent().getStringExtra("name");
-        String email=getIntent().getStringExtra("email");
-        Long phoneNumber=getIntent().getLongExtra("phoneNumber",0L);
-        String encodedImage=getIntent().getStringExtra("profilePicture");
+        userUniqueID=getIntent().getStringExtra("uniqueID");
+        fetchUser(userUniqueID);
 
         ImageView profileImageView=findViewById(R.id.user_profile_image);
         TextView profileName=findViewById(R.id.user_profile_name);
@@ -37,21 +39,42 @@ public class AdminUserProfile extends AppCompatActivity{
         Button removeButton=findViewById(R.id.remove_user_button);
         Button returnButton=findViewById(R.id.return_user_button);
 
-        profileName.setText(name);
-        profileEmail.setText(email);
-        profileNumber.setText(String.valueOf(phoneNumber));
+        profileName.setText(selectedUser.getName());
+        profileEmail.setText(selectedUser.getEmail());
+        profileNumber.setText(String.valueOf(selectedUser.getPhoneNumber()));
 
-        if(encodedImage!=null){
-            byte[] decodedBytes= Base64.decode(encodedImage,Base64.DEFAULT);
-            Bitmap profilePicture= BitmapFactory.decodeByteArray(decodedBytes,0, decodedBytes.length);
-            profileImageView.setImageBitmap(profilePicture);
+        if(selectedUser.getProfilePicture()!=null){
+            profileImageView.setImageBitmap(selectedUser.getProfilePicture());
         }
         else{
-            Bitmap generatedPicture=generateProfileImage(name);
+            Bitmap generatedPicture=generateProfileImage(selectedUser.getName());
             profileImageView.setImageBitmap(generatedPicture);
         }
         removeButton.setOnClickListener(view -> showDeletePage());
         returnButton.setOnClickListener(view -> finish());
+    }
+
+    private void fetchUser(String uniqueID){
+        if(userUniqueID!=null){
+            DatabaseManager databaseManager=new DatabaseManager();
+            databaseManager.getUser(uniqueID,user -> {
+                if(user!=null){
+                    selectedUser=user;
+                    runOnUiThread(()->{
+                        Toast.makeText(this,"Success",Toast.LENGTH_SHORT).show();
+                    });
+                }
+                else{
+                    runOnUiThread(()->{
+                        Toast.makeText(this,"Failed",Toast.LENGTH_SHORT).show();
+                    });
+                }
+            });
+            //getUser(uniqueID) and stores User Object as selectedUser
+        }
+        else{
+            Toast.makeText(this,"No Unique ID",Toast.LENGTH_SHORT).show();
+        }
     }
 
 

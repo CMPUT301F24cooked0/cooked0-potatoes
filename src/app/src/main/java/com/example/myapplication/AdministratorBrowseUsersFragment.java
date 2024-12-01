@@ -58,14 +58,7 @@ public class AdministratorBrowseUsersFragment extends Fragment {
         userList.setOnItemClickListener((adapterView, view1, position, id) -> {
             User selectedUser=userDataList.get(position);
             Intent intent=new Intent(requireContext(), AdminUserProfile.class);
-            intent.putExtra("name",selectedUser.getName());
-            intent.putExtra("email",selectedUser.getEmail());
-            intent.putExtra("phoneNumber",selectedUser.getPhoneNumber());
-
-            if(selectedUser.getProfilePicture()!=null){
-                String encodedImage=BitmapToString(selectedUser.getProfilePicture());
-                intent.putExtra("profilePicture",encodedImage);
-            }
+            intent.putExtra("uniqueID",selectedUser.getUniqueID());
             startActivity(intent);
         });
         return view;

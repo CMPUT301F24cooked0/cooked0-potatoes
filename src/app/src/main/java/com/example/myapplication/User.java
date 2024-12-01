@@ -22,7 +22,7 @@ It also tracks if the user has created a facility or if they have any events.
 Additional functionalities including managing notification preferences and storage of information
 provided by the user
  */
-public class User {
+public class User{
     private static final FirebaseFirestore db=FirebaseFirestore.getInstance();
     protected static final CollectionReference userRef=db.collection("Users");
     private String uniqueID;
