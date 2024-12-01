@@ -3,11 +3,8 @@ package com.example.myapplication;
 import android.graphics.Bitmap;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.time.*;
 
@@ -15,7 +12,7 @@ import java.time.*;
 This class is responsible for creating an event object using user input. It sets information about
 the event and also gets information about the event.
  */
-public class Event implements Serializable {
+public class Event {
     private String name;
     private String description;
     private Instant startInstant;
@@ -65,7 +62,7 @@ public class Event implements Serializable {
      * @param eventPoster
      * @param capacity
      * @param geolocationRequired
-    */
+     */
     public Event(String name, Instant startInstant, Instant endInstant, Instant registrationStartInstant, Instant registrationEndInstant, Bitmap eventPoster, Integer capacity, Boolean geolocationRequired) throws Exception {
         this(name, startInstant, endInstant, registrationStartInstant, registrationEndInstant, eventPoster, geolocationRequired);
         this.setCapacity(capacity);
@@ -128,7 +125,6 @@ public class Event implements Serializable {
 
     /**
      * set this event's name, throws an exception if the name is null or empty
-     *
      * @param name
      * @throws Exception
      */
@@ -214,7 +210,6 @@ public class Event implements Serializable {
     /**
      * set this event's capacity, throws an exception if the capacity is 0 or negative
      * A capacity of null is valid, and means that the event has no capacity
-     *
      * @param capacity
      * @throws Exception
      */
@@ -231,7 +226,6 @@ public class Event implements Serializable {
 
     /**
      * set this event's poster, throws an exception if the poster is null, or if image dimensions are too small or too large
-     *
      * @param eventPoster
      * @throws Exception
      */
@@ -272,7 +266,6 @@ public class Event implements Serializable {
 
     /**
      * add an entrant to this event
-     *
      * @param entrant
      * @param joinedFrom
      * @throws EntrantAlreadyInPool
@@ -306,7 +299,6 @@ public class Event implements Serializable {
 
     /**
      * remove an entrant from this event
-     *
      * @param entrant
      */
     public void removeEntrant(User entrant) throws Exception {
@@ -324,7 +316,6 @@ public class Event implements Serializable {
 
     /**
      * get this event's name
-     *
      * @return
      */
     public String getName() {
@@ -381,7 +372,6 @@ public class Event implements Serializable {
 
     /**
      * get this event's capacity
-     *
      * @return
      */
     public Integer getCapacity() {
@@ -390,7 +380,6 @@ public class Event implements Serializable {
 
     /**
      * get this event's poster
-     *
      * @return
      */
     public Bitmap getEventPoster() {
@@ -399,7 +388,6 @@ public class Event implements Serializable {
 
     /**
      * get this event's QR code
-     *
      * @return
      */
     public QRCode getQrCode() {
@@ -408,7 +396,6 @@ public class Event implements Serializable {
 
     /**
      * get a list of this event's entrants
-     *
      * @return
      */
     public ArrayList<User> getEntrants() throws Exception {
@@ -417,13 +404,15 @@ public class Event implements Serializable {
 
     /**
      * get a list of this event's entrantStatuses
-     *
      * @return
      */
     public ArrayList<EntrantStatus> getEntrantStatuses() {
         return this.entrantPool.getEntrantStatuses();
     }
 
+    public void setEventReference(DocumentReference eventRef) {
+        this.eventRef = eventRef;
+    }
 
     /**
      * get aDocumentReference to this event in the database
