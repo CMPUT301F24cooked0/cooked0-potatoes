@@ -15,7 +15,8 @@ the event and also gets information about the event.
 public class Event {
     private String name;
     private String description;
-    private Instant instant;
+    private Instant startInstant;
+    private Instant endInstant;
     private Integer capacity;
     private Bitmap eventPoster;
     private QRCode qrCode;
@@ -27,14 +28,16 @@ public class Event {
      * Base constructor to consolidate code used by other constructors.
      * Note that this sets QRCode's text to null, but it should be set as soon as it is known
      * @param name
-     * @param instant
+     * @param startInstant
+     * @param endInstant
      * @param eventPoster
      * @param geolocationRequired
      */
-    public Event(String name, Instant instant, Bitmap eventPoster, Boolean geolocationRequired) throws Exception {
+    public Event(String name, Instant startInstant, Instant endInstant, Bitmap eventPoster, Boolean geolocationRequired) throws Exception {
         this.setName(name);
         this.setGeolocationRequired(geolocationRequired);
-        this.setInstant(instant);
+        this.setStartInstant(startInstant);
+        this.setEndInstant(endInstant);
         this.setEventPoster(eventPoster);
         this.qrCode = new QRCode();
         this.setQrCode(qrCode);
@@ -46,13 +49,14 @@ public class Event {
      * create an event with a capacity.
      * Note that this sets QRCode's text to null, but it should be set as soon as it is known
      * @param name
-     * @param instant
+     * @param startInstant
+     * @param endInstant
      * @param eventPoster
      * @param capacity
      * @param geolocationRequired
     */
-    public Event(String name, Instant instant, Bitmap eventPoster, Integer capacity, Boolean geolocationRequired) throws Exception {
-        this(name, instant, eventPoster, geolocationRequired);
+    public Event(String name, Instant startInstant, Instant endInstant, Bitmap eventPoster, Integer capacity, Boolean geolocationRequired) throws Exception {
+        this(name, startInstant, endInstant, eventPoster, geolocationRequired);
         this.setCapacity(capacity);
     }
 
@@ -61,12 +65,13 @@ public class Event {
      * Note that this sets QRCode's text to null, but it should be set as soon as it is known
      * @param name
      * @param description
-     * @param instant
+     * @param startInstant
+     * @param endInstant
      * @param eventPoster
      * @param geolocationRequired
      */
-    public Event(String name, String description, Instant instant, Bitmap eventPoster, Boolean geolocationRequired) throws Exception {
-        this(name, instant, eventPoster, geolocationRequired);
+    public Event(String name, String description, Instant startInstant, Instant endInstant, Bitmap eventPoster, Boolean geolocationRequired) throws Exception {
+        this(name, startInstant, endInstant, eventPoster, geolocationRequired);
         this.setDescription(description );
     }
 
@@ -74,7 +79,8 @@ public class Event {
      * only use this constructor in DatabaseManager to instantiate an Event from the data in the database
      * @param name
      * @param description
-     * @param instant
+     * @param startInstant
+     * @param endInstant
      * @param eventPoster
      * @param capacity
      * @param qrCode
@@ -82,11 +88,12 @@ public class Event {
      * @param entrantPool
      * @param eventRef
      */
-    public Event(String name, String description, Instant instant, Bitmap eventPoster, Integer capacity, QRCode qrCode, Boolean geolocationRequired, EntrantPool entrantPool, DocumentReference eventRef) throws Exception {
+    public Event(String name, String description, Instant startInstant, Instant endInstant, Bitmap eventPoster, Integer capacity, QRCode qrCode, Boolean geolocationRequired, EntrantPool entrantPool, DocumentReference eventRef) throws Exception {
         this.setName(name);
         this.setDescription(description);
         this.setGeolocationRequired(geolocationRequired);
-        this.setInstant(instant);
+        this.setStartInstant(startInstant);
+        this.setEndInstant(endInstant);
         this.setEventPoster(eventPoster);
         this.setCapacity(capacity);
         this.setQrCode(qrCode);
@@ -137,18 +144,33 @@ public class Event {
     }
 
     /**
-     * set this event's instant, throws an exception if the instant is null or in the past
-     * @param instant
+     * set this event's start instant, throws an exception if the instant is null or after end instant
+     * @param startInstant
      * @throws Exception
      */
-    public void setInstant(Instant instant) throws Exception {
-        if (instant == null) {
-            throw new Exception("cannot set event instant to null");
+    public void setStartInstant(Instant startInstant) throws Exception {
+        if (startInstant == null) {
+            throw new Exception("cannot set event startInstant to null");
         }
-        if (instant.isBefore(Instant.now())) {
-            throw new Exception("cannot set event instant in the past");
+        if (this.endInstant != null && this.endInstant.isBefore(startInstant)) {
+            throw new Exception("cannot set event startInstant to after endInstant");
         }
-        this.instant = instant;
+        this.startInstant = startInstant;
+    }
+
+    /**
+     * set this event's end instant, throws an exception if the instant is null or before start instant
+     * @param endInstant
+     * @throws Exception
+     */
+    public void setEndInstant(Instant endInstant) throws Exception {
+        if (endInstant == null) {
+            throw new Exception("cannot set event endInstant to null");
+        }
+        if (this.startInstant != null && endInstant.isBefore(this.startInstant)) {
+            throw new Exception("cannot set event endInstant to before startInstant");
+        }
+        this.endInstant = endInstant;
     }
 
     /**
@@ -271,11 +293,19 @@ public class Event {
     }
 
     /**
-     * get this event's instant
+     * get this event's start instant
      * @return
      */
-    public Instant getInstant() {
-        return this.instant;
+    public Instant getStartInstant() {
+        return this.startInstant;
+    }
+
+    /**
+     * get this event's end instant
+     * @return
+     */
+    public Instant getEndInstant() {
+        return this.endInstant;
     }
 
     /**

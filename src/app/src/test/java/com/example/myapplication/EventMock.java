@@ -14,12 +14,12 @@ import java.util.Date;
  */
 class EventMock extends Event {
 
-    public EventMock(String name, Instant instant, Bitmap eventPoster, Boolean geolocationRequired) throws Exception {
-        super(name, instant, eventPoster, geolocationRequired);
+    public EventMock(String name, Instant startInstant, Instant endInstant, Bitmap eventPoster, Boolean geolocationRequired) throws Exception {
+        super(name, startInstant, endInstant, eventPoster, geolocationRequired);
     }
 
-    public EventMock(String name, Instant instant, Bitmap eventPoster, Integer capacity, Boolean geolocationRequired) throws Exception {
-        super(name, instant, eventPoster, capacity, geolocationRequired);
+    public EventMock(String name, Instant startInstant, Instant endInstant, Bitmap eventPoster, Integer capacity, Boolean geolocationRequired) throws Exception {
+        super(name, startInstant, endInstant, eventPoster, capacity, geolocationRequired);
     }
 
     @Override

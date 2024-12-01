@@ -453,7 +453,8 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
         eventData.put(DatabaseEventFieldNames.description.name(), event.getDescription());
         eventData.put(DatabaseEventFieldNames.geolocationRequired.name(), event.getGeolocationRequired());
-        eventData.put(DatabaseEventFieldNames.instant.name(), new Timestamp(event.getInstant()));
+        eventData.put(DatabaseEventFieldNames.startInstant.name(), new Timestamp(event.getStartInstant()));
+        eventData.put(DatabaseEventFieldNames.endInstant.name(), new Timestamp(event.getEndInstant()));
         String encodedEventPoster = null;
         try {
             encodedEventPoster = BitmapConverter.BitmapToCompressedString(event.getEventPoster(), this.stringMaximumLength);
@@ -487,7 +488,8 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         eventData.put(DatabaseEventFieldNames.name.name(), event.getName());
         eventData.put(DatabaseEventFieldNames.description.name(), event.getDescription());
         eventData.put(DatabaseEventFieldNames.geolocationRequired.name(), event.getGeolocationRequired());
-        eventData.put(DatabaseEventFieldNames.instant.name(), new Timestamp(event.getInstant()));
+        eventData.put(DatabaseEventFieldNames.startInstant.name(), new Timestamp(event.getStartInstant()));
+        eventData.put(DatabaseEventFieldNames.endInstant.name(), new Timestamp(event.getEndInstant()));
         String encodedEventPoster = null;
         try {
             encodedEventPoster = BitmapConverter.BitmapToCompressedString(event.getEventPoster(), this.stringMaximumLength);
@@ -620,12 +622,19 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             }
             Boolean geolocationRequired = (Boolean) geolocationRequiredTemp;
 
-            Object dateTemp = eventData.get(DatabaseEventFieldNames.instant.name());
-            if (dateTemp == null) {
-                throw new EventDoesNotExist("this event was missing the instant field");
+            Object startInstantTemp = eventData.get(DatabaseEventFieldNames.startInstant.name());
+            if (startInstantTemp == null) {
+                throw new EventDoesNotExist("this event was missing the startInstant field");
             }
-            Timestamp dateTimestamp = (Timestamp) dateTemp;
-            Instant instant = dateTimestamp.toInstant();
+            Timestamp startInstantTimestamp = (Timestamp) startInstantTemp;
+            Instant startInstant = startInstantTimestamp.toInstant();
+
+            Object endInstantTemp = eventData.get(DatabaseEventFieldNames.endInstant.name());
+            if (endInstantTemp == null) {
+                throw new EventDoesNotExist("this event was missing the endInstant field");
+            }
+            Timestamp endInstantTimestamp = (Timestamp) endInstantTemp;
+            Instant endInstant = endInstantTimestamp.toInstant();
 
             Object eventPosterTemp = eventData.get(DatabaseEventFieldNames.eventPoster.name());
             if (eventPosterTemp == null) {
@@ -641,7 +650,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             Integer capacity = (Integer) capacityTemp;
 
             try {
-                events.add(new Event(name, description, instant, eventPoster, capacity, qrCode, geolocationRequired, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
+                events.add(new Event(name, description, startInstant, endInstant, eventPoster, capacity, qrCode, geolocationRequired, new EntrantPool(), eventRefs.get(eventRefs.size()-1)));
             }
             catch (Exception e) {
                 continue;
@@ -723,12 +732,19 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
         Boolean geolocationRequired = (Boolean) geolocationRequiredTemp;
 
-        Object dateTemp = singleEventData.get(DatabaseEventFieldNames.instant.name());
-        if (dateTemp == null) {
-            return null;
+        Object startInstantTemp = singleEventData.get(DatabaseEventFieldNames.startInstant.name());
+        if (startInstantTemp == null) {
+            throw new EventDoesNotExist("this event was missing the startInstant field");
         }
-        Timestamp dateTimestamp = (Timestamp) dateTemp;
-        Instant instant = dateTimestamp.toInstant();
+        Timestamp startInstantTimestamp = (Timestamp) startInstantTemp;
+        Instant startInstant = startInstantTimestamp.toInstant();
+
+        Object endInstantTemp = singleEventData.get(DatabaseEventFieldNames.endInstant.name());
+        if (endInstantTemp == null) {
+            throw new EventDoesNotExist("this event was missing the endInstant field");
+        }
+        Timestamp endInstantTimestamp = (Timestamp) endInstantTemp;
+        Instant endInstant = endInstantTimestamp.toInstant();
 
         Object eventPosterTemp = singleEventData.get(DatabaseEventFieldNames.eventPoster.name());
         if (eventPosterTemp == null) {
@@ -747,13 +763,12 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         Integer capacity = (Integer) capacityTemp;
 
         try {
-            event = new Event(name, description, instant, eventPoster, capacity, qrCode, geolocationRequired, new EntrantPool(), singleEventRef);
+            event = new Event(name, description, startInstant, endInstant, eventPoster, capacity, qrCode, geolocationRequired, new EntrantPool(), singleEventRef);
         }
         catch (Exception e) {
             return null;
         }
         return event;
-
     }
 
     /**
