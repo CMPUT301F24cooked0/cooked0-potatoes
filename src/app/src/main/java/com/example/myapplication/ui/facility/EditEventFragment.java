@@ -142,7 +142,6 @@ public class EditEventFragment extends Fragment {
         // TODO update the event in the database
 
         // update the event in the ViewModel
-        facilityViewModel.setEvents();
     }
 
     /**

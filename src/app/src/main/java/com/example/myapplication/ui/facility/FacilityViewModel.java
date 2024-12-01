@@ -13,12 +13,10 @@ import java.util.ArrayList;
 public class FacilityViewModel extends ViewModel {
 
     private User organizer;
-    MutableLiveData<ArrayList<Event>> events;
     private Event eventToManage;
 
     public FacilityViewModel() {
         organizer = null;
-        events = new MutableLiveData<>(new ArrayList<>());
         eventToManage = null;
 
     }
@@ -30,17 +28,6 @@ public class FacilityViewModel extends ViewModel {
         this.organizer = organizer;
     }
 
-    public void setEvents() {
-        events = new MutableLiveData<>();
-        Facility facility = organizer.getFacility();
-        events.setValue(facility.getEvents());
-
-    }
-
-    public MutableLiveData<ArrayList<Event>> getEvents() {
-        return events;
-
-    }
     public void setEventToManage(Event event) {
         eventToManage = event;
     }
