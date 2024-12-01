@@ -1,13 +1,10 @@
 package com.example.myapplication;
 
-import static com.example.myapplication.BitmapConverter.BitmapToString;
 import static com.example.myapplication.ProfilePictureGenerator.generateProfileImage;
 
-import android.content.Intent;
+
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +25,7 @@ public class AdminUserProfile extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile_summary);
 
-        Intent intent=getIntent();
+
         userUniqueID=getIntent().getStringExtra("uniqueID");
         fetchUser(userUniqueID);
 
@@ -50,10 +47,15 @@ public class AdminUserProfile extends AppCompatActivity{
             Bitmap generatedPicture=generateProfileImage(selectedUser.getName());
             profileImageView.setImageBitmap(generatedPicture);
         }
-        removeButton.setOnClickListener(view -> showDeletePage());
+        profileImageView.setOnClickListener(view -> showImageDeletePage());
+        removeButton.setOnClickListener(view -> showUserDeletePage());
         returnButton.setOnClickListener(view -> finish());
     }
 
+    /***
+     * Method to get user data from the database using getUser() from databasemanager
+     * @param uniqueID user uniqueID
+     */
     private void fetchUser(String uniqueID){
         if(userUniqueID!=null){
             DatabaseManager databaseManager=new DatabaseManager();
@@ -81,7 +83,7 @@ public class AdminUserProfile extends AppCompatActivity{
     /***
      * Method to show the dialog page to confirm or cancel the delete action
      */
-    public void showDeletePage() {
+    public void showUserDeletePage() {
         LayoutInflater inflater= LayoutInflater.from(this);
         View dialogView = inflater.inflate(R.layout.delete_dialog,null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -89,8 +91,8 @@ public class AdminUserProfile extends AppCompatActivity{
 
         TextView dialogTitle = dialogView.findViewById(R.id.dialog_title);
         TextView dialogMessage=dialogView.findViewById(R.id.dialog_message);
-        dialogTitle.setText("Remove User");
-        dialogMessage.setText("Are you sure you want to remove this user?");
+        dialogTitle.setText(R.string.remove_user);
+        dialogMessage.setText(R.string.are_you_sure_you_want_to_remove_this_user);
         Button cancelButton = dialogView.findViewById(R.id.dialog_cancel_button);
         Button removeButton = dialogView.findViewById(R.id.dialog_remove_button);
         AlertDialog dialog = builder.create();
@@ -114,6 +116,34 @@ public class AdminUserProfile extends AppCompatActivity{
                 Toast.makeText(this,"Fail",Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
+        });
+        dialog.show();
+    }
+
+    public void showImageDeletePage() {
+        LayoutInflater inflater= LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.delete_dialog,null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+
+        TextView dialogTitle = dialogView.findViewById(R.id.dialog_title);
+        TextView dialogMessage=dialogView.findViewById(R.id.dialog_message);
+        dialogTitle.setText(R.string.remove_profile_picture);
+        dialogMessage.setText(R.string.are_you_sure_you_want_to_remove_this_photo);
+        Button cancelButton = dialogView.findViewById(R.id.dialog_cancel_button);
+        Button removeButton = dialogView.findViewById(R.id.dialog_remove_button);
+        AlertDialog dialog = builder.create();
+
+        cancelButton.setOnClickListener(view -> dialog.dismiss());
+        removeButton.setOnClickListener(view -> {
+            if(selectedUser==null){
+                Toast.makeText(this,"No Profile Picture to delete",Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                return;
+            }
+            Bitmap generatedImage=generateProfileImage(selectedUser.getName());
+            selectedUser.setProfilePicture(generatedImage);
+
         });
         dialog.show();
     }
