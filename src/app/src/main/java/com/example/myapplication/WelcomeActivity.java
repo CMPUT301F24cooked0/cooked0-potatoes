@@ -45,7 +45,10 @@ public class WelcomeActivity extends AppCompatActivity {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             // Device ID exists in Firestore
-                            //TODO: add user instantion and intent to main
+
+                            Intent i = new Intent(WelcomeActivity.this, MainActivity.class);
+                            startActivity(i);
+                            finish();
 
                         } else {
                             // Device ID does not exist in Firestore
