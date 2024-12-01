@@ -729,7 +729,11 @@ public class DatabaseManager {
         for (Event event : events) {
             entrantStatuses = this.fetchEntrantStatuses(event);
             for (EntrantStatus entrantStatus : entrantStatuses) {
-                event.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
+                try {
+                    event.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
@@ -859,7 +863,11 @@ public class DatabaseManager {
         }
         ArrayList<EntrantStatus> entrantStatuses = this.fetchEntrantStatuses(event);
         for (EntrantStatus entrantStatus : entrantStatuses) {
-            event.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
+            try {
+                event.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return event;
