@@ -16,7 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.myapplication.Event;
-import com.example.myapplication.EventArrayAdapter;
 import com.example.myapplication.Facility;
 import com.example.myapplication.R;
 import com.example.myapplication.User;
