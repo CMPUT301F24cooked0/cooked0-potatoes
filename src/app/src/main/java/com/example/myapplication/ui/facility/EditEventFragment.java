@@ -72,7 +72,7 @@ public class EditEventFragment extends Fragment {
         eventCapacityEditText.setText(event.getCapacity() != null ? String.valueOf(event.getCapacity()) : "");
         eventStartEditText.setText(event.getStartInstant().toString());
         eventEndEditText.setText(event.getEndInstant().toString());
-        eventDetailsEditText.setText(event.getDescription());
+        eventDetailsEditText.setText(event.getDescription() != null ? event.getDescription() : "");
         eventRegStartEditText.setText(event.getRegistrationStartInstant().toString());
         eventRegEndEditText.setText(event.getRegistrationEndInstant().toString());
         geoRequiredSwitch.setChecked(event.getGeolocationRequired());
