@@ -48,9 +48,9 @@ public class AdministratorBrowseEventsFragment extends Fragment {
         });
 
         eventListView.setOnItemClickListener((parent,view1,position,id)->{
-            Event clickedEvent=eventList.get(position);
+            Event selectedEvent=eventList.get(position);
             Intent intent=new Intent(getContext(),AdministratorEventDetails.class);
-            intent.putExtra("selectedEvent",clickedEvent);
+            //intent.putExtra("selectedEvent",selectedEvent); TODO figure out what data to pass to get single event data
             startActivity(intent);
         });
         return view;
