@@ -2,6 +2,8 @@ package com.example.myapplication;
 
 
 
+import static com.example.myapplication.BitmapConverter.BitmapToString;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -61,10 +63,7 @@ public class AdministratorBrowseUsersFragment extends Fragment {
             intent.putExtra("phoneNumber",selectedUser.getPhoneNumber());
 
             if(selectedUser.getProfilePicture()!=null){
-                ByteArrayOutputStream stream=new ByteArrayOutputStream();
-                selectedUser.getProfilePicture().compress(Bitmap.CompressFormat.PNG,100,stream);
-                byte[] bytes= stream.toByteArray();
-                String encodedImage=Base64.encodeToString(bytes,Base64.DEFAULT);
+                String encodedImage=BitmapToString(selectedUser.getProfilePicture());
                 intent.putExtra("profilePicture",encodedImage);
             }
             startActivity(intent);
