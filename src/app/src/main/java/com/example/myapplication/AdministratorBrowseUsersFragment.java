@@ -2,22 +2,26 @@ package com.example.myapplication;
 
 
 
-import android.app.AlertDialog;
+import static com.example.myapplication.BitmapConverter.BitmapToString;
+
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import android.util.Base64;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+
 
 
 public class AdministratorBrowseUsersFragment extends Fragment {
@@ -34,39 +38,33 @@ public class AdministratorBrowseUsersFragment extends Fragment {
         userDataList = new ArrayList<>();
         userArrayAdapter = new UserArrayAdapter(requireContext(), userDataList);
         userList.setAdapter(userArrayAdapter);
-
-        User.fetchUsers(users -> {
+        DatabaseManager databaseManager=new DatabaseManager();
+        databaseManager.getAllUsers(users -> {
+            if(users!=null && !users.isEmpty()){
+                requireActivity().runOnUiThread(()->{
                     userDataList.clear();
                     userDataList.addAll(users);
                     userArrayAdapter.notifyDataSetChanged();
-                },
-                error->Log.w("Firestore","Error Fetching Users",error)
-        );
-
-        userList.setOnItemClickListener(((adapterView, view1, position, id) -> showDeletePage(position)));
+                    Log.d("Fetch Users","Success");
+                });
+            }
+            else{
+                requireActivity().runOnUiThread(()->{
+                    Log.w("Fetch Users", "No Users Found");
+                    Toast.makeText(requireContext(),"No Users Found",Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+        userList.setOnItemClickListener((adapterView, view1, position, id) -> {
+            User selectedUser=userDataList.get(position);
+            Intent intent=new Intent(requireContext(), AdminUserProfile.class);
+            intent.putExtra("uniqueID",selectedUser.getUniqueID());
+            startActivity(intent);
+        });
         return view;
     }
 
 
-    private void showDeletePage(final int position) {
-        LayoutInflater inflater= LayoutInflater.from(requireContext());
-        View dialogView = inflater.inflate(R.layout.delete_dialog, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-        builder.setView(dialogView);
-        TextView dialogTitle = dialogView.findViewById(R.id.dialog_title);
-        dialogTitle.setText("Remove User");
-        Button cancelButton = dialogView.findViewById(R.id.dialog_cancel_button);
-        Button removeButton = dialogView.findViewById(R.id.dialog_remove_button);
-        AlertDialog dialog = builder.create();
-
-        cancelButton.setOnClickListener(view -> dialog.dismiss());
-        removeButton.setOnClickListener(view -> {
-            User user = userDataList.get(position);
-            User.deleteUser(user,position);
-            dialog.dismiss();
-        });
-        dialog.show();
-    }
 
 
 }

@@ -244,44 +244,6 @@ public class User {
         return this.receivesOrgAdmNotifications;
     }
 
-    /***
-     * Method to delete user from database and is called in AdministratorBrowseUsersFragment when admin confirms the deletion of the user.
-     * @param onSuccessListener
-     * @param onFailureListener
-     * @deprecated please DO NOT use this method. // TODO create method in DatabaseManager to do this
-     */
-    public void deleteUser(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener){
-        userRef.document(this.name).delete()
-                .addOnSuccessListener(onSuccessListener)
-                .addOnFailureListener(onFailureListener);
-    }
-
-    /***
-     * Method that gets users data from the database and to be called in the AdministratorBrowseUsersFragment to populate the list.
-     * @param onSuccessListener
-     * @param onFailureListener
-     * @deprecated please DO NOT use this method. Use the DatabaseManager to get users
-     */
-    public static void fetchUsers(OnSuccessListener<ArrayList<User>> onSuccessListener,OnFailureListener onFailureListener){
-        userRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
-            ArrayList<User> users=new ArrayList<>();
-            for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
-                String name = doc.getString("name");
-                String email = doc.getString("email");
-                Long phoneNumber =doc.getLong("phoneNumber");
-
-                try {
-                    User user=new User(name,email,phoneNumber);
-                    users.add(user);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-            onSuccessListener.onSuccess(users);
-        }).addOnFailureListener(onFailureListener);
-    }
-
-
     public void setUserReference(DocumentReference userRef) {
         this.userRef = userRef;
     }

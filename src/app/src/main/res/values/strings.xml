@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="administrator_browse_users_title">Browse Profiles</string>
-    <string name="administrator_browse_events_title">Browse Events</string>
-    <string name="event_poster">event_poster</string>
+    <string name="profile_picture">profile_picture</string>
 </resources>

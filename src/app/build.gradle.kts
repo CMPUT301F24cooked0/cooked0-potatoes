@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.qr.generator)
     implementation(libs.play.services.maps)
     testImplementation(libs.junit)
+    testImplementation(libs.core)
     testImplementation(libs.mockito.core)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
