@@ -19,6 +19,7 @@ public class Event {
     private Integer capacity;
     private Bitmap eventPoster;
     private QRCode qrCode;
+    private Boolean geolocationRequired;
     private final EntrantPool entrantPool;
     private DocumentReference eventRef;
 
@@ -28,9 +29,11 @@ public class Event {
      * @param name
      * @param instant
      * @param eventPoster
+     * @param geolocationRequired
      */
-    public Event(String name, Instant instant, Bitmap eventPoster) throws Exception {
+    public Event(String name, Instant instant, Bitmap eventPoster, Boolean geolocationRequired) throws Exception {
         this.setName(name);
+        this.setGeolocationRequired(geolocationRequired);
         this.setInstant(instant);
         this.setEventPoster(eventPoster);
         this.qrCode = new QRCode();
@@ -46,9 +49,10 @@ public class Event {
      * @param instant
      * @param eventPoster
      * @param capacity
+     * @param geolocationRequired
     */
-    public Event(String name, Instant instant, Bitmap eventPoster, Integer capacity) throws Exception {
-        this(name, instant, eventPoster);
+    public Event(String name, Instant instant, Bitmap eventPoster, Integer capacity, Boolean geolocationRequired) throws Exception {
+        this(name, instant, eventPoster, geolocationRequired);
         this.setCapacity(capacity);
     }
 
@@ -59,25 +63,29 @@ public class Event {
      * @param description
      * @param instant
      * @param eventPoster
+     * @param geolocationRequired
      */
-    public Event(String name, String description, Instant instant, Bitmap eventPoster) throws Exception {
-        this(name, instant, eventPoster);
+    public Event(String name, String description, Instant instant, Bitmap eventPoster, Boolean geolocationRequired) throws Exception {
+        this(name, instant, eventPoster, geolocationRequired);
         this.setDescription(description );
     }
 
     /**
      * only use this constructor in DatabaseManager to instantiate an Event from the data in the database
      * @param name
+     * @param description
      * @param instant
      * @param eventPoster
      * @param capacity
      * @param qrCode
+     * @param geolocationRequired
      * @param entrantPool
      * @param eventRef
      */
-    public Event(String name, String description, Instant instant, Bitmap eventPoster, Integer capacity, QRCode qrCode, EntrantPool entrantPool, DocumentReference eventRef) throws Exception {
+    public Event(String name, String description, Instant instant, Bitmap eventPoster, Integer capacity, QRCode qrCode, Boolean geolocationRequired, EntrantPool entrantPool, DocumentReference eventRef) throws Exception {
         this.setName(name);
         this.setDescription(description);
+        this.setGeolocationRequired(geolocationRequired);
         this.setInstant(instant);
         this.setEventPoster(eventPoster);
         this.setCapacity(capacity);
@@ -115,6 +123,17 @@ public class Event {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * set whether this Event requires geolocation or not. cannot be null
+     * @param geolocationRequired
+     */
+    public void setGeolocationRequired(Boolean geolocationRequired) {
+        if (geolocationRequired == null) {
+            throw new RuntimeException("geolocationRequired cannot be null");
+        }
+        this.geolocationRequired = geolocationRequired;
     }
 
     /**
@@ -241,6 +260,14 @@ public class Event {
      */
     public String getDescription() {
         return this.description;
+    }
+
+    /**
+     * get whether this Event requires geolocation or not
+     * @return
+     */
+    public Boolean getGeolocationRequired() {
+        return this.geolocationRequired;
     }
 
     /**

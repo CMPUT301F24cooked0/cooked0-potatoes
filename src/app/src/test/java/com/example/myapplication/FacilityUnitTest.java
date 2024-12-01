@@ -22,7 +22,7 @@ public class FacilityUnitTest {
         LatLng location = new LatLng(69.420, 42.69);
         String address = "address";
         Facility facility = new Facility("name", location, address);
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         assertEquals(facility.getEvents().size(), 0);
         facility.addEvent(event);
         assertEquals(facility.getEvents().size(), 1);
@@ -34,7 +34,7 @@ public class FacilityUnitTest {
         LatLng location = new LatLng(69.420, 42.69);
         String address = "address";
         Facility facility = new Facility("name", location, address);
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         facility.addEvent(event);
         assertThrows(EventAlreadyExistsAtFacility.class, () -> {facility.addEvent(event);});
     }
@@ -44,7 +44,7 @@ public class FacilityUnitTest {
         LatLng location = new LatLng(69.420, 42.69);
         String address = "address";
         Facility facility = new Facility("name", location, address);
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         facility.deleteEvent(event);
         assertEquals(facility.getEvents().size(), 0);
     }
@@ -54,7 +54,7 @@ public class FacilityUnitTest {
         LatLng location = new LatLng(69.420, 42.69);
         String address = "address";
         Facility facility = new Facility("name", location, address);
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         facility.addEvent(event);
         facility.deleteEvent(event);
         assertEquals(facility.getEvents().size(), 0);
@@ -65,7 +65,7 @@ public class FacilityUnitTest {
         LatLng location = new LatLng(69.420, 42.69);
         String address = "address";
         Facility facility = new Facility("name", location, address);
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         facility.addEvent(event);
         facility.deleteAllEvents();
         assertEquals(facility.getEvents().size(), 0);

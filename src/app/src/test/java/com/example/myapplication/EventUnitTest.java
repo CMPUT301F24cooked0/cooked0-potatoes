@@ -22,17 +22,17 @@ import java.util.concurrent.TimeUnit;
 public class EventUnitTest {
     @Test
     public void firstConstructorTest() throws Exception {
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
     }
 
     @Test
     public void secondConstructorTest() throws Exception {
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, 123);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, 123, false);
     }
 
     @Test
     public void invalidateQRCodeTest() throws Exception {
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         QRCode qrCode = new QRCode("text");
         event.setQrCode(qrCode);
         assertNotNull(event.getQrCode());
@@ -44,7 +44,7 @@ public class EventUnitTest {
 
     @Test
     public void setGetNameTest() throws Exception {
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         String name = "newName";
         assertNotEquals(event.getName(), name);
         event.setName(name);
@@ -53,7 +53,7 @@ public class EventUnitTest {
 
     @Test
     public void setGetDateTest() throws Exception {
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         TimeUnit.MILLISECONDS.sleep(10); // to ensure the new Date object isn't actually the same
         Instant instant = Instant.parse("2026-01-01T00:00:00.00Z");
         assertNotEquals(event.getInstant(), instant);
@@ -63,7 +63,7 @@ public class EventUnitTest {
 
     @Test
     public void setGetCapacityTest() throws Exception {
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         Integer capacity = 123;
         assertNull(event.getCapacity());
         event.setCapacity(capacity);
@@ -75,14 +75,14 @@ public class EventUnitTest {
     public void getSetEventPosterTest() throws Exception {
         // can't really test this, EventMock overwrites setter, and only null can be used in testing
         // in reality Event should not allow setting a null eventPoster, but we can't test it...
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         event.setEventPoster(null);
         assertNull(event.getEventPoster());
     }
 
     @Test
     public void setGetQrCodeTest() throws Exception {
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         QRCode qrCode = new QRCode("text");
         event.setQrCode(qrCode);
         assertNotNull(event.getQrCode());
@@ -92,7 +92,7 @@ public class EventUnitTest {
 
     @Test
     public void addEntrantTest() throws Exception {
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         User entrant = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
         LatLng joinedFrom = new LatLng(42.69, 69.42);
         assertEquals(event.getEntrants().size(), 0);
@@ -103,7 +103,7 @@ public class EventUnitTest {
 
     @Test
     public void addDuplicateEntrantTest() throws Exception {
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         User entrant = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
         LatLng joinedFrom = new LatLng(42.69, 69.42);
         event.addEntrant(entrant, joinedFrom);
@@ -113,7 +113,7 @@ public class EventUnitTest {
 
     @Test
     public void removeEntrantTest() throws Exception {
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         User entrant = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
         LatLng joinedFrom = new LatLng(42.69, 69.42);
         assertEquals(event.getEntrants().size(), 0);
@@ -126,7 +126,7 @@ public class EventUnitTest {
 
     @Test
     public void removeEntrantNotInTest() throws Exception {
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         User entrant = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
         assertEquals(event.getEntrants().size(), 0);
         event.removeEntrant(entrant);
@@ -135,7 +135,7 @@ public class EventUnitTest {
 
     @Test
     public void getEntrantsTest() throws Exception {
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         User entrant = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
         LatLng joinedFrom = new LatLng(42.69, 69.42);
         assertEquals(event.getEntrants().size(), 0);
@@ -146,7 +146,7 @@ public class EventUnitTest {
 
     @Test
     public void getEntrantStatusesTest() throws Exception {
-        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null);
+        Event event = new EventMock("name", Instant.parse("2025-01-01T00:00:00.00Z"), null, false);
         User entrant = new UserMock(null, "name", "email@email.ca", (Bitmap) null);
         LatLng joinedFrom = new LatLng(42.69, 69.42);
         assertEquals(event.getEntrantStatuses().size(), 0);
