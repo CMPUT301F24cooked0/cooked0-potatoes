@@ -658,21 +658,21 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
      * Gets an Event from the database.
      * Once the Event has been fetched, it will be returned
      * via the onSingleEventFetchListener method (onSingleEventFetch)
-     * @param eventPath
+     * @param qrPath
      * @param onSingleEventFetchListener
      */
 
-    public void getSingleEvent(String eventPath, OnSingleEventFetchListener onSingleEventFetchListener) {
+    public void getSingleEvent(String qrPath, OnSingleEventFetchListener onSingleEventFetchListener) {
         Thread thread = new Thread(() -> {
-            Event event = fetchSingleEvent(eventPath);
+            Event event = fetchSingleEvent(qrPath);
             onSingleEventFetchListener.onSingleEventFetch(event);
         });
         thread.start();
 
     }
 
-    private Event fetchSingleEvent(String eventPath) {
-        // TODO take qr path instead and validate it?
+    private Event fetchSingleEvent(String qrPath) {
+        String eventPath = qrPath.substring(0, qrPath.lastIndexOf("/")); // remove the last part of the path that contains unique id
         DocumentReference singleEventRef = db.document(eventPath);
         Task<DocumentSnapshot> task = singleEventRef.get();
         DocumentSnapshot documentSnapshot = null;
@@ -695,6 +695,13 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         if (singleEventData == null) {
             return null;
         }
+
+        Object qrCodeTemp = singleEventData.get(DatabaseEventFieldNames.qrCode.name());
+        if (qrCodeTemp != qrPath) { // check if stored qr text matches the qr path given by qrcode
+            return null;
+        }
+        QRCode qrCode = new QRCode((String) qrCodeTemp);
+
         Object nameTemp = singleEventData.get(DatabaseEventFieldNames.name.name());
         if (nameTemp == null) {
             return null;
@@ -715,13 +722,11 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         String encodedEventPoster = (String) eventPosterTemp;
         Bitmap eventPoster = BitmapConverter.StringToBitmap(encodedEventPoster);
 
-        Object qrCodeTemp = singleEventData.get(DatabaseEventFieldNames.qrCode.name());
-        if (qrCodeTemp == null) {
-            return null;
-        }
-        QRCode qrCode = new QRCode((String) qrCodeTemp);
 
         Object capacityTemp = singleEventData.get(DatabaseEventFieldNames.capacity.name());
+        if (capacityTemp instanceof Long) {
+            capacityTemp = ((Long) capacityTemp).intValue();
+        }
         Integer capacity = (Integer) capacityTemp;
 
         try {
