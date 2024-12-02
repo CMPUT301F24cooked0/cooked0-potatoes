@@ -8,6 +8,7 @@
     <color name="inputFieldBackground">#F1EDF7</color>
     <!-- Text Colours -->
     <color name="eventDescriptionColour">#375476</color>
+    <color name="headingText">#454069</color>
     <!-- Notification Colours -->
     <color name="successNotificationColor">#66C397</color>
     <color name="failureNotificationColor">#E28040</color>
