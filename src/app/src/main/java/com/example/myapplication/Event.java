@@ -25,6 +25,7 @@ public class Event {
     private Boolean geolocationRequired;
     private final EntrantPool entrantPool;
     private DocumentReference eventRef;
+    private String details; // Add this field
 
     /***
      * Base constructor to consolidate code used by other constructors.
@@ -82,7 +83,7 @@ public class Event {
      */
     public Event(String name, String description, Instant startInstant, Instant endInstant, Instant registrationStartInstant, Instant registrationEndInstant, Bitmap eventPoster, Boolean geolocationRequired) throws Exception {
         this(name, startInstant, endInstant, registrationStartInstant, registrationEndInstant, eventPoster, geolocationRequired);
-        this.setDescription(description );
+        this.setDescription(description);
     }
 
     /**
@@ -119,6 +120,7 @@ public class Event {
      * invalidate the current QR code for this event. This sets the QR code text to null.
      * This Event needs to be updated in the database after this
      */
+
     public void invalidateQRCode() {
         this.qrCode.setText(null);
     }
@@ -402,10 +404,6 @@ public class Event {
         return this.entrantPool.getEntrants();
     }
 
-    /**
-     * get a list of this event's entrantStatuses
-     * @return
-     */
     public ArrayList<EntrantStatus> getEntrantStatuses() {
         return this.entrantPool.getEntrantStatuses();
     }
