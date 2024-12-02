@@ -91,8 +91,8 @@ public class AdminUserProfile extends AppCompatActivity{
 
         TextView dialogTitle = dialogView.findViewById(R.id.dialog_title);
         TextView dialogMessage=dialogView.findViewById(R.id.dialog_message);
-        dialogTitle.setText(R.string.remove_user);
-        dialogMessage.setText(R.string.are_you_sure_you_want_to_remove_this_user);
+        dialogTitle.setText("Remove User");
+        dialogMessage.setText("Are you sure you want to remove this user?");
         Button cancelButton = dialogView.findViewById(R.id.dialog_cancel_button);
         Button removeButton = dialogView.findViewById(R.id.dialog_remove_button);
         AlertDialog dialog = builder.create();
@@ -128,8 +128,8 @@ public class AdminUserProfile extends AppCompatActivity{
 
         TextView dialogTitle = dialogView.findViewById(R.id.dialog_title);
         TextView dialogMessage=dialogView.findViewById(R.id.dialog_message);
-        dialogTitle.setText(R.string.remove_profile_picture);
-        dialogMessage.setText(R.string.are_you_sure_you_want_to_remove_this_photo);
+        dialogTitle.setText("Remove Profile Picture");
+        dialogMessage.setText("Are you sure you want to remove this photo?");
         Button cancelButton = dialogView.findViewById(R.id.dialog_cancel_button);
         Button removeButton = dialogView.findViewById(R.id.dialog_remove_button);
         AlertDialog dialog = builder.create();
