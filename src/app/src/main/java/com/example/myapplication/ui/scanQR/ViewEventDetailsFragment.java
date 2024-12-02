@@ -15,8 +15,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.myapplication.DatabaseManager;
+import com.example.myapplication.EntrantStatus;
 import com.example.myapplication.Event;
 import com.example.myapplication.R;
+import com.example.myapplication.Status;
+import com.example.myapplication.User;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -28,6 +33,7 @@ import java.util.Locale;
  */
 public class ViewEventDetailsFragment extends Fragment {
     View view;
+    User user;
     Event eventToView;
     ImageView eventPoster;
     TextView eventName;
@@ -38,6 +44,7 @@ public class ViewEventDetailsFragment extends Fragment {
     TextView geolocation;
     Button joinWaitlistBtn;
     ScanQRViewModel scanQRViewModel;
+    DatabaseManager databaseManager;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withLocale(Locale.getDefault());
 
 
@@ -63,6 +70,8 @@ public class ViewEventDetailsFragment extends Fragment {
         geolocation = view.findViewById(R.id.download_QR_link);
         joinWaitlistBtn = view.findViewById(R.id.join_waitlist_button);
         eventToView = scanQRViewModel.getEventToView();
+        user = scanQRViewModel.getUser();
+        databaseManager = new DatabaseManager();
 
         eventName.setText(eventToView.getName()); // set event name
         // set event date
@@ -88,9 +97,24 @@ public class ViewEventDetailsFragment extends Fragment {
             geolocation.setText("This event requires geolocation to join");
         }
 
-        // TODO add button to join/leave waitlist
+        joinWaitlistBtn.setOnClickListener(this::onClickJoinWaitlist);
+        // TODO add button to leave?
 
     }
+
+    /**
+     * Called when the user clicks the join waitlist button.
+     * @param view
+     */
+    public void onClickJoinWaitlist(View view) {
+        if (user != null) {
+            LatLng userLocation = null; // user location
+            Status userStatus = Status.none;
+            EntrantStatus newEntrant = new EntrantStatus(user, userLocation, userStatus);
+            databaseManager.createEntrantStatus(eventToView, newEntrant); // add entrant to database
+        }
+    }
+
     /**
      * Formats an Instant into a string in "dd/MM/yyyy HH:mm" format.
      *

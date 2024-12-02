@@ -26,6 +26,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.myapplication.databinding.ActivityMainBinding;
 import com.example.myapplication.ui.facility.FacilityViewModel;
+import com.example.myapplication.ui.scanQR.ScanQRViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
@@ -68,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
         // add user to facility view model
         FacilityViewModel facilityViewModel = new ViewModelProvider(this).get(FacilityViewModel.class);
         facilityViewModel.setOrganizer(user);
+        ScanQRViewModel scanQRViewModel = new ViewModelProvider(this).get(ScanQRViewModel.class);
+        scanQRViewModel.setUser(user);
 
 
         profileTextView = findViewById(R.id.profile_text);
