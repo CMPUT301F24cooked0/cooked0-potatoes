@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.myapplication.DatabaseManager;
@@ -87,6 +88,7 @@ public class FacilityCreationFragment extends Fragment {
 
         facilityOwner.setFacility(facility); // set facility for user
         Toast.makeText(this.requireContext(), "Facility created", Toast.LENGTH_SHORT).show();
+
         Boolean addedToDatabase = databaseManager.createFacility(facilityOwner, facility); // add facility to database and set facility document reference
 
         // Check if facility was added to database

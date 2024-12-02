@@ -311,9 +311,9 @@
             <Button
                 android:id="@+id/editEventButton"
                 android:layout_width="200dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:backgroundTint="@color/submitButtonColor"
-                android:paddingHorizontal="65dp"
+                android:paddingHorizontal="0dp"
                 android:text="Save"
                 android:textAlignment="center"
                 android:textSize="15sp"
