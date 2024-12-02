@@ -205,10 +205,10 @@ public class CreateEventFragment extends Fragment {
             // TODO add event to database
             event.getQrCode().setText("test"); // FIXME change this to the actual path with unique id
             // TODO add qrpath to event once added to database
-            //String qrID = UUID.randomUUID().toString();
-            //String eventPath = event.getEventReference().getPath();
-            //String qrPath = eventPath + "/" + qrID;
-            //event.getQrCode().setText(qrPath);
+//            String qrID = UUID.randomUUID().toString(); // generate a random id for the QR code
+//            String eventPath = event.getEventReference().getPath(); // get the path of the event document
+//            String qrPath = eventPath + "/" + qrID; // concatenate the random id to the path
+//            event.getQrCode().setText(qrPath); // set the QR code text of the event to the path
             // TODO update event in database once qrpath added
             facilityViewModel.setEventToManage(event); // set event to manage in FacilityViewModel
 
