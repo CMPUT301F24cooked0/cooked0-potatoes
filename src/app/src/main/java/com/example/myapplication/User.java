@@ -37,7 +37,7 @@ public class User {
         this.setName(name);
         this.setEmail(email);
         this.setPhoneNumber(null);
-        this.setProfilePicture(profilePicture);
+        //this.setProfilePicture(profilePicture);
         this.isAdmin = false;
         this.setFacility(null);
         this.setReceivesOrgAdmNotifications(true);
@@ -56,7 +56,7 @@ public class User {
         this.setName(name);
         this.setEmail(email);
         this.setPhoneNumber(phoneNumber);
-        this.setProfilePicture(profilePicture);
+        //this.setProfilePicture(profilePicture);
         this.isAdmin = false;
         this.setFacility(null);
         this.setReceivesOrgAdmNotifications(true);
@@ -76,7 +76,7 @@ public class User {
         this.setName(name);
         this.setEmail(email);
         this.setPhoneNumber(phoneNumber);
-        this.setProfilePicture(profilePicture);
+        //this.setProfilePicture(profilePicture);
         this.isAdmin = isAdmin;
         this.setReceivesOrgAdmNotifications(receivesOrgAdmNotifications);
         this.userRef = userRef;

@@ -32,12 +32,6 @@ public class ViewParticipantsLists extends Fragment {
             navController.navigate(R.id.navigation_waiting_list);
         });
 
-        Button invitedListButton = view.findViewById(R.id.invited_list_button);
-        invitedListButton.setOnClickListener(v -> {
-            NavController navController = NavHostFragment.findNavController(ViewParticipantsLists.this);
-            navController.navigate(R.id.navigation_invited_list);
-        });
-
         Button acceptedListButton = view.findViewById(R.id.accepted_list_button);
         acceptedListButton.setOnClickListener(v -> {
             NavController navController = NavHostFragment.findNavController(ViewParticipantsLists.this);

@@ -74,8 +74,13 @@ public class ManageEventFragment extends Fragment {
 
         Button waitingListButton = view.findViewById(R.id.participants_waiting_button);
         waitingListButton.setOnClickListener(v -> {
+            // Pass only the event capacity to WaitingListFragment
+            Bundle bundle = new Bundle();
+            bundle.putInt("event_capacity", event.getCapacity());  // Pass the event capacity
+
+            // Navigate to WaitingListFragment with the bundle
             NavController navController = NavHostFragment.findNavController(ManageEventFragment.this);
-            navController.navigate(R.id.navigation_participants);
+            navController.navigate(R.id.navigation_waiting_list, bundle);  // Pass the bundle with capacity
         });
 
     }

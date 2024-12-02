@@ -47,9 +47,9 @@
 
     <fragment
         android:id="@+id/navigation_invited_list"
-        android:name="com.example.myapplication.ui.facility.InvitedParticipantsFragment"
-        android:label="Invited Participants"
-        tools:layout="@layout/invited_list" />
+        android:name="com.example.myapplication.ui.facility.InvitedListFragment"
+        android:label="Invited List"
+        tools:layout="@layout/invited_list"/>
 
     <fragment
         android:id="@+id/navigation_accepted_list"
