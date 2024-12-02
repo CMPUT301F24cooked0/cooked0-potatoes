@@ -891,10 +891,11 @@ public class DatabaseManager {
         }
 
         Object qrCodeTemp = singleEventData.get(DatabaseEventFieldNames.qrCode.name());
-        if (qrCodeTemp != qrPath) { // check if stored qr text matches the qr path given by qrcode
+        String qrCodeText = (String) qrCodeTemp;
+        if (!qrCodeText.equals(qrPath)) { // check if stored qr text matches the qr path given by qrcode
             return null;
         }
-        QRCode qrCode = new QRCode((String) qrCodeTemp);
+        QRCode qrCode = new QRCode((String) qrCodeText);
 
         Object nameTemp = singleEventData.get(DatabaseEventFieldNames.name.name());
         if (nameTemp == null) {
