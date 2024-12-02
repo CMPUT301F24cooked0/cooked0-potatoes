@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Base64;
 import android.view.View;
 
@@ -26,6 +27,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.myapplication.databinding.ActivityMainBinding;
 import com.example.myapplication.ui.facility.FacilityViewModel;
+import com.example.myapplication.ui.profile.ProfileViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
@@ -33,11 +35,8 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
 
     private ActivityMainBinding binding;
 
-    private TextView profileTextView;
-    private ImageView profileImageView;
-    private Button signOut;
-    private ImageButton editUserInfo;
     private User user;
+    private DatabaseManager dbManager;
 
 
 
@@ -59,49 +58,13 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.bottomNav, navController);
-        // test user (to use this you need to comment out the "setProfilePicture" line in User.java)
-//        try {
-//            user = new User("test", "test", "test@gmail.com");
-//        } catch (Exception e) {
-//            Toast.makeText(this, "Unable to create user", Toast.LENGTH_SHORT).show();
-//        }
-        // add user to facility view model
-        FacilityViewModel facilityViewModel = new ViewModelProvider(this).get(FacilityViewModel.class);
-        facilityViewModel.setOrganizer(user);
 
-
-        profileTextView = findViewById(R.id.profile_text);
-        profileImageView = findViewById(R.id.my_profile);
-        editUserInfo=findViewById(R.id.edit_button);
-        SharedPreferences sharedPreferences = getSharedPreferences("UserDetails", MODE_PRIVATE);
-        String name = sharedPreferences.getString("Name", "N/A");
-        String email = sharedPreferences.getString("Email", "N/A");
-        String phone = sharedPreferences.getString("Phone", "N/A");
-        String encodedImage = sharedPreferences.getString("ProfileImage", null);
-
-
-        String profileDetails = "Name: " + name + "\nEmail: " + email + "\nPhone: " + phone;
-        profileTextView.setText(profileDetails);
-
-        Bitmap decodedByte = null;
-        if (encodedImage != null) {
-            byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-            decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            profileImageView.setImageBitmap(decodedByte);
-        }
-
-        editUserInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
-                startActivity(intent);
-
-            }
-        });
+        // fetching user from database
+        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        dbManager = new DatabaseManager();
+        dbManager.getUser(deviceID, this);
 
     }
-
 
     @Override
     public void onUserFetch(User user) {
@@ -110,6 +73,10 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
         }
         else {
             this.user = user;
+            FacilityViewModel facilityViewModel = new ViewModelProvider(this).get(FacilityViewModel.class);
+            facilityViewModel.setOrganizer(user);
+            ProfileViewModel profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+            profileViewModel.setUser(user);
         }
     }
 }

@@ -1,19 +1,25 @@
 package com.example.myapplication.ui.profile;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.example.myapplication.User;
+
 
 public class ProfileViewModel extends ViewModel {
 
-    private final MutableLiveData<String> mText;
+    private User user;
+
 
     public ProfileViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+        user = null;
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public User getUser() {
+        return user;
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 }
