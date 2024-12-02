@@ -60,11 +60,11 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.bottomNav, navController);
         // test user (to use this you need to comment out the "setProfilePicture" line in User.java)
-        try {
-            user = new User("test", "test", "test@gmail.com");
-        } catch (Exception e) {
-            Toast.makeText(this, "Unable to create user", Toast.LENGTH_SHORT).show();
-        }
+//        try {
+//            user = new User("test", "test", "test@gmail.com");
+//        } catch (Exception e) {
+//            Toast.makeText(this, "Unable to create user", Toast.LENGTH_SHORT).show();
+//        }
         // add user to facility view model
         FacilityViewModel facilityViewModel = new ViewModelProvider(this).get(FacilityViewModel.class);
         facilityViewModel.setOrganizer(user);

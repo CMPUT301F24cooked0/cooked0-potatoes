@@ -96,6 +96,8 @@ public class DownloadQRFragment extends Fragment {
             e.printStackTrace();
             Toast.makeText(requireContext(), "Error downloading QR code", Toast.LENGTH_SHORT).show();
         }
+        Toast.makeText(requireContext(), "QR Code Downloaded", Toast.LENGTH_SHORT).show(); // Notify the user that the QR code has been downloaded
+
 
 
     }
