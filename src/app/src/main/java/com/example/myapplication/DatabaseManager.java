@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
@@ -18,9 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
-public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchListener, OnEntrantStatusesFetchListener { // static class
+public class DatabaseManager {
     private final FirebaseFirestore db;
     private ArrayList<User> users;
     private int stringMaximumLength = 1000000; // 1MB
@@ -139,8 +137,8 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
      * Once the User is fetched, which is done asynchronously, it will be returned
      * via the onUserFetchListener method.
      * IMPORTANT NOTE: The DatabaseManager will recursively build the User
-     * and attach all objects that the User is attached to (its Facility, Events, EntrantStatuses),
-     * however this MAY be done after the onUserFetchListener has returned the user // FIXME get things recursively all on the same thread in private methods, so that the user object is fully built before being returned
+     * and attach all objects that the User is attached to (its Facility, Events, EntrantStatuses).
+     * This may take a while, so try to reuse User objects to avoid calling this method
      * @param userID
      * @param onUserFetchListener
      */
@@ -246,7 +244,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             return null;
         }
         this.users.add(user);
-        this.getFacility(user, this); // get user's facility, which is automatically added to user
+        user.setFacility(this.fetchFacility(user));
 
         return user;
     }
@@ -457,7 +455,10 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             facility = null;
             throw new RuntimeException(e);
         }
-        this.getEvents(facility, this); // get facility's events
+        ArrayList<Event> events = this.fetchEvents(facility);
+        for (Event event : events) {
+            facility.addEvent(event);
+        }
 
         return facility;
     }
@@ -468,7 +469,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
 
         Facility facility;
         for (User user : users) {
-            facility = this.fetchFacility(user); // FIXME convert this to user.getFacility() once things can run on a single thread
+            facility = user.getFacility();
             if (facility != null) {
                 assert !facilities.contains(facility);
                 facilities.add(facility);
@@ -476,11 +477,6 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
 
         return facilities;
-    }
-
-    @Override
-    public void onFacilityFetch(User organizer, Facility facility) {
-        organizer.setFacility(facility);
     }
 
     /**
@@ -729,8 +725,16 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
             }
         }
 
+        ArrayList<EntrantStatus> entrantStatuses;
         for (Event event : events) {
-            this.getEntrantStatuses(event, this);
+            entrantStatuses = this.fetchEntrantStatuses(event);
+            for (EntrantStatus entrantStatus : entrantStatuses) {
+                try {
+                    event.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
 
         return events;
@@ -742,20 +746,13 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
 
         ArrayList<Event> events = new ArrayList<Event>();
         for (Facility facility: facilities) {
-            events = this.fetchEvents(facility); // FIXME convert this to facility.getEvents() once things car run on a single thread
+            events = facility.getEvents();
             if (events != null && !events.isEmpty()) {
                 allEvents.addAll(events);
             }
         }
 
         return allEvents;
-    }
-
-    @Override
-    public void onEventsFetch(Facility facility, ArrayList<Event> events) {
-        for (Event event : events) {
-            facility.addEvent(event);
-        }
     }
 
     /**
@@ -874,6 +871,15 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         catch (Exception e) {
             return null;
         }
+        ArrayList<EntrantStatus> entrantStatuses = this.fetchEntrantStatuses(event);
+        for (EntrantStatus entrantStatus : entrantStatuses) {
+            try {
+                event.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         return event;
     }
 
@@ -1027,17 +1033,6 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         }
 
         return entrantStatuses;
-    }
-
-    @Override
-    public void onEntrantStatusesFetch(Event event, ArrayList<EntrantStatus> entrantStatuses) {
-        for (EntrantStatus entrantStatus : entrantStatuses) {
-            try {
-                event.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     /**
