@@ -89,6 +89,7 @@ public class DatabaseManager {
         userData.put(DatabaseUserFieldNames.email.name(), user.getEmail());
         userData.put(DatabaseUserFieldNames.phoneNumber.name(), user.getPhoneNumber());
         String encodedProfilePicture = null;
+
         try {
             encodedProfilePicture = BitmapConverter.BitmapToCompressedString(user.getProfilePicture(), this.stringMaximumLength);
         } catch (Exception e) {
@@ -96,6 +97,7 @@ public class DatabaseManager {
             // this really should not be possible though
             encodedProfilePicture = null;
         }
+
         userData.put(DatabaseUserFieldNames.profilePicture.name(), encodedProfilePicture);
         userData.put(DatabaseUserFieldNames.receivesOrgAdmNotifications.name(), user.getReceivesOrgAdmNotifications());
         DocumentReference userRef = user.getUserReference();
