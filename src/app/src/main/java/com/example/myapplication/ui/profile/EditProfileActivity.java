@@ -1,16 +1,11 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.profile;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Base64;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,7 +19,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.io.ByteArrayOutputStream;
+import com.example.myapplication.DatabaseManager;
+import com.example.myapplication.MainActivity;
+import com.example.myapplication.OnUserFetchListener;
+import com.example.myapplication.ProfilePictureGenerator;
+import com.example.myapplication.R;
+import com.example.myapplication.User;
 
 /**
  * This class is used currently as an Activity for the User to edit details of their profile.
