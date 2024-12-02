@@ -71,17 +71,7 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/profile_layout"
         android:layout_marginTop="20dp"
-
         android:text="userInfo" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/signout_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/profile_text"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/button_bg"
-        android:text="Sign Out" />
 
 </RelativeLayout>

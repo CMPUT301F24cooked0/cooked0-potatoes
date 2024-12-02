@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Base64;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,6 +37,9 @@ public class SignUpActivity extends AppCompatActivity {
     private ImageView profileImageView;
     private Button signupButton, selectImageButton;
     private Bitmap selectedImageBitmap;
+    private DatabaseManager dbManager;
+    private User user;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -48,13 +52,8 @@ public class SignUpActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        SharedPreferences sharedPreferences = getSharedPreferences("UserDetails", MODE_PRIVATE);
-        if (sharedPreferences.contains("Name")) {
-            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        }
+
+        dbManager = new DatabaseManager();
 
         nameEditText = findViewById(R.id.name);
         emailEditText = findViewById(R.id.email);
@@ -86,15 +85,37 @@ public class SignUpActivity extends AppCompatActivity {
 
     /**
      * Saves the user details to SharedPreferences.
-     * @author Daniyal Abbas
+     * @author Ishaan Chandel, Daniyal Abbas
      */
     private void saveUserDetails() {
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         String name = nameEditText.getText().toString();
         String email = emailEditText.getText().toString();
-        String phone = phoneEditText.getText().toString();
+        Long phone = null;
 
-        if (name.isEmpty() || email.isEmpty() || phone.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+        if (!phoneEditText.getText().toString().isEmpty()) {  // if there is input in the phoneNumber field
+
+            if (phoneEditText.getText().toString().length() == 10) {  // if the phone number is 10 digits
+
+                try {
+                    phone = Long.parseLong(phoneEditText.getText().toString());
+                } catch (NumberFormatException e) {
+                    // Handle invalid input (e.g., non-numeric characters)
+                    Toast.makeText(this, "Invalid phone number", Toast.LENGTH_SHORT).show();
+                    return; // Stop further processing
+                }
+
+            } else {
+
+                Toast.makeText(this, "Invalid phone number", Toast.LENGTH_SHORT).show();
+
+                return; // Stop further processing
+            }
+
+        }
+
+        if (name.isEmpty() || email.isEmpty()) {
+            Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -107,14 +128,15 @@ public class SignUpActivity extends AppCompatActivity {
         selectedImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         String encodedImage = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
 
-        // Saving the data to SharedPreferences
-        SharedPreferences sharedPreferences = getSharedPreferences("UserDetails", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("Name", name);
-        editor.putString("Email", email);
-        editor.putString("Phone", phone);
-        editor.putString("ProfileImage", encodedImage);
-        editor.apply();
+        // Creating the User object
+        try {
+            user = new User(deviceId, name, email, phone, selectedImageBitmap);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        // Create User in database
+        dbManager.createUser(user);
 
         Toast.makeText(this, "Sign Up Successful", Toast.LENGTH_SHORT).show();
 

@@ -24,7 +24,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 public class WelcomeActivity extends AppCompatActivity {
 
     private Button btn;
-    private String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +36,11 @@ public class WelcomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        btn = findViewById(R.id.welcome_button);
+        btn.setVisibility(View.GONE);
+
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -53,7 +58,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         } else {
                             // Device ID does not exist in Firestore
 
-                            btn = findViewById(R.id.welcome_button);
+                            btn.setVisibility(View.VISIBLE);
 
                             btn.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -62,9 +67,7 @@ public class WelcomeActivity extends AppCompatActivity {
                                     Intent i = new Intent(WelcomeActivity.this, SignUpActivity.class);
                                     startActivity(i);
                                     finish();
-
                                 }
-
                             });
                         }
 
