@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
 
             FacilityViewModel facilityViewModel = new ViewModelProvider(this).get(FacilityViewModel.class);
             facilityViewModel.setOrganizer(user);
-          
+
             ScanQRViewModel scanQRViewModel = new ViewModelProvider(this).get(ScanQRViewModel.class);
             scanQRViewModel.setUser(user);
         }
