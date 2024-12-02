@@ -83,8 +83,8 @@ public class ViewEventDetailsFragment extends Fragment {
         String eventRegEndStr = formatDateTime(eventToView.getRegistrationEndInstant());
         if (eventStartStr != null && eventEndStr != null && eventRegStartStr != null && eventRegEndStr != null) {
             eventDate.setText(eventStartStr + " - " + eventEndStr);
-            registerStart.setText(eventRegStartStr);
-            registerEnd.setText(eventRegEndStr);
+            registerStart.setText("Registration Opens: " + eventRegStartStr);
+            registerEnd.setText("Registration Ends: " + eventRegEndStr);
 
         }
         eventDesc.setText(eventToView.getDescription() != null ? eventToView.getDescription() : "");
