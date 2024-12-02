@@ -9,12 +9,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/event_view"/>
-    <ImageView
-        android:id="@+id/event_detail_poster"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:scaleType="centerCrop"
-        android:contentDescription="@string/event_poster"/>
+        android:layout_height="200dp">
+        <ImageView
+            android:id="@+id/event_detail_poster"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/event_poster"/>
+        <ImageButton
+            android:id="@+id/delete_poster_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end|bottom"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_trash"
+            android:contentDescription="delete_poster"
+            android:padding="8dp"/>
+    </FrameLayout>
+
     <TextView
         android:id="@+id/event_detail_name"
         android:layout_width="match_parent"
@@ -28,17 +43,7 @@
         android:layout_height="wrap_content"
         android:textSize="15sp"/>
     <TextView
-        android:id="@+id/event_detail_time"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"/>
-    <TextView
-        android:id="@+id/event_detail_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"/>
-    <TextView
-        android:id="@+id/event_detail_capacity"
+        android:id="@+id/event_detail_datetime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"/>
