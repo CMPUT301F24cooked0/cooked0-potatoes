@@ -120,7 +120,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         if (selectedImageBitmap == null) {
-            selectedImageBitmap = generateProfileImage(name);
+            selectedImageBitmap = ProfilePictureGenerator.generateProfileImage(name);
         }
 
         // Converting bitmap to Base64
@@ -144,38 +144,5 @@ public class SignUpActivity extends AppCompatActivity {
         Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
-    }
-
-    /**
-     * Generates a profile image based on the first letter of the user's name.
-     * @author Daniyal Abbas
-     * @param name - String storing name of the user to perform profile picture generation with
-     * @return
-     */
-    private Bitmap generateProfileImage(String name) {
-        String firstNameInitial = !name.isEmpty() ? name.substring(0, 1).toUpperCase() : "A";
-
-        int size = 1024;
-        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-
-        // Draw a circle
-        Paint paint = new Paint();
-        paint.setColor(Color.BLUE);  // Set background color
-        paint.setAntiAlias(true);
-        canvas.drawCircle(size / 2, size / 2, size / 2, paint);
-
-        paint.setColor(Color.WHITE);
-        paint.setTextSize(size/2);
-        paint.setTextAlign(Paint.Align.CENTER);
-
-        Rect textBounds = new Rect();
-        paint.getTextBounds(firstNameInitial, 0, firstNameInitial.length(), textBounds);
-        int x = size / 2;
-        int y = size / 2 + (textBounds.height() / 2);
-
-        canvas.drawText(firstNameInitial, x, y, paint);
-
-        return bitmap;
     }
 }
