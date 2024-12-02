@@ -759,21 +759,21 @@ public class DatabaseManager {
      * Gets an Event from the database.
      * Once the Event has been fetched, it will be returned
      * via the onSingleEventFetchListener method (onSingleEventFetch)
-     * @param eventPath
+     * @param qrPath
      * @param onSingleEventFetchListener
      */
 
-    public void getSingleEvent(String eventPath, OnSingleEventFetchListener onSingleEventFetchListener) {
+    public void getSingleEvent(String qrPath, OnSingleEventFetchListener onSingleEventFetchListener) {
         Thread thread = new Thread(() -> {
-            Event event = fetchSingleEvent(eventPath);
+            Event event = fetchSingleEvent(qrPath);
             onSingleEventFetchListener.onSingleEventFetch(event);
         });
         thread.start();
 
     }
 
-    private Event fetchSingleEvent(String eventPath) {
-        // TODO take qr path instead and validate it?
+    private Event fetchSingleEvent(String qrPath) {
+        String eventPath = qrPath.substring(0, qrPath.lastIndexOf("/")); // remove the last part of the path that contains unique id
         DocumentReference singleEventRef = db.document(eventPath);
         Task<DocumentSnapshot> task = singleEventRef.get();
         DocumentSnapshot documentSnapshot = null;
@@ -796,6 +796,13 @@ public class DatabaseManager {
         if (singleEventData == null) {
             return null;
         }
+
+        Object qrCodeTemp = singleEventData.get(DatabaseEventFieldNames.qrCode.name());
+        if (qrCodeTemp != qrPath) { // check if stored qr text matches the qr path given by qrcode
+            return null;
+        }
+        QRCode qrCode = new QRCode((String) qrCodeTemp);
+
         Object nameTemp = singleEventData.get(DatabaseEventFieldNames.name.name());
         if (nameTemp == null) {
             return null;
@@ -807,34 +814,39 @@ public class DatabaseManager {
 
         Object geolocationRequiredTemp = singleEventData.get(DatabaseEventFieldNames.geolocationRequired.name());
         if (geolocationRequiredTemp == null) {
-            throw new EventDoesNotExist("this event was missing the geolocationReqired field");
+            //throw new EventDoesNotExist("this event was missing the geolocationRequired field");
+            return null;
         }
         Boolean geolocationRequired = (Boolean) geolocationRequiredTemp;
 
         Object startInstantTemp = singleEventData.get(DatabaseEventFieldNames.startInstant.name());
         if (startInstantTemp == null) {
-            throw new EventDoesNotExist("this event was missing the startInstant field");
+            //throw new EventDoesNotExist("this event was missing the startInstant field");
+            return null;
         }
         Timestamp startInstantTimestamp = (Timestamp) startInstantTemp;
         Instant startInstant = startInstantTimestamp.toInstant();
 
         Object endInstantTemp = singleEventData.get(DatabaseEventFieldNames.endInstant.name());
         if (endInstantTemp == null) {
-            throw new EventDoesNotExist("this event was missing the endInstant field");
+            //throw new EventDoesNotExist("this event was missing the endInstant field");
+            return null;
         }
         Timestamp endInstantTimestamp = (Timestamp) endInstantTemp;
         Instant endInstant = endInstantTimestamp.toInstant();
 
         Object registrationStartInstantTemp = singleEventData.get(DatabaseEventFieldNames.registrationStartInstant.name());
         if (registrationStartInstantTemp == null) {
-            throw new EventDoesNotExist("this event was missing the registrationStartInstant field");
+            //throw new EventDoesNotExist("this event was missing the registrationStartInstant field");
+            return null;
         }
         Timestamp registrationStartInstantTimestamp = (Timestamp) registrationStartInstantTemp;
         Instant registrationStartInstant = registrationStartInstantTimestamp.toInstant();
 
         Object registrationEndInstantTemp = singleEventData.get(DatabaseEventFieldNames.registrationEndInstant.name());
         if (registrationEndInstantTemp == null) {
-            throw new EventDoesNotExist("this event was missing the registrationEndInstant field");
+            //throw new EventDoesNotExist("this event was missing the registrationEndInstant field");
+            return null;
         }
         Timestamp registrationEndInstantTimestamp = (Timestamp) registrationEndInstantTemp;
         Instant registrationEndInstant = registrationEndInstantTimestamp.toInstant();
@@ -846,13 +858,11 @@ public class DatabaseManager {
         String encodedEventPoster = (String) eventPosterTemp;
         Bitmap eventPoster = BitmapConverter.StringToBitmap(encodedEventPoster);
 
-        Object qrCodeTemp = singleEventData.get(DatabaseEventFieldNames.qrCode.name());
-        if (qrCodeTemp == null) {
-            return null;
-        }
-        QRCode qrCode = new QRCode((String) qrCodeTemp);
 
         Object capacityTemp = singleEventData.get(DatabaseEventFieldNames.capacity.name());
+        if (capacityTemp instanceof Long) {
+            capacityTemp = ((Long) capacityTemp).intValue();
+        }
         Integer capacity = (Integer) capacityTemp;
 
         try {
