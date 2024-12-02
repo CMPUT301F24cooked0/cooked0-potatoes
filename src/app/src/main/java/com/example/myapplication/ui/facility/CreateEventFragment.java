@@ -3,7 +3,6 @@ package com.example.myapplication.ui.facility;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.myapplication.DatabaseManager;
 import com.example.myapplication.Event;
 import com.example.myapplication.Facility;
 import com.example.myapplication.R;
@@ -45,7 +45,8 @@ public class CreateEventFragment extends Fragment {
     private ImageView eventPosterInput;
     private Button createEventButton;
     private User user;
-    private Facility facility; // Facility object representing the facility this event belongs to
+    private Facility facility;
+    DatabaseManager databaseManager;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withLocale(Locale.getDefault());
     private FacilityViewModel facilityViewModel;
 
@@ -65,6 +66,7 @@ public class CreateEventFragment extends Fragment {
         eventRegEndInput = view.findViewById(R.id.regEndInput);
         geoRequiredSwitch = view.findViewById(R.id.enableGeoSwitch);
         createEventButton = view.findViewById(R.id.createEventButton);
+        databaseManager = new DatabaseManager();
         eventPoster = null;
         createEventButton.setOnClickListener(this::onCreateEventClick);
 
@@ -78,7 +80,7 @@ public class CreateEventFragment extends Fragment {
         }
 
 
-        // add image adding functionality for event poster
+        // Add image adding functionality for event poster
         ActivityResultLauncher<Intent> imagePickerLauncher =
                 registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                     if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
@@ -92,6 +94,7 @@ public class CreateEventFragment extends Fragment {
                     }
                 });
 
+        // Set click listener for event poster input
         eventPosterInput.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
@@ -201,15 +204,21 @@ public class CreateEventFragment extends Fragment {
             // Create the event
             Event event = new Event(name, details, startInstant, endInstant, regStartInstant, regEndInstant, eventPoster, geoRequired); // Create the event
             event.setCapacity(capacity);
+            Boolean addedToDatabase = databaseManager.createEvent(facility, event); // Add the event to the database and set eventRef to the event object
 
-            // TODO add event to database
-            event.getQrCode().setText("test"); // FIXME change this to the actual path with unique id
-            // TODO add qrpath to event once added to database
-//            String qrID = UUID.randomUUID().toString(); // generate a random id for the QR code
-//            String eventPath = event.getEventReference().getPath(); // get the path of the event document
-//            String qrPath = eventPath + "/" + qrID; // concatenate the random id to the path
-//            event.getQrCode().setText(qrPath); // set the QR code text of the event to the path
-            // TODO update event in database once qrpath added
+            // Check if event was added to database
+            if (!addedToDatabase) {
+                Log.e("CreateEventFragment", "Error adding event to database");
+                return;
+            }
+            // Set the QR code text of the event
+            String qrID = UUID.randomUUID().toString(); // generate a random id for the QR code
+            String eventPath = event.getEventReference().getPath(); // get the path of the event document
+            String qrPath = eventPath + "/" + qrID; // concatenate the random id to the path
+            event.getQrCode().setText(qrPath); // set the QR code text of the event to the path
+
+            databaseManager.updateEvent(event); // update the event in the database now that the QR code text has been set
+
             facilityViewModel.setEventToManage(event); // set event to manage in FacilityViewModel
 
             // Add event to facility (if facility is available)

@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.myapplication.DatabaseManager;
 import com.example.myapplication.Event;
 import com.example.myapplication.R;
 
@@ -43,6 +44,7 @@ public class EditEventFragment extends Fragment {
     private Boolean geoRequired;
     private Event event;
     private FacilityViewModel facilityViewModel;
+    private DatabaseManager databaseManager;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withLocale(Locale.getDefault());
 
 
@@ -60,6 +62,7 @@ public class EditEventFragment extends Fragment {
         eventRegStartEditText = view.findViewById(R.id.editRegOpenInput);
         eventRegEndEditText = view.findViewById(R.id.editRegEndInput);
         eventPosterImageView = view.findViewById(R.id.eventPosterPlaceholder);
+        databaseManager = new DatabaseManager();
         eventPoster = event.getEventPoster();
         saveButton = view.findViewById(R.id.editEventButton);
         geoRequiredSwitch = view.findViewById(R.id.editGeoSwitch);
@@ -204,7 +207,8 @@ public class EditEventFragment extends Fragment {
         event.setGeolocationRequired(geoRequired);
 
 
-        // TODO update the event in the database
+        // Add event to database
+        databaseManager.updateEvent(event);
     }
 
     /**
