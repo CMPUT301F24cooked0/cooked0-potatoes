@@ -47,41 +47,6 @@ public class WelcomeActivity extends AppCompatActivity implements OnUserFetchLis
 
         dbManager.getUser(deviceId, this);
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection("users").document(deviceId).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            // Device ID exists in Firestore
-
-                            Intent i = new Intent(WelcomeActivity.this, MainActivity.class);
-                            startActivity(i);
-                            finish();
-
-                        } else {
-                            // Device ID does not exist in Firestore
-
-                            btn.setVisibility(View.VISIBLE);
-
-                            btn.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-
-                                    Intent i = new Intent(WelcomeActivity.this, SignUpActivity.class);
-                                    startActivity(i);
-                                    finish();
-                                }
-                            });
-                        }
-
-                    } else {
-                        // Handle Firestore errors
-                        Log.e("FirestoreError", "Error retrieving document: ", task.getException());
-                    }
-                });
-
     }
 
     @Override
