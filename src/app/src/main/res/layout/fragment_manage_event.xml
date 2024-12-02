@@ -170,7 +170,18 @@
                     android:layout_weight="1"
                     android:paddingStart="10dp"
                     android:text="Spots Created" />
+
             </LinearLayout>
+
+            <Button
+                android:id="@+id/participants_waiting_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Participants"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
 
 
         </LinearLayout>

@@ -6,11 +6,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -68,7 +72,25 @@ public class ManageEventFragment extends Fragment {
         eventCapacity.setText("Spots Created -- " + event.getCapacity());
 
 
+        Button waitingListButton = view.findViewById(R.id.participants_waiting_button);
+        waitingListButton.setOnClickListener(v -> {
+            NavController navController = NavHostFragment.findNavController(ManageEventFragment.this);
+            navController.navigate(R.id.navigation_participants);
+        });
+
     }
+
+    public void onClickWaitingList() {
+        // Create an instance of the WaitingListFragment
+        ViewParticipantsLists viewParticipantsLists = new ViewParticipantsLists();
+
+        // Replace the current fragment with WaitingListFragment
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, viewParticipantsLists); // Use the container ID that holds the fragments
+        transaction.addToBackStack(null); // Allow users to navigate back to the previous fragment
+        transaction.commit();
+    }
+
     public void onClickDownloadQR (View view) {
         // Navigate to the download QR code page
         FragmentManager fragmentManager = getParentFragmentManager();
