@@ -62,7 +62,7 @@ public class ManageEventFragment extends Fragment {
         // TODO update when new fields are added in event class
         eventPosterImageView.setImageBitmap(event.getEventPoster());
         eventName.setText(event.getName());
-        eventDate.setText(event.getInstant() + "- end"); // TODO add start and end
+        //eventDate.setText(event.getInstant() + "- end"); // TODO add start and end
         downloadQRLink.setOnClickListener(this::onClickDownloadQR);
         editEventLink.setOnClickListener(this::onClickEditEvent);
         eventCapacity.setText("Spots Created -- " + event.getCapacity());
