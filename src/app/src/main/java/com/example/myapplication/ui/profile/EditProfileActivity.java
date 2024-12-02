@@ -118,9 +118,10 @@ public class EditProfileActivity extends AppCompatActivity implements OnUserFetc
             Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        if (selectedImageBitmap == null) {
-            selectedImageBitmap = ProfilePictureGenerator.generateProfileImage(name);
+        if (profileImageView == null) {
+            if (selectedImageBitmap == null) {
+                selectedImageBitmap = ProfilePictureGenerator.generateProfileImage(name);
+            }
         }
 
         // Save updated details to databases
