@@ -33,5 +33,34 @@
         android:label="Profile"
         tools:layout="@layout/profile_screen_fragment"
         />
+    <fragment
+        android:id="@+id/navigation_participants"
+        android:name="com.example.myapplication.ui.facility.ViewParticipantsLists"
+        android:label="Participants"
+        tools:layout="@layout/fragment_all_lists" />
+
+    <fragment
+        android:id="@+id/navigation_waiting_list"
+        android:name="com.example.myapplication.ui.facility.WaitingListFragment"
+        android:label="Waiting List"
+        tools:layout="@layout/waiting_list" />
+
+    <fragment
+        android:id="@+id/navigation_invited_list"
+        android:name="com.example.myapplication.ui.facility.InvitedListFragment"
+        android:label="Invited List"
+        tools:layout="@layout/invited_list"/>
+
+    <fragment
+        android:id="@+id/navigation_accepted_list"
+        android:name="com.example.myapplication.ui.facility.AcceptedParticipantsFragment"
+        android:label="Accepted Participants"
+        tools:layout="@layout/accepted_list" />
+
+    <fragment
+        android:id="@+id/navigation_declined_list"
+        android:name="com.example.myapplication.ui.facility.DeclinedParticipantsFragment"
+        android:label="Declined Participants"
+        tools:layout="@layout/declined_list" />
 
 </navigation>
