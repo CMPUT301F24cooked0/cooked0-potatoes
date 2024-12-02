@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- layout for each element in event list array; use arrayadapter-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
+
+        <TextView
+            android:id="@+id/eventNamePlaceholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="&lt;Event Name&gt;"
+            android:textAlignment="center"
+            android:textColor="@color/defaultButtonColor"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/eventDescPlaceholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="&lt;Event Description&gt;"
+            android:maxLines="2"
+            android:maxLength="93"
+            android:ellipsize="end" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/eventPosterCrop"
+            android:layout_width="231dp"
+            android:layout_height="130dp"
+            android:layout_gravity="center"
+            app:cardCornerRadius="10dp">
+
+            <ImageView
+                android:id="@+id/eventPosterPlaceholder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/noeventimage" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/editEventLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="90dp"
+            android:text="@string/edit_event_str"
+            android:textAlignment="textEnd" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
