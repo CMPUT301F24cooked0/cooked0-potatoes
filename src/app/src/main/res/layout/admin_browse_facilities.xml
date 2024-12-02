@@ -9,7 +9,7 @@
         android:id="@+id/manage_facilities_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/manage_facilities"
+        android:text="Manage_Facilities"
         android:textSize="30sp"
         android:textColor="#5A5B87"
         android:gravity="center"/>
