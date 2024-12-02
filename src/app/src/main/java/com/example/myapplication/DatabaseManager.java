@@ -13,6 +13,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.w3c.dom.Document;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -388,6 +390,55 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         thread.start();
     }
 
+    public Facility fetchFacilityByRefPath(String facilityRefPath){
+        DocumentReference facilityRef=this.db.document(facilityRefPath);
+
+        Task<DocumentSnapshot> task=facilityRef.get();
+        DocumentSnapshot documentSnapshot=null;
+        try{
+            documentSnapshot=Tasks.await(task);
+        }
+        catch (ExecutionException | InterruptedException e){
+            throw new FacilityDataException("Error fetching facility data");
+        }
+        if(documentSnapshot==null || !documentSnapshot.exists()){
+            throw new FacilityDataException("No facility data found");
+        }
+        HashMap<String,Object> facilityData=(HashMap<String,Object>) documentSnapshot.getData();
+        if(facilityData==null){
+            throw new FacilityDataException("Facility data is null");
+        }
+        String name=(String) facilityData.get(DatabaseFacilityFieldNames.name.name());
+        if(name==null){
+            throw new FacilityDataException("Facility name is missing");
+        }
+        String address=(String) facilityData.get(DatabaseFacilityFieldNames.address.name());
+        Object locationData=facilityData.get(DatabaseFacilityFieldNames.location.name());
+        LatLng location=null;
+        if(locationData instanceof HashMap){
+            HashMap<String,Double> locationMap=(HashMap<String, Double>) locationData;
+            location=new LatLng(locationMap.get("latitude"),locationMap.get("longitude"));
+        }
+        Facility facility;
+        try{
+            facility=new Facility(name,location,address,facilityRef,new ArrayList<>());
+        }
+        catch(Exception e){
+            throw new FacilityDataException("Error creating facility object");
+        }
+
+        ArrayList<Event> events=fetchEvents(facility);
+        for(Event event:events){
+            try{
+                facility.addEvent(event);
+            }
+            catch (EventAlreadyExistsAtFacility e){
+                throw new FacilityDataException("Duplicate event when adding to facility");
+            }
+        }
+        return facility;
+    }
+
     /**
      * Requests to get all Facilities from the database.
      * Once the facilities are fetched, which is done asynchronously, they will be returned
@@ -570,9 +621,7 @@ public class DatabaseManager implements OnFacilityFetchListener, OnEventsFetchLi
         Task task = eventRef.delete();
         try {
             Tasks.await(task);
-        } catch (ExecutionException e) {
-            return false;
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             return false;
         }
         return true;
