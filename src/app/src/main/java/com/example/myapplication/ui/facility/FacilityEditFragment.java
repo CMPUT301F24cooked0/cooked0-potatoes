@@ -91,13 +91,17 @@ public class FacilityEditFragment extends Fragment {
             return;
         }
 
-        // TODO update facility in database
-        //databaseManager.updateFacility(existingFacility); // update facility in database
+
+        databaseManager.updateFacility(existingFacility); // update facility in database
 
 
     }
 
-
+    /**
+     * Converts a string address to a LatLng object.
+     * @param address string address
+     * @return LatLng object
+     */
     public LatLng getAddress(String address) {
         // converts string address given by user to LatLng
         Geocoder geocoder = new Geocoder(this.requireContext(), Locale.getDefault());
