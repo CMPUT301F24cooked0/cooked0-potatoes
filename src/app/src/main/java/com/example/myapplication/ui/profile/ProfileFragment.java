@@ -20,10 +20,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.AdminHomePage;
-import com.example.myapplication.EditProfileActivity;
-import com.example.myapplication.MainActivity;
-import com.example.myapplication.R;
-import com.example.myapplication.User;
 import com.example.myapplication.databinding.ProfileScreenFragmentBinding;
 
 public class ProfileFragment extends Fragment {
