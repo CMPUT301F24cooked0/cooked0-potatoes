@@ -73,7 +73,7 @@
         android:layout_marginTop="20dp"
         android:fontFamily="sans-serif"
         android:text="FIRSTNAME LASTNAME"
-        android:textColor="#454069"
+        android:textColor="@color/headingText"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -83,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/profile_name"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:text="email@address.com"
         android:textStyle="bold" />
     <TextView
@@ -92,8 +92,32 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/profile_email"
         android:layout_centerHorizontal="true"
-        android:text="123-123-1234"
+        android:text="678-999-8212"
         android:textStyle="bold" />
+
+    <FrameLayout
+        android:id="@+id/admin_button_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="80dp"
+        android:background="@drawable/button_bg"
+        android:padding="10dp"
+        >
+
+        <ImageButton
+            android:id="@+id/admin_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/admin_tools_24"
+
+            />
+    </FrameLayout>
+
+
 
 
 </RelativeLayout>
