@@ -11,4 +11,8 @@
     <string name="edit_facility_str"><u>Edit Facility</u></string>
     <string name="edit_event_str"><u>Edit Event</u></string>
     <string name="download_qr_sign_up_code_text"><u>Download QR Sign Up Code</u></string>
+    <string name="welcome_admin">Welcome Admin!</string>
+    <string name="manage_users">Manage Users</string>
+    <string name="manage_events">Manage Events</string>
+    <string name="manage_facilities">Manage Facilities</string>
 </resources>
