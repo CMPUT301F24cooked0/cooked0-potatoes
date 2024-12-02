@@ -40,8 +40,8 @@ public class WaitingListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Initialize Mock EntrantPool with mock data
-        entrantPool = new MockEntrantPool();
+      
+        entrantPool = new EntrantPool();
         ArrayList<User> waitingListUsers = entrantPool.getEntrants();
 
         // Set up Adapter for RecyclerView

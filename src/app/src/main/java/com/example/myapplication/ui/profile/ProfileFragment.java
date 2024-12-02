@@ -1,18 +1,10 @@
 package com.example.myapplication.ui.profile;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,10 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.AdminHomePage;
-import com.example.myapplication.EditProfileActivity;
-import com.example.myapplication.MainActivity;
-import com.example.myapplication.R;
-import com.example.myapplication.User;
 import com.example.myapplication.databinding.ProfileScreenFragmentBinding;
 
 public class ProfileFragment extends Fragment {
