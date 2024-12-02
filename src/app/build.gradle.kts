@@ -53,6 +53,7 @@ dependencies {
     debugImplementation("androidx.fragment:fragment-testing:1.8.5")
     implementation("com.google.firebase:firebase-firestore:25.1.1")
     testImplementation(libs.junit)
+    testImplementation(libs.core)
     testImplementation(libs.mockito.core)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
