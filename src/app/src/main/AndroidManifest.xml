@@ -14,7 +14,7 @@
         android:theme="@style/Theme.MyApplication."
         tools:targetApi="31">
         <activity
-            android:name=".EditProfileActivity"
+            android:name=".ui.profile.EditProfileActivity"
             android:exported="false" />
 
         <activity
