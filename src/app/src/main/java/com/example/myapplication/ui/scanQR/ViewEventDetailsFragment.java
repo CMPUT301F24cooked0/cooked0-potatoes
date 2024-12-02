@@ -18,6 +18,11 @@ import android.widget.TextView;
 import com.example.myapplication.Event;
 import com.example.myapplication.R;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 /**
  * This fragment allows a user to view the details of an event after scanning a QR code.
  */
@@ -27,13 +32,13 @@ public class ViewEventDetailsFragment extends Fragment {
     ImageView eventPoster;
     TextView eventName;
     TextView eventDesc;
-    TextView eventTime;
     TextView eventDate;
     TextView registerStart;
     TextView registerEnd;
     TextView geolocation;
     Button joinWaitlistBtn;
     ScanQRViewModel scanQRViewModel;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withLocale(Locale.getDefault());
 
 
     @Override
@@ -62,18 +67,42 @@ public class ViewEventDetailsFragment extends Fragment {
         eventName.setText(eventToView.getName()); // set event name
         // set event date
         // TODO add register start and end dates, geolocation, description
-        String eventStartStr = eventToView.getStartInstant().toString();
-        // String eventEndStr = eventToView.getInstant().toString(); // TODO get end date when available in base class
-        eventDate.setText(eventStartStr + " - end"); // TODO add end date
-        // eventDesc.setText(eventToView.getDescription()); // TODO add description
-        // registerStart.setText(eventToView.getInstant().toString()); // TODO add register start date
-        // registerEnd.setText(eventToView.getInstant().toString()); // TODO add register end date
+        String eventStartStr = formatDateTime(eventToView.getStartInstant());
+        String eventEndStr = formatDateTime(eventToView.getEndInstant());
+        String eventRegStartStr = formatDateTime(eventToView.getRegistrationStartInstant());
+        String eventRegEndStr = formatDateTime(eventToView.getRegistrationEndInstant());
+        if (eventStartStr != null && eventEndStr != null && eventRegStartStr != null && eventRegEndStr != null) {
+            eventDate.setText(eventStartStr + " - " + eventEndStr);
+            registerStart.setText(eventRegStartStr);
+            registerEnd.setText(eventRegEndStr);
 
-        // set event poster
+        }
+        eventDesc.setText(eventToView.getDescription() != null ? eventToView.getDescription() : "");
+
+        // Set event poster
         Bitmap eventPosterBitmap = eventToView.getEventPoster();
         eventPoster.setImageBitmap(eventPosterBitmap);
-        // TODO add boolean check for geolocation
+
+        // Set geolocation notice
+        if (eventToView.getGeolocationRequired()) {
+            geolocation.setText("This event requires geolocation to join");
+        }
+
         // TODO add button to join/leave waitlist
 
     }
+    /**
+     * Formats an Instant into a string in "dd/MM/yyyy HH:mm" format.
+     *
+     * @param instant the Instant to format.
+     * @return the formatted string.
+     */
+    private String formatDateTime(Instant instant) {
+        try {
+            return instant.atZone(ZoneId.systemDefault()).toLocalDateTime().format(dateFormatter);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }
