@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import static com.example.myapplication.BitmapConverter.StringToBitmap;
+
 import android.graphics.Bitmap;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -226,7 +228,7 @@ public class DatabaseManager {
 
             Object profilePictureTemp = userData.get(DatabaseUserFieldNames.profilePicture.name());
             String encodedProfilePicture = (String) profilePictureTemp;
-            Bitmap profilePicture = BitmapConverter.StringToBitmap(encodedProfilePicture);
+            Bitmap profilePicture = StringToBitmap(encodedProfilePicture);
 
             Object notificationTemp = userData.get(DatabaseUserFieldNames.receivesOrgAdmNotifications.name());
             boolean receivesOrgAdmNotifications = (boolean) notificationTemp;
@@ -751,7 +753,7 @@ public class DatabaseManager {
                 throw new EventDoesNotExist("this event was missing the eventPoster field");
             }
             String encodedEventPoster = (String) eventPosterTemp;
-            Bitmap eventPoster = BitmapConverter.StringToBitmap(encodedEventPoster);
+            Bitmap eventPoster = StringToBitmap(encodedEventPoster);
 
             Object qrCodeTemp = eventData.get(DatabaseEventFieldNames.qrCode.name());
             QRCode qrCode = new QRCode((String) qrCodeTemp);
@@ -818,6 +820,46 @@ public class DatabaseManager {
             onSingleEventFetchListener.onSingleEventFetch(event);
         });
         thread.start();
+
+    }
+
+    public Event fetchEventByRefPath(String eventRefPath){
+        DocumentReference eventRef=db.document(eventRefPath);
+
+        Task<DocumentSnapshot> task=eventRef.get();
+        DocumentSnapshot documentSnapshot=null;
+        try{
+            documentSnapshot=Tasks.await(task);
+        } catch (ExecutionException | InterruptedException e) {
+            throw new EventDataException("Error fetching event data");
+        }
+        if(documentSnapshot==null || !documentSnapshot.exists()){
+            throw new EventDataException("No Event data found");
+        }
+        HashMap<String,Object> eventData=(HashMap<String, Object>) documentSnapshot.getData();
+        if(eventData==null){
+            throw new EventDataException("Event data is null");
+        }
+        String name=(String) eventData.get(DatabaseEventFieldNames.name.name());
+        if(name==null){
+            throw new EventDataException("Event name is missing");
+        }
+        String description=(String) eventData.get(DatabaseEventFieldNames.description.name());
+        Instant startInstant=(Instant) eventData.get(DatabaseEventFieldNames.startInstant.name());
+        Instant endInstant=(Instant) eventData.get(DatabaseEventFieldNames.endInstant.name());
+        Instant registrationStartInstant=(Instant) eventData.get(DatabaseEventFieldNames.registrationStartInstant.name());
+        Instant registrationEndInstant=(Instant) eventData.get(DatabaseEventFieldNames.registrationEndInstant.name());
+        Integer capacity=(Integer) eventData.get(DatabaseEventFieldNames.capacity.name());
+        String encodedImage=(String) eventData.get(DatabaseEventFieldNames.eventPoster.name());
+        Bitmap eventPoster=StringToBitmap(encodedImage);
+        String qrCodeText=(String) eventData.get(DatabaseEventFieldNames.qrCode.name());
+        QRCode qrCode=new QRCode(qrCodeText);
+        Boolean geolocationRequired=(Boolean) eventData.get(DatabaseEventFieldNames.geolocationRequired.name());
+        try{
+            return new Event(name,description,startInstant,endInstant,registrationStartInstant,registrationEndInstant,eventPoster,capacity,qrCode,geolocationRequired,new EntrantPool(),eventRef);
+        } catch (Exception e) {
+            throw new EventDataException("Error creating event object");
+        }
 
     }
 
@@ -905,7 +947,7 @@ public class DatabaseManager {
             return null;
         }
         String encodedEventPoster = (String) eventPosterTemp;
-        Bitmap eventPoster = BitmapConverter.StringToBitmap(encodedEventPoster);
+        Bitmap eventPoster = StringToBitmap(encodedEventPoster);
 
 
         Object capacityTemp = singleEventData.get(DatabaseEventFieldNames.capacity.name());
