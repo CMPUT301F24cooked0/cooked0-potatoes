@@ -13,7 +13,7 @@ import com.google.firebase.firestore.DocumentReference;
  */
 public class UserMock extends User {
     public UserMock(String uniqueID, String name, String email, Bitmap profilePicture) throws Exception {
-        super(uniqueID, name, email, profilePicture);
+        super(uniqueID, name, email);
     }
 
     public UserMock(String uniqueID, String name, String email, Long phoneNumber, Bitmap profilePicture) throws Exception {
