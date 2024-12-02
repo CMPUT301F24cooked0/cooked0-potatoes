@@ -76,8 +76,8 @@ public class ManageEventFragment extends Fragment {
         String formattedRegEndDateTime = formatDateTime(event.getRegistrationEndInstant());
         if (formattedStartDateTime != null && formattedEndDateTime != null && formattedRegStartDateTime != null && formattedRegEndDateTime != null){
             eventDate.setText(formattedStartDateTime + " - " + formattedEndDateTime);
-            registerStart.setText(formattedRegStartDateTime);
-            registerEnd.setText(formattedRegEndDateTime);
+            registerStart.setText("Registration Starts: " + formattedRegStartDateTime);
+            registerEnd.setText("Registration Ends: " + formattedRegEndDateTime);
         } else {
             Toast.makeText(getActivity(), "Could not format Instants", Toast.LENGTH_SHORT).show();
         }
