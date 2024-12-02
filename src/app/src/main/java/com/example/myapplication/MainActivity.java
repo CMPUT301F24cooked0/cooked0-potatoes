@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
 
         profileTextView = findViewById(R.id.profile_text);
         profileImageView = findViewById(R.id.my_profile);
-        signOut=findViewById(R.id.signout_button);
         editUserInfo=findViewById(R.id.edit_button);
         SharedPreferences sharedPreferences = getSharedPreferences("UserDetails", MODE_PRIVATE);
         String name = sharedPreferences.getString("Name", "N/A");
