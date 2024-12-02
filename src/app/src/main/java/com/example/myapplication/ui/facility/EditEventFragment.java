@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,15 +65,22 @@ public class EditEventFragment extends Fragment {
         geoRequiredSwitch = view.findViewById(R.id.editGeoSwitch);
 
 
-
         // Pre-fill fields with existing event data
         eventNameEditText.setText(event.getName());
         eventCapacityEditText.setText(event.getCapacity() != null ? String.valueOf(event.getCapacity()) : "");
-        eventStartEditText.setText(event.getStartInstant().toString());
-        eventEndEditText.setText(event.getEndInstant().toString());
-        eventDetailsEditText.setText(event.getDescription());
-        eventRegStartEditText.setText(event.getRegistrationStartInstant().toString());
-        eventRegEndEditText.setText(event.getRegistrationEndInstant().toString());
+        String formattedStartDateTime = formatDateTime(event.getStartInstant());
+        String formattedEndDateTime = formatDateTime(event.getEndInstant());
+        String formattedRegStartDateTime = formatDateTime(event.getRegistrationStartInstant());
+        String formattedRegEndDateTime = formatDateTime(event.getRegistrationEndInstant());
+        if (formattedStartDateTime != null && formattedEndDateTime != null && formattedRegStartDateTime != null && formattedRegEndDateTime != null){
+            eventStartEditText.setText(formattedStartDateTime);
+            eventEndEditText.setText(formattedEndDateTime);
+            eventRegStartEditText.setText(formattedRegStartDateTime);
+            eventRegEndEditText.setText(formattedRegEndDateTime);
+        } else {
+            Toast.makeText(getActivity(), "Could not format Instants", Toast.LENGTH_SHORT).show();
+        }
+        eventDetailsEditText.setText(event.getDescription() != null ? event.getDescription() : "");
         geoRequiredSwitch.setChecked(event.getGeolocationRequired());
         eventPosterImageView.setImageBitmap(eventPoster);
 
@@ -195,6 +201,8 @@ public class EditEventFragment extends Fragment {
         event.setDescription(details);
         event.setCapacity(capacity);
         event.setEventPoster(eventPoster);
+        event.setGeolocationRequired(geoRequired);
+
 
         // TODO update the event in the database
     }
@@ -210,6 +218,20 @@ public class EditEventFragment extends Fragment {
         try {
             LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, dateFormatter);
             return dateTime.atZone(ZoneId.systemDefault()).toInstant();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Formats an Instant into a string in "dd/MM/yyyy HH:mm" format.
+     *
+     * @param instant the Instant to format.
+     * @return the formatted string.
+     */
+    private String formatDateTime(Instant instant) {
+        try {
+            return instant.atZone(ZoneId.systemDefault()).toLocalDateTime().format(dateFormatter);
         } catch (Exception e) {
             return null;
         }

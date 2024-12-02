@@ -29,12 +29,11 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         }
         Event event = getItem(position);
         TextView eventTitle = view.findViewById(R.id.eventNamePlaceholder);
-        // TODO implement event description
-        // TextView eventDesc = view.findViewById(R.id.eventDescPlaceholder);
+        TextView eventDesc = view.findViewById(R.id.eventDescPlaceholder);
         ImageView eventPoster = view.findViewById(R.id.eventPosterPlaceholder);
         eventTitle.setText(event.getName());
         eventPoster.setImageBitmap(event.getEventPoster());
-        // eventDesc.setText(event.getDescription());
+        eventDesc.setText(event.getDescription() != null ? event.getDescription() : "");
         return view;
 
 

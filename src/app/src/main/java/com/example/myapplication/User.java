@@ -27,12 +27,12 @@ public class User {
 
     /**
      * Basic User constructor, no phoneNumber provided
+     *
      * @param name
      * @param email
-     * @param profilePicture
      * @throws Exception
      */
-    public User(String uniqueID, String name, String email, Bitmap profilePicture) throws Exception {
+    public User(String uniqueID, String name, String email) throws Exception {
         this.uniqueID = uniqueID;
         this.setName(name);
         this.setEmail(email);
@@ -83,11 +83,6 @@ public class User {
         this.facility = facility;
     }
 
-    public User(String test, String test1, String mail) {
-        this.uniqueID = test;
-        this.name = test1;
-        this.email = mail;
-    }
 
     /**
      * Get this user's unique device ID

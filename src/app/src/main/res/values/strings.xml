@@ -1,6 +1,18 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="administrator_browse_users_title">Browse Profiles</string>
+    <string name="profile_picture">profile_picture</string>
+    <string name="administrator_browse_events_title">administrator_browse_events_title</string>
+    <string name="event_poster">event_poster</string>
+    <string name="remove_qr_code_data">Remove QR Code Data</string>
+    <string name="remove_event">Remove Event</string>
+    <string name="Return">Return</string>
+    <string name="event_view">Event View</string>
     <string name="edit_facility_str"><u>Edit Facility</u></string>
     <string name="edit_event_str"><u>Edit Event</u></string>
     <string name="download_qr_sign_up_code_text"><u>Download QR Sign Up Code</u></string>
+    <string name="welcome_admin">Welcome Admin!</string>
+    <string name="manage_users">Manage Users</string>
+    <string name="manage_events">Manage Events</string>
+    <string name="manage_facilities">Manage Facilities</string>
 </resources>

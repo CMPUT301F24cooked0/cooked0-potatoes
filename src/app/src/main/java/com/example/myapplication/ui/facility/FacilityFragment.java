@@ -37,7 +37,6 @@ public class FacilityFragment extends Fragment {
             FacilityViewModel facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
             user = facilityViewModel.getOrganizer();
             if (user.getFacility() == null) {
-                //Toast.makeText(this.requireContext(), "Please create a facility", Toast.LENGTH_SHORT).show();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new FacilityCreationFragment())
