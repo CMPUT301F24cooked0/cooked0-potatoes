@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -204,7 +203,6 @@ public class EditEventFragment extends Fragment {
         event.setEventPoster(eventPoster);
         event.setGeolocationRequired(geoRequired);
 
-        // Navigate to manage event fragment
 
         // TODO update the event in the database
     }
