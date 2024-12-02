@@ -83,11 +83,6 @@ public class User {
         this.facility = facility;
     }
 
-//    public User(String test, String test1, String mail) {
-//        this.uniqueID = test;
-//        this.name = test1;
-//        this.email = mail;
-//    }
 
     /**
      * Get this user's unique device ID

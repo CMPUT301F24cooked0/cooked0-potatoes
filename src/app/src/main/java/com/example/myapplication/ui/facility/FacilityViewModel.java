@@ -1,14 +1,10 @@
 package com.example.myapplication.ui.facility;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.Event;
-import com.example.myapplication.Facility;
 import com.example.myapplication.User;
 
-import java.util.ArrayList;
 
 public class FacilityViewModel extends ViewModel {
 
