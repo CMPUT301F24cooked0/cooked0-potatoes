@@ -70,13 +70,15 @@ public class MainActivity extends AppCompatActivity implements OnUserFetchListen
     public void onUserFetch(User user) {
         if (user == null) {
             new DatabaseManager().createUser(this.user);
-        }
-        else {
+        } else {
             this.user = user;
-            FacilityViewModel facilityViewModel = new ViewModelProvider(this).get(FacilityViewModel.class);
-            facilityViewModel.setOrganizer(user);
+
+            // Pass the user to ViewModels
             ProfileViewModel profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
             profileViewModel.setUser(user);
+
+            FacilityViewModel facilityViewModel = new ViewModelProvider(this).get(FacilityViewModel.class);
+            facilityViewModel.setOrganizer(user);
         }
     }
 }

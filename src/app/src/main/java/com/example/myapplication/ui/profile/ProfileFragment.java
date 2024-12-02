@@ -42,15 +42,17 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ProfileViewModel profileViewModel =
-                new ViewModelProvider(this).get(ProfileViewModel.class);
+        ProfileViewModel profileViewModel = new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
 
-        User user = profileViewModel.getUser();
+        profileViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            if (user != null) {
+                binding.profileName.setText(user.getName());
+                binding.profileEmail.setText(user.getEmail());
+                binding.profilePhone.setText(user.getPhoneNumber() != null ? user.getPhoneNumber().toString() : "N/A");
+                binding.profilePicture.setImageBitmap(user.getProfilePicture());
+            }
+        });
 
-        binding.profileName.setText(user.getName());
-        binding.profileEmail.setText(user.getEmail());
-        binding.profilePhone.setText(user.getPhoneNumber().toString());
-        binding.profilePicture.setImageBitmap(user.getProfilePicture());
         binding.editButton.setOnClickListener(editButtonView -> {
             Intent intent = new Intent(getActivity(), EditProfileActivity.class);
             startActivity(intent);
