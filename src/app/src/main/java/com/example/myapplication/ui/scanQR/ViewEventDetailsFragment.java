@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myapplication.DatabaseManager;
 import com.example.myapplication.EntrantStatus;
@@ -95,7 +96,9 @@ public class ViewEventDetailsFragment extends Fragment {
         // Set geolocation notice
         if (eventToView.getGeolocationRequired()) {
             geolocation.setText("This event requires geolocation to join");
+            Toast.makeText(requireActivity(), "Warning: Geolocation required to join event", Toast.LENGTH_SHORT).show();
         }
+
 
         joinWaitlistBtn.setOnClickListener(this::onClickJoinWaitlist);
         // TODO add button to leave?
