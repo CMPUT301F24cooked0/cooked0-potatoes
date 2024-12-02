@@ -21,9 +21,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
  * This class represents the launch screen of the app for brand new users
  * @author Ishaan Chandel, Daniyal Abbas
  */
-public class WelcomeActivity extends AppCompatActivity {
+public class WelcomeActivity extends AppCompatActivity implements OnUserFetchListener {
 
     private Button btn;
+    private DatabaseManager dbManager;
 
 
     @Override
@@ -40,7 +41,11 @@ public class WelcomeActivity extends AppCompatActivity {
         btn = findViewById(R.id.welcome_button);
         btn.setVisibility(View.GONE);
 
+        dbManager = new DatabaseManager();
+
         String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        dbManager.getUser(deviceId, this);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -77,5 +82,25 @@ public class WelcomeActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    @Override
+    public void onUserFetch(User user) {
+        if (user == null) {
+            // Device ID does not exist in Firestore
+            runOnUiThread(() -> {
+                btn.setVisibility(View.VISIBLE); // Show the button
+                btn.setOnClickListener(v -> {
+                    Intent intent = new Intent(WelcomeActivity.this, SignUpActivity.class);
+                    startActivity(intent);
+                    finish();
+                });
+            });
+        } else {
+            // Device ID exists in Firestore
+            Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }
