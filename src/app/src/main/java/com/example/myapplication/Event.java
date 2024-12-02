@@ -63,7 +63,7 @@ public class Event {
      * @param eventPoster
      * @param capacity
      * @param geolocationRequired
-    */
+     */
     public Event(String name, Instant startInstant, Instant endInstant, Instant registrationStartInstant, Instant registrationEndInstant, Bitmap eventPoster, Integer capacity, Boolean geolocationRequired) throws Exception {
         this(name, startInstant, endInstant, registrationStartInstant, registrationEndInstant, eventPoster, geolocationRequired);
         this.setCapacity(capacity);
