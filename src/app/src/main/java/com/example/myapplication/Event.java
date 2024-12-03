@@ -295,11 +295,15 @@ public class Event {
             throw new Exception("cannot register user, registration has ended");
         }
 
-         */
+
         if (Instant.now().isBefore(this.registrationStartInstant)) {
             throw new Exception("cannot register user, registration has not begun");
         }
+
+         */
         this.entrantPool.addEntrant(entrant, joinedFrom, status);
+
+
     }
 
     /**
