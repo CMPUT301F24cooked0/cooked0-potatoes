@@ -58,16 +58,17 @@ public class DownloadQRFragment extends Fragment {
         qrCodeImage = view.findViewById(R.id.qrCodeImage);
 
         try {
-            qrCodeImage.setImageBitmap(eventQRCode.getImage());
-            Toast.makeText(requireContext(), "QR Code Generated and Stored", Toast.LENGTH_SHORT).show(); // Notify the user that the QR code has been generated
+            qrCodeImage.setImageBitmap(eventQRCode.getImage()); // Set the QR code image in the ImageView
         } catch (WriterException e) {
             Toast.makeText(requireContext(), "Error generating QR code", Toast.LENGTH_SHORT).show();
         }
+        Toast.makeText(requireContext(), "QR Code Generated and Stored", Toast.LENGTH_SHORT).show(); // Notify the user that the QR code has been generated
 
         // Request permissions to access external storage
         ActivityCompat.requestPermissions(requireActivity(), new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         ActivityCompat.requestPermissions(requireActivity(), new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
 
+        // Set click listeners for the download and continue buttons
         downloadBtn.setOnClickListener(this::onClickDownload);
         continueBtn.setOnClickListener(this::onClickContinue);
 
@@ -96,9 +97,12 @@ public class DownloadQRFragment extends Fragment {
             e.printStackTrace();
             Toast.makeText(requireContext(), "Error downloading QR code", Toast.LENGTH_SHORT).show();
         }
+        Toast.makeText(requireContext(), "QR Code Downloaded", Toast.LENGTH_SHORT).show(); // Notify the user that the QR code has been downloaded
+
 
 
     }
+
     public void onClickContinue (View view) {
         // Navigate to the view events page
         Fragment fragment = new FacilityViewEventsFragment();

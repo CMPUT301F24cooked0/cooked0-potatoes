@@ -277,7 +277,7 @@
                     android:background="@drawable/edit_text_box"
                     android:backgroundTintMode="add"
                     android:drawableTint="#00865353"
-                    android:hint=" DD/MM/YYYY"
+                    android:hint=" DD/MM/YYYY HH:mm"
                     android:translationX="30dp"
                     android:translationY="40dp" />
 
@@ -303,7 +303,7 @@
                     android:background="@drawable/edit_text_box"
                     android:backgroundTintMode="add"
                     android:drawableTint="#00865353"
-                    android:hint=" DD/MM/YYYY"
+                    android:hint=" DD/MM/YYYY HH:mm"
                     android:translationX="30dp"
                     android:translationY="30dp" />
             </FrameLayout>
@@ -311,9 +311,9 @@
             <Button
                 android:id="@+id/editEventButton"
                 android:layout_width="200dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:backgroundTint="@color/submitButtonColor"
-                android:paddingHorizontal="65dp"
+                android:paddingHorizontal="0dp"
                 android:text="Save"
                 android:textAlignment="center"
                 android:textSize="15sp"

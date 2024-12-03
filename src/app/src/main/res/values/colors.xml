@@ -8,6 +8,7 @@
     <color name="inputFieldBackground">#F1EDF7</color>
     <!-- Text Colours -->
     <color name="eventDescriptionColour">#375476</color>
+    <color name="headingText">#454069</color>
     <!-- Notification Colours -->
     <color name="successNotificationColor">#66C397</color>
     <color name="failureNotificationColor">#E28040</color>
@@ -26,4 +27,7 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    <color name="lightYellow">#D5C957</color>
+    <color name="yellow">#F1BE1C</color>
+    <color name="colorPrimary">#FC0D00</color>
 </resources>

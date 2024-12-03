@@ -14,12 +14,15 @@
         android:theme="@style/Theme.MyApplication."
         tools:targetApi="31">
         <activity
-            android:name=".EditProfileActivity"
+            android:name=".ui.profile.EditProfileActivity"
             android:exported="false" />
 
         <activity
             android:name=".SignUpActivity"
             android:exported="false" />
+        <activity
+            android:name=".AdminHomePage"
+            android:exported="false"/>
         <activity
             android:name=".MainActivity"
             android:exported="false" />

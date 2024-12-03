@@ -10,11 +10,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.myapplication.DatabaseManager;
@@ -30,9 +32,7 @@ import java.util.Locale;
 /**
  * This class represents the facility creation page.
  */
-
 public class FacilityCreationFragment extends Fragment {
-    // TODO get user from bundle
     View view;
     EditText facilityNameInput;
     EditText facilityAddressInput;
@@ -88,18 +88,29 @@ public class FacilityCreationFragment extends Fragment {
 
         facilityOwner.setFacility(facility); // set facility for user
         Toast.makeText(this.requireContext(), "Facility created", Toast.LENGTH_SHORT).show();
-        // TODO add facility to database
-        // databaseManager.createFacility(facilityOwner, facility); // add facility to database and set facility document reference
 
-        // Navigate to view events
+        Boolean addedToDatabase = databaseManager.createFacility(facilityOwner, facility); // add facility to database and set facility document reference
+
+        // Check if facility was added to database
+        if (!addedToDatabase) {
+            Log.e("FacilityCreationFragment", "Unable to add facility to database");
+            return;
+        }
+
+        // Navigate to view events fragment
         FragmentManager fragmentManager = getParentFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, new FacilityViewEventsFragment())
                 .commit();
+
     }
 
+    /**
+     * Converts a string address to a LatLng object.
+     * @param address string address
+     * @return LatLng object
+     */
     public LatLng getAddress(String address) {
-        // converts string address given by user to LatLng
         Geocoder geocoder = new Geocoder(this.requireContext(), Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocationName(address, 1);
