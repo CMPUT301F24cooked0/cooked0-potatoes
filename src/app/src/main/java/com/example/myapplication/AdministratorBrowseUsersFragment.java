@@ -55,7 +55,6 @@ public class AdministratorBrowseUsersFragment extends Fragment {
             }
         });
 
-
         userList.setOnItemClickListener((adapterView, view1, position, id) -> {
             User selectedUser=userDataList.get(position);
             Intent intent=new Intent(requireContext(), AdminUserProfile.class);
