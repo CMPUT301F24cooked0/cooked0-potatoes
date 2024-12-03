@@ -21,6 +21,10 @@ import android.widget.TextView;
 import com.example.myapplication.Event;
 import com.example.myapplication.R;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 /**
  * This fragment allows an organizer to view, edit, and manage an event. It allows the organizer to
  * download a QR code that can be used to sign up for the event.
@@ -38,6 +42,7 @@ public class ManageEventFragment extends Fragment {
     private TextView editEventLink;
     private TextView eventCapacity;
     private ImageView eventPosterImageView;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,10 +68,18 @@ public class ManageEventFragment extends Fragment {
         eventPosterImageView = view.findViewById(R.id.event_poster_placeholder);
 
         // Set text for event details
-        // TODO update when new fields are added in event class
         eventPosterImageView.setImageBitmap(event.getEventPoster());
         eventName.setText(event.getName());
-        //eventDate.setText(event.getInstant() + "- end"); // TODO add start and end
+        eventDesc.setText(event.getDescription());
+        String eventStartStr = formatDateTime(event.getStartInstant());
+        String eventEndStr = formatDateTime(event.getEndInstant());
+        String eventRegStartStr = formatDateTime(event.getRegistrationStartInstant());
+        String eventRegEndStr = formatDateTime(event.getRegistrationEndInstant());
+        if (eventStartStr != null && eventEndStr != null && eventRegStartStr != null && eventRegEndStr != null) {
+            eventDate.setText(eventStartStr + " - " + eventEndStr);
+            registerStart.setText("Registration Opens: " + eventRegStartStr);
+            registerEnd.setText("Registration Ends: " + eventRegEndStr);
+        }
         downloadQRLink.setOnClickListener(this::onClickDownloadQR);
         editEventLink.setOnClickListener(this::onClickEditEvent);
         eventCapacity.setText("Spots Created -- " + event.getCapacity());
@@ -107,6 +120,20 @@ public class ManageEventFragment extends Fragment {
         // Navigate to edit event page
         FragmentManager fragmentManager = getParentFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.fragment_container, new EditEventFragment()).commit();
+    }
+
+    /**
+     * Formats an Instant into a string in "dd/MM/yyyy HH:mm" format.
+     *
+     * @param instant the Instant to format.
+     * @return the formatted string.
+     */
+    private String formatDateTime(Instant instant) {
+        try {
+            return instant.atZone(ZoneId.systemDefault()).toLocalDateTime().format(dateFormatter);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }
