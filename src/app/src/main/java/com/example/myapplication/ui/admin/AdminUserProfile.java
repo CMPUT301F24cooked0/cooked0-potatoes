@@ -4,6 +4,7 @@ import static com.example.myapplication.ProfilePictureGenerator.generateProfileI
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +20,7 @@ import com.example.myapplication.DatabaseManager;
 import com.example.myapplication.R;
 import com.example.myapplication.User;
 
-public class AdminUserProfile extends AppCompatActivity{
+public class AdminUserProfile extends AppCompatActivity {
     private String userUniqueID;
     private User selectedUser;
 
@@ -28,10 +29,6 @@ public class AdminUserProfile extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_user_profile_summary);
 
-
-        userUniqueID=getIntent().getStringExtra("uniqueID");
-        fetchUser(userUniqueID);
-
         ImageView profileImageView=findViewById(R.id.user_profile_image);
         TextView profileName=findViewById(R.id.user_profile_name);
         TextView profileEmail=findViewById(R.id.user_profile_email);
@@ -39,49 +36,58 @@ public class AdminUserProfile extends AppCompatActivity{
         Button removeButton=findViewById(R.id.remove_user_button);
         Button returnButton=findViewById(R.id.return_user_button);
 
+        String userUniqueID=getIntent().getStringExtra("uniqueID");
+        if (userUniqueID == null || userUniqueID.isEmpty()) {
+            Toast.makeText(this, "Invalid user ID", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        new Thread(()->{
+            DatabaseManager databaseManager=new DatabaseManager();
+            databaseManager.getUser(userUniqueID, user -> {
+                if(user!=null){
+                    selectedUser=user;
+                    runOnUiThread(this::updateUserData);
+                }
+                else{
+                    runOnUiThread(()->{
+                        Toast.makeText(this,"User Not Found",Toast.LENGTH_SHORT).show();
+                        finish();
+                    });
+                }
+            });
+        }).start();
+        returnButton.setOnClickListener(view -> finish());
+    }
+
+
+
+    private void updateUserData() {
+        if(selectedUser==null){
+            Toast.makeText(this,"User data unavailable",Toast.LENGTH_SHORT).show();
+        }
+        ImageView profileImageView = findViewById(R.id.user_profile_image);
+        TextView profileName = findViewById(R.id.user_profile_name);
+        TextView profileEmail = findViewById(R.id.user_profile_email);
+        TextView profileNumber = findViewById(R.id.user_profile_phonenumber);
+        Button removeButton = findViewById(R.id.remove_user_button);
+
         profileName.setText(selectedUser.getName());
         profileEmail.setText(selectedUser.getEmail());
         profileNumber.setText(String.valueOf(selectedUser.getPhoneNumber()));
 
-        if(selectedUser.getProfilePicture()!=null){
+        if (selectedUser.getProfilePicture() != null) {
             profileImageView.setImageBitmap(selectedUser.getProfilePicture());
-        }
-        else{
-            Bitmap generatedPicture=generateProfileImage(selectedUser.getName());
+        } else {
+            Bitmap generatedPicture = generateProfileImage(selectedUser.getName());
             profileImageView.setImageBitmap(generatedPicture);
         }
+
         profileImageView.setOnClickListener(view -> showImageDeletePage());
         removeButton.setOnClickListener(view -> showUserDeletePage());
-        returnButton.setOnClickListener(view -> finish());
-    }
 
-    /***
-     * Method to get user data from the database using getUser() from databasemanager
-     * @param uniqueID user uniqueID
-     */
-    private void fetchUser(String uniqueID){
-        if(userUniqueID!=null){
-            DatabaseManager databaseManager=new DatabaseManager();
-            databaseManager.getUser(uniqueID,user -> {
-                if(user!=null){
-                    selectedUser=user;
-                    runOnUiThread(()->{
-                        Toast.makeText(this,"Success",Toast.LENGTH_SHORT).show();
-                    });
-                }
-                else{
-                    runOnUiThread(()->{
-                        Toast.makeText(this,"Failed",Toast.LENGTH_SHORT).show();
-                    });
-                }
-            });
-            //getUser(uniqueID) and stores User Object as selectedUser
-        }
-        else{
-            Toast.makeText(this,"No Unique ID",Toast.LENGTH_SHORT).show();
-        }
     }
-
 
     /***
      * Method to show the dialog page to confirm or cancel the delete action

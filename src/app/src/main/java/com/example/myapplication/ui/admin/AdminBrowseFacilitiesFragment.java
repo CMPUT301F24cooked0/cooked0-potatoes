@@ -40,7 +40,7 @@ public class AdminBrowseFacilitiesFragment extends Fragment {
                     facilitiesDataList.clear();
                     facilitiesDataList.addAll(facilities);
                     facilityArrayAdapter.notifyDataSetChanged();
-                    Log.d("Fetch Facilities","Success");
+                    Log.d("Fetch Facilities","Facilities List Update:" + facilities.size() +"Facilities");
                 });
             }
             else {
