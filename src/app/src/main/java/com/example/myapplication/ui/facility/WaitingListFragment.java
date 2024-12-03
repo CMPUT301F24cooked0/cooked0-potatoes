@@ -42,10 +42,15 @@ public class WaitingListFragment extends Fragment {
 
       
         entrantPool = new EntrantPool();
+        // Get the list of entrants and convert to names
         ArrayList<User> waitingListUsers = entrantPool.getEntrants();
+        ArrayList<String> waitingListNames = new ArrayList<>();
+        for (User user : waitingListUsers) {
+            waitingListNames.add(user.getName()); // Assuming User class has a getName() method
+        }
 
-        // Set up Adapter for RecyclerView
-        adapter = new WaitingListAdapter(waitingListUsers);
+        // Pass the names to the adapter
+        adapter = new WaitingListAdapter(waitingListNames); // Pass the names, not the users
         recyclerView.setAdapter(adapter);
 
         // Set up Choose Participants button

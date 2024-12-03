@@ -77,7 +77,7 @@
                     android:layout_height="33dp"
                     android:layout_weight="1"
                     android:paddingStart="10dp"
-                    android:text="(null)" />
+                    android:text="(Not Null)" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/RegisterStartDisplayLayout"
