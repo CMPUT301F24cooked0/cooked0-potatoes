@@ -76,7 +76,6 @@ public class ViewEventDetailsFragment extends Fragment {
 
         eventName.setText(eventToView.getName()); // set event name
         // set event date
-        // TODO add register start and end dates, geolocation, description
         String eventStartStr = formatDateTime(eventToView.getStartInstant());
         String eventEndStr = formatDateTime(eventToView.getEndInstant());
         String eventRegStartStr = formatDateTime(eventToView.getRegistrationStartInstant());
@@ -111,7 +110,7 @@ public class ViewEventDetailsFragment extends Fragment {
      */
     public void onClickJoinWaitlist(View view) {
         if (user != null) {
-            LatLng userLocation = null; // user location
+            LatLng userLocation = new LatLng(1, 1); // user location
             Status userStatus = Status.none;
             EntrantStatus newEntrant = new EntrantStatus(user, userLocation, userStatus);
             databaseManager.createEntrantStatus(eventToView, newEntrant); // add entrant to database
