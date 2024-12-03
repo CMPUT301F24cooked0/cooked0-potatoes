@@ -70,7 +70,7 @@ public class EditEventFragment extends Fragment {
 
         // Pre-fill fields with existing event data
         eventNameEditText.setText(event.getName());
-        eventCapacityEditText.setText(event.getCapacity() != null ? String.valueOf(event.getCapacity()) : "");
+        eventCapacityEditText.setText(String.valueOf(event.getCapacity()));
         String formattedStartDateTime = formatDateTime(event.getStartInstant());
         String formattedEndDateTime = formatDateTime(event.getEndInstant());
         String formattedRegStartDateTime = formatDateTime(event.getRegistrationStartInstant());

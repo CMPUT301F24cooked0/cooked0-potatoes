@@ -230,6 +230,19 @@ public class CreateEventFragment extends Fragment {
                 return;
             }
 
+            event.setName(name);
+            event.setStartInstant(startInstant);
+            event.setEndInstant(endInstant);
+            event.setRegistrationStartInstant(regStartInstant);
+            event.setRegistrationEndInstant(regEndInstant);
+            event.setDescription(details);
+            event.setCapacity(capacity);
+            event.setEventPoster(eventPoster);
+            event.setGeolocationRequired(geoRequired);
+
+            // Add event to database
+            databaseManager.updateEvent(event);
+
             Toast.makeText(getActivity(), "Event created successfully!", Toast.LENGTH_SHORT).show();
             Log.d("CreateEventFragment", "Event created: " + event.getName());
 
