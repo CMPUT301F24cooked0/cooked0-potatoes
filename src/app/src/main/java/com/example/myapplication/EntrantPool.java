@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /*This class is responsible for adding and removing an entrant who has joined the waiting list
@@ -12,6 +13,9 @@ as well as check their status to see if they are in the database.
  */
 public class EntrantPool {
     private ArrayList<EntrantStatus> entrants;
+
+    private static EntrantPool instance;
+    private List<User> entrantList;
 
     /**
      * EntrantPool constructor, no users in the pool by default
@@ -75,6 +79,22 @@ public class EntrantPool {
         // joinedFrom can be null though
         EntrantStatus entrantStatus = new EntrantStatus(entrant, joinedFrom, status);
         this.entrants.add(entrantStatus);
+    }
+
+    // Singleton instance method
+    public static EntrantPool getInstance() {
+        if (instance == null) {
+            instance = new EntrantPool();
+        }
+        return instance;
+    }
+    private ArrayList<User> waitingList = new ArrayList<>(); // Ensure this list is initialized
+
+    public ArrayList<User> getWaitingList() {
+        if (waitingList == null) {
+            waitingList = new ArrayList<>(); // Initialize if it's null
+        }
+        return waitingList;
     }
 
     /**

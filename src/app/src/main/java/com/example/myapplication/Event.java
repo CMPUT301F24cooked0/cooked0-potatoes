@@ -290,9 +290,11 @@ public class Event {
      * @throws EntrantAlreadyInPool
      */
     public void addEntrant(User entrant, LatLng joinedFrom, Status status) throws Exception {
-        /*if (Instant.now().isAfter(this.registrationEndInstant)) {
+       /*
+        if (Instant.now().isAfter(this.registrationEndInstant)) {
             throw new Exception("cannot register user, registration has ended");
         }
+
         */
         if (Instant.now().isBefore(this.registrationStartInstant)) {
             throw new Exception("cannot register user, registration has not begun");

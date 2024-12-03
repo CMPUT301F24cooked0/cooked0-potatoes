@@ -1,11 +1,12 @@
 package com.example.myapplication.ui.facility;
 
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -15,8 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.EntrantPool;
-import com.example.myapplication.Event;
-import com.example.myapplication.MockEntrantPool;
 import com.example.myapplication.R;
 import com.example.myapplication.User;
 import com.example.myapplication.ui.facility.WaitingListAdapter;
@@ -28,7 +27,6 @@ public class WaitingListFragment extends Fragment {
     private RecyclerView recyclerView;
     private WaitingListAdapter adapter;
     private EntrantPool entrantPool;
-    private int eventCapacity;
     private ArrayList<User> invitedParticipants = new ArrayList<>();
 
     @Nullable
@@ -40,22 +38,23 @@ public class WaitingListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-      
-        entrantPool = new EntrantPool();
-        // Get the list of entrants and convert to names
-        ArrayList<User> waitingListUsers = entrantPool.getEntrants();
-        ArrayList<String> waitingListNames = new ArrayList<>();
-        for (User user : waitingListUsers) {
-            waitingListNames.add(user.getName()); // Assuming User class has a getName() method
+        entrantPool = EntrantPool.getInstance();
+        if (entrantPool == null) {
+            Log.e("WaitingListFragment", "EntrantPool is null");
+            return view;
         }
 
-        // Pass the names to the adapter
-        adapter = new WaitingListAdapter(waitingListNames); // Pass the names, not the users
-        recyclerView.setAdapter(adapter);
+        ArrayList<User> waitingListUsers = entrantPool.getWaitingList();
+        if (waitingListUsers == null) {
+            Log.e("WaitingListFragment", "Waiting list is null");
+            return view;
+        }
+
+        updateRecyclerView(waitingListUsers);
 
         // Set up Choose Participants button
         Button chooseParticipantsButton = view.findViewById(R.id.chooseParticipantsButton);
-        chooseParticipantsButton.setOnClickListener(v -> chooseParticipants(eventCapacity)); // Choose 2 participants for testing
+        chooseParticipantsButton.setOnClickListener(v -> chooseParticipants(2)); // Choose 2 participants for testing
 
         // Set up View Invited List button
         Button viewInvitedListButton = view.findViewById(R.id.invite_button);
@@ -64,9 +63,26 @@ public class WaitingListFragment extends Fragment {
         return view;
     }
 
+    private void updateRecyclerView(ArrayList<User> waitingListUsers) {
+        if (waitingListUsers == null || waitingListUsers.isEmpty()) {
+            Log.e("WaitingListFragment", "Waiting list is empty or null");
+            return;
+        }
+
+        ArrayList<String> waitingListNames = new ArrayList<>();
+        for (User user : waitingListUsers) {
+            waitingListNames.add(user.getName());
+        }
+
+        // Initialize and set the adapter
+        adapter = new WaitingListAdapter(waitingListNames);
+        recyclerView.setAdapter(adapter);
+    }
+
+
     // Method to choose participants (mock functionality for now)
     private void chooseParticipants(int howMany) {
-        // Simulate participant drawing using the mock data
+        // Simulate participant drawing using the EntrantPool's method
         ArrayList<User> drawnParticipants = entrantPool.drawEntrants(howMany);
         invitedParticipants.addAll(drawnParticipants);
     }
@@ -75,6 +91,9 @@ public class WaitingListFragment extends Fragment {
     private void navigateToInvitedList() {
         // Pass the invited participants list to the InvitedListFragment using arguments
         Bundle bundle = new Bundle();
+
+        // Assuming you're passing some data here, update this as needed
+        //bundle.putParcelableArrayList("invitedParticipants", invitedParticipants);
 
         NavController navController = NavHostFragment.findNavController(WaitingListFragment.this);
         navController.navigate(R.id.navigation_invited_list, bundle);

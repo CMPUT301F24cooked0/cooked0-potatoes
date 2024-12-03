@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.qr.generator)
     implementation(libs.play.services.maps)
     implementation(libs.firebase.common)
+    implementation("com.google.firebase:firebase-database:21.0.0")
     debugImplementation("androidx.fragment:fragment-testing:1.8.5")
     implementation("com.google.firebase:firebase-firestore:25.1.1")
     testImplementation(libs.junit)

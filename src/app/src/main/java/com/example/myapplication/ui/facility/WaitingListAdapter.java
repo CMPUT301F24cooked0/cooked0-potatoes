@@ -14,10 +14,10 @@ import java.util.ArrayList;
 
 public class WaitingListAdapter extends RecyclerView.Adapter<WaitingListAdapter.ViewHolder> {
 
-    private ArrayList<String> entrantNames;
+    private ArrayList<User> entrantList; // Use User objects instead of strings for full data
 
-    public WaitingListAdapter(ArrayList<String> entrantNames) {
-        this.entrantNames = entrantNames;
+    public WaitingListAdapter(ArrayList<String> entrantList) {
+        this.entrantList = entrantList != null ? entrantList : new ArrayList<>(); // Avoid null lists
     }
 
     @NonNull
@@ -29,13 +29,13 @@ public class WaitingListAdapter extends RecyclerView.Adapter<WaitingListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String name = entrantNames.get(position);
-        holder.nameTextView.setText(name); // Set the entrant's name
+        User user = entrantList.get(position);
+        holder.nameTextView.setText(user.getName()); // Set the entrant's name
     }
 
     @Override
     public int getItemCount() {
-        return entrantNames.size();
+        return entrantList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -47,4 +47,3 @@ public class WaitingListAdapter extends RecyclerView.Adapter<WaitingListAdapter.
         }
     }
 }
-
