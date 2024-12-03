@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.admin;
+package com.example.myapplication.ui.admin.facilities;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

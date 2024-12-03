@@ -40,7 +40,7 @@ public class ProfileFragment extends Fragment {
             if (user != null) {
                 binding.profileName.setText(user.getName());
                 binding.profileEmail.setText(user.getEmail());
-                binding.profilePhone.setText(user.getPhoneNumber() != null ? user.getPhoneNumber().toString() : "N/A");
+                binding.profilePhone.setText(user.getPhoneNumber() != null ? user.getPhoneNumber().toString() : "");
                 binding.profilePicture.setImageBitmap(user.getProfilePicture());
                 if (user.isAdmin()) {
                     binding.adminButton.setVisibility(View.VISIBLE);

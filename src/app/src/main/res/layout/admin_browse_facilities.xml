@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="15dp">
 
     <TextView
-        android:id="@+id/manage_facilities_title"
+        android:id="@+id/admin_browse_facilities_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Manage_Facilities"
+        android:text="Manage Facilities"
         android:textSize="30sp"
-        android:textColor="#5A5B87"
+        android:textColor="@color/headingText"
         android:gravity="center"/>
     <ListView
-        android:id="@+id/facilities_list"
+        android:id="@+id/admin_facility_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </LinearLayout>

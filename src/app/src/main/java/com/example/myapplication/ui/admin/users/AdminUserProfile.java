@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.admin;
+package com.example.myapplication.ui.admin.users;
 
 import static com.example.myapplication.ProfilePictureGenerator.generateProfileImage;
 

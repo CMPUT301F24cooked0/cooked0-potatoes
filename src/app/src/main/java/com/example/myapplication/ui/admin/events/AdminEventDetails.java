@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.admin;
+package com.example.myapplication.ui.admin.events;
 
 import android.app.AlertDialog;
 import android.os.Bundle;

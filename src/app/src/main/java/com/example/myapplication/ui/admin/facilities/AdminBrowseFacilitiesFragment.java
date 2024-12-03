@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.admin;
+package com.example.myapplication.ui.admin.facilities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,22 +17,34 @@ import com.example.myapplication.DatabaseManager;
 import com.example.myapplication.Facility;
 import com.example.myapplication.FacilityArrayAdapter;
 import com.example.myapplication.R;
+import com.example.myapplication.databinding.AdminBrowseFacilitiesBinding;
 
 import java.util.ArrayList;
 
 public class AdminBrowseFacilitiesFragment extends Fragment {
-    private ListView facilitiesList;
+
+
+    private AdminBrowseFacilitiesBinding binding;
     private ArrayList<Facility> facilitiesDataList;
     private FacilityArrayAdapter facilityArrayAdapter;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
-        View view=inflater.inflate(R.layout.admin_browse_facilities,container,false);
-        facilitiesList=view.findViewById(R.id.facilities_list);
-        facilitiesDataList=new ArrayList<>();
-        facilityArrayAdapter=new FacilityArrayAdapter(requireContext(),facilitiesDataList);
-        facilitiesList.setAdapter(facilityArrayAdapter);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Inflate layout using View Binding
+        binding = AdminBrowseFacilitiesBinding.inflate(inflater, container, false);
+
+        facilitiesDataList = new ArrayList<>();
+        facilityArrayAdapter = new FacilityArrayAdapter(requireContext(), facilitiesDataList);
+        binding.adminFacilityList.setAdapter(facilityArrayAdapter);
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         DatabaseManager databaseManager=new DatabaseManager();
         databaseManager.getAllFacilities(facilities -> {
             if(facilities!=null && !facilities.isEmpty()){
@@ -51,12 +63,17 @@ public class AdminBrowseFacilitiesFragment extends Fragment {
             }
         });
 
-        facilitiesList.setOnItemClickListener((parent,view1,position,id)->{
-            Facility selectedFacility=facilitiesDataList.get(position);
-            Intent intent=new Intent(getContext(), AdminFacilityDetails.class);
-            intent.putExtra("facilityRef",selectedFacility.getFacilityReference().getPath());
+        binding.adminFacilityList.setOnItemClickListener((parent,view1,position,id)->{
+            Facility selectedFacility = facilitiesDataList.get(position);
+            Intent intent = new Intent(getContext(), AdminFacilityDetails.class);
+            intent.putExtra("facilityRef", selectedFacility.getFacilityReference().getPath());
             startActivity(intent);
         });
-        return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

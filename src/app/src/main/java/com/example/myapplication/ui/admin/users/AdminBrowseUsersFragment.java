@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.admin;
+package com.example.myapplication.ui.admin.users;
 
 
 import android.content.Intent;
@@ -19,22 +19,36 @@ import com.example.myapplication.DatabaseManager;
 import com.example.myapplication.R;
 import com.example.myapplication.User;
 import com.example.myapplication.UserArrayAdapter;
+import com.example.myapplication.databinding.AdminBrowseUsersBinding;
 
 import java.util.ArrayList;
 
 
 
 public class AdminBrowseUsersFragment extends Fragment {
-    ListView userList;
-    ArrayList<User> userDataList;
-    ArrayAdapter<User> userArrayAdapter;
 
-    //@Nullable
+    private AdminBrowseUsersBinding binding;
+    private ArrayList<User> userDataList;
+    private ArrayAdapter<User> userArrayAdapter;
+
+    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.admin_browse_users, container, false);
+        // Inflate layout using View Binding
+        binding = AdminBrowseUsersBinding.inflate(inflater, container, false);
 
-        userList.setAdapter(userArrayAdapter);
+        userDataList = new ArrayList<>();
+        userArrayAdapter = new UserArrayAdapter(requireContext(), userDataList);
+        binding.adminUserList.setAdapter(userArrayAdapter);
+
+        return binding.getRoot();
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         DatabaseManager databaseManager=new DatabaseManager();
         Log.d("test","test");
         databaseManager.getAllUsers(users -> {
@@ -57,17 +71,18 @@ public class AdminBrowseUsersFragment extends Fragment {
         });
 
 
-        userList.setOnItemClickListener((adapterView, view1, position, id) -> {
-            User selectedUser=userDataList.get(position);
-            Intent intent=new Intent(requireContext(), AdminUserProfile.class);
-            intent.putExtra("uniqueID",selectedUser.getUniqueID());
+        binding.adminUserList.setOnItemClickListener((adapterView, view1, position, id) -> {
+            User selectedUser = userDataList.get(position);
+            Intent intent = new Intent(requireContext(), AdminUserProfile.class);
+            intent.putExtra("uniqueID", selectedUser.getUniqueID());
             startActivity(intent);
         });
-        return view;
     }
 
-
-
-
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }
 
