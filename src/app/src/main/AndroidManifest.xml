@@ -24,6 +24,12 @@
             android:name=".ui.admin.AdminActivity"
             android:exported="false"/>
         <activity
+            android:name=".AdminFacilityDetails"
+            android:exported="false"/>
+        <activity
+            android:name=".AdminUserProfile"
+            android:exported="false"/>
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity

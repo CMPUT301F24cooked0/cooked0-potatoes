@@ -28,13 +28,14 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         }
         ImageView eventPoster=convertView.findViewById(R.id.event_poster);
         TextView eventName=convertView.findViewById(R.id.event_name);
-        //TextView eventDescription=convertView.findViewById(R.id.event_description);
+        TextView eventDescription=convertView.findViewById(R.id.event_description);
 
         if(event.getEventPoster()!=null){
             eventPoster.setImageBitmap(event.getEventPoster());
         }
         eventName.setText(event.getName());
-        //eventDescription.setText(event.getDescription()); TODO add a description in the event class or show date and capacity
+        eventDescription.setText(event.getDescription());
+
         return convertView;
     }
 

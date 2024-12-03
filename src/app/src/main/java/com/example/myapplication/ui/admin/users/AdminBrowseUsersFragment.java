@@ -70,7 +70,6 @@ public class AdminBrowseUsersFragment extends Fragment {
             }
         });
 
-
         binding.adminUserList.setOnItemClickListener((adapterView, view1, position, id) -> {
             User selectedUser = userDataList.get(position);
             Intent intent = new Intent(requireContext(), AdminUserProfile.class);

@@ -8,6 +8,7 @@ import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,12 +30,9 @@ public class AdminUserProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_user_profile_summary);
 
-        ImageView profileImageView=findViewById(R.id.user_profile_image);
-        TextView profileName=findViewById(R.id.user_profile_name);
-        TextView profileEmail=findViewById(R.id.user_profile_email);
-        TextView profileNumber=findViewById(R.id.user_profile_phonenumber);
-        Button removeButton=findViewById(R.id.remove_user_button);
+
         Button returnButton=findViewById(R.id.return_user_button);
+        ImageButton removeImageButton=findViewById(R.id.delete_poster_button);
 
         String userUniqueID=getIntent().getStringExtra("uniqueID");
         if (userUniqueID == null || userUniqueID.isEmpty()) {
@@ -58,6 +56,7 @@ public class AdminUserProfile extends AppCompatActivity {
                 }
             });
         }).start();
+        removeImageButton.setOnClickListener(view->showImageDeletePage());
         returnButton.setOnClickListener(view -> finish());
     }
 
@@ -72,6 +71,7 @@ public class AdminUserProfile extends AppCompatActivity {
         TextView profileEmail = findViewById(R.id.user_profile_email);
         TextView profileNumber = findViewById(R.id.user_profile_phonenumber);
         Button removeButton = findViewById(R.id.remove_user_button);
+
 
         profileName.setText(selectedUser.getName());
         profileEmail.setText(selectedUser.getEmail());
@@ -152,6 +152,9 @@ public class AdminUserProfile extends AppCompatActivity {
             }
             Bitmap generatedImage=generateProfileImage(selectedUser.getName());
             selectedUser.setProfilePicture(generatedImage);
+            DatabaseManager databaseManager=new DatabaseManager();
+            databaseManager.updateUser(selectedUser);
+            dialog.dismiss();
 
         });
         dialog.show();
