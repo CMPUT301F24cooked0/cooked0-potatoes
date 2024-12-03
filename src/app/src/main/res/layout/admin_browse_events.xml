@@ -4,18 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="15dp">
+    android:padding="15dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        android:id="@+id/admin_browse_facilities_title"
+        android:id="@+id/admin_browse_events_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Manage Facilities"
+        android:text="Manage Events"
         android:textSize="30sp"
         android:textColor="@color/headingText"
-        android:gravity="center"/>
+        android:gravity="center" />
     <ListView
-        android:id="@+id/admin_facility_list"
+        android:id="@+id/admin_event_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 </LinearLayout>

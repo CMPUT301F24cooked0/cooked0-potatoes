@@ -1,7 +1,6 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.admin.events;
 
 import android.app.AlertDialog;
-import android.app.AppComponentFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,19 +13,23 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.DatabaseManager;
+import com.example.myapplication.Event;
+import com.example.myapplication.R;
+
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class AdministratorEventDetails extends AppCompatActivity {
+public class AdminEventDetails extends AppCompatActivity {
     private Event selectedEvent;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withLocale(Locale.getDefault());
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.administrator_event_details);
+        setContentView(R.layout.admin_event_details);
 
         ImageView eventPoster=findViewById(R.id.event_detail_poster);
         TextView eventName=findViewById(R.id.event_detail_name);

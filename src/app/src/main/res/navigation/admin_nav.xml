@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/admin_nav"
+    app:startDestination="@id/adminHomeFragment">
+
+    <fragment
+        android:id="@+id/adminBrowseEventsFragment"
+        android:name="com.example.myapplication.ui.admin.events.AdminBrowseEventsFragment"
+        android:label="AdminBrowseEventsFragment" >
+        <action
+            android:id="@+id/action_adminBrowseEventsFragment_to_adminHomeFragment"
+            app:destination="@id/adminHomeFragment" />
+        <action
+            android:id="@+id/action_adminBrowseEventsFragment_to_adminEventDetails"
+            app:destination="@id/adminEventDetails" />
+    </fragment>
+    <fragment
+        android:id="@+id/adminBrowseFacilitiesFragment"
+        android:name="com.example.myapplication.ui.admin.facilities.AdminBrowseFacilitiesFragment"
+        android:label="AdminBrowseFacilitiesFragment" >
+        <action
+            android:id="@+id/action_adminBrowseFacilitiesFragment_to_adminHomeFragment"
+            app:destination="@id/adminHomeFragment" />
+        <action
+            android:id="@+id/action_adminBrowseFacilitiesFragment_to_adminFacilityDetails"
+            app:destination="@id/adminFacilityDetails" />
+    </fragment>
+    <fragment
+        android:id="@+id/adminBrowseUsersFragment"
+        android:name="com.example.myapplication.ui.admin.users.AdminBrowseUsersFragment"
+        android:label="AdminBrowseUsersFragment" >
+        <action
+            android:id="@+id/action_adminBrowseUsersFragment_to_adminHomeFragment"
+            app:destination="@id/adminHomeFragment" />
+        <action
+            android:id="@+id/action_adminBrowseUsersFragment_to_adminUserProfile"
+            app:destination="@id/adminUserProfile" />
+        <action
+            android:id="@+id/action_adminBrowseUsersFragment_to_adminHomeFragment2"
+            app:destination="@id/adminHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/adminHomeFragment"
+        android:name="com.example.myapplication.ui.admin.AdminHomeFragment"
+        android:label="AdminHomeFragment" >
+        <action
+            android:id="@+id/action_adminHomeFragment_to_adminBrowseFacilitiesFragment"
+            app:destination="@id/adminBrowseFacilitiesFragment" />
+        <action
+            android:id="@+id/action_adminHomeFragment_to_adminBrowseUsersFragment"
+            app:destination="@id/adminBrowseUsersFragment" />
+        <action
+            android:id="@+id/action_adminHomeFragment_to_adminBrowseEventsFragment"
+            app:destination="@id/adminBrowseEventsFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/adminEventDetails"
+        android:name="com.example.myapplication.ui.admin.events.AdminEventDetails"
+        android:label="AdminEventDetails" />
+    <activity
+        android:id="@+id/adminFacilityDetails"
+        android:name="com.example.myapplication.ui.admin.facilities.AdminFacilityDetails"
+        android:label="AdminFacilityDetails" />
+    <activity
+        android:id="@+id/adminUserProfile"
+        android:name="com.example.myapplication.ui.admin.users.AdminUserProfile"
+        android:label="AdminUserProfile" />
+</navigation>

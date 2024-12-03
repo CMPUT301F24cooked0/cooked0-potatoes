@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.admin.facilities;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +10,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapplication.DatabaseManager;
+import com.example.myapplication.Facility;
+import com.example.myapplication.R;
 
 public class AdminFacilityDetails extends AppCompatActivity {
     private Facility selectedFacility;
