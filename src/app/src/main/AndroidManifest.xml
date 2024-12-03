@@ -27,9 +27,6 @@
             android:name=".ui.admin.facilities.AdminFacilityDetails"
             android:exported="false"/>
         <activity
-            android:name=".ui.admin.events.AdminEventDetails"
-            android:exported="false"/>
-        <activity
             android:name=".ui.admin.users.AdminUserProfile"
             android:exported="false"/>
         <activity
