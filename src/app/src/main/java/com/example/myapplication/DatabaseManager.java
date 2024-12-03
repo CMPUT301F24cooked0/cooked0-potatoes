@@ -3,6 +3,7 @@ package com.example.myapplication;
 import static com.example.myapplication.BitmapConverter.StringToBitmap;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
@@ -392,6 +393,7 @@ public class DatabaseManager {
         thread.start();
     }
 
+
     public Facility fetchFacilityByRefPath(String facilityRefPath){
         DocumentReference facilityRef=this.db.document(facilityRefPath);
 
@@ -712,7 +714,7 @@ public class DatabaseManager {
                 throw new EventDoesNotExist("this event was missing the name field");
             }
             String name = (String) nameTemp;
-            
+
             Object descriptionTemp = eventData.get(DatabaseEventFieldNames.description.name());
             String description = (String) descriptionTemp;
 
@@ -785,6 +787,7 @@ public class DatabaseManager {
                 try {
                     event.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
                 } catch (Exception e) {
+                    Log.e("Entrant Error","Could not add");
                     throw new RuntimeException(e);
                 }
             }

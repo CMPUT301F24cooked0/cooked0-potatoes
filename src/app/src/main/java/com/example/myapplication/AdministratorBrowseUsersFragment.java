@@ -17,9 +17,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import android.util.Base64;
-
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 
@@ -29,23 +26,25 @@ public class AdministratorBrowseUsersFragment extends Fragment {
     ArrayList<User> userDataList;
     ArrayAdapter<User> userArrayAdapter;
 
-    @Nullable
+    //@Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.administrator_browse_users, container, false);
-
         userList = view.findViewById(R.id.administrator_browse_users_recyclerview);
         userDataList = new ArrayList<>();
         userArrayAdapter = new UserArrayAdapter(requireContext(), userDataList);
         userList.setAdapter(userArrayAdapter);
         DatabaseManager databaseManager=new DatabaseManager();
+        Log.d("test","test");
         databaseManager.getAllUsers(users -> {
+            Log.d("test","before test");
             if(users!=null && !users.isEmpty()){
+                Log.d("test","after test");
                 requireActivity().runOnUiThread(()->{
                     userDataList.clear();
                     userDataList.addAll(users);
                     userArrayAdapter.notifyDataSetChanged();
-                    Log.d("Fetch Users","Success");
+                    Log.d("Fetch Users","User List Updated:" + users.size()+"users");
                 });
             }
             else{
@@ -55,6 +54,8 @@ public class AdministratorBrowseUsersFragment extends Fragment {
                 });
             }
         });
+
+
         userList.setOnItemClickListener((adapterView, view1, position, id) -> {
             User selectedUser=userDataList.get(position);
             Intent intent=new Intent(requireContext(), AdminUserProfile.class);
