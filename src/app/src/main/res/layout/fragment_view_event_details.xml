@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -143,6 +144,44 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:backgroundTint="@color/acceptButtonColor"
-        android:text="Join Waiting List" />
+        android:text="Join Waiting List"
+        android:visibility="visible"
+        app:cornerRadius="20dp" />
+
+    <Button
+        android:id="@+id/leave_waitlist_button"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:backgroundTint="@color/declineButtonColor"
+        android:text="Leave Waiting List"
+        android:visibility="gone"
+        app:cornerRadius="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/accept_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/acceptButtonColor"
+            android:text="Accept"
+            android:visibility="gone"
+            app:cornerRadius="20dp" />
+
+        <Button
+            android:id="@+id/decline_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/declineButtonColor"
+            android:text="Decline"
+            android:visibility="gone"
+            app:cornerRadius="20dp" />
+    </LinearLayout>
 
 </LinearLayout>

@@ -3,6 +3,7 @@ package com.example.myapplication;
 import static com.example.myapplication.BitmapConverter.StringToBitmap;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
@@ -899,6 +900,8 @@ public class DatabaseManager {
 
         Object nameTemp = singleEventData.get(DatabaseEventFieldNames.name.name());
         if (nameTemp == null) {
+            //throw new EventDoesNotExist("this event was missing the name field");
+            Log.e("Event", "this event was missing the name field");
             return null;
         }
         String name = (String) nameTemp;
@@ -909,6 +912,7 @@ public class DatabaseManager {
         Object geolocationRequiredTemp = singleEventData.get(DatabaseEventFieldNames.geolocationRequired.name());
         if (geolocationRequiredTemp == null) {
             //throw new EventDoesNotExist("this event was missing the geolocationRequired field");
+            Log.e("Event", "this event was missing the geolocationRequired field");
             return null;
         }
         Boolean geolocationRequired = (Boolean) geolocationRequiredTemp;
@@ -916,6 +920,7 @@ public class DatabaseManager {
         Object startInstantTemp = singleEventData.get(DatabaseEventFieldNames.startInstant.name());
         if (startInstantTemp == null) {
             //throw new EventDoesNotExist("this event was missing the startInstant field");
+            Log.e("Event", "this event was missing the startInstant field");
             return null;
         }
         Timestamp startInstantTimestamp = (Timestamp) startInstantTemp;
@@ -924,6 +929,7 @@ public class DatabaseManager {
         Object endInstantTemp = singleEventData.get(DatabaseEventFieldNames.endInstant.name());
         if (endInstantTemp == null) {
             //throw new EventDoesNotExist("this event was missing the endInstant field");
+            Log.e("Event", "this event was missing the endInstant field");
             return null;
         }
         Timestamp endInstantTimestamp = (Timestamp) endInstantTemp;
@@ -932,6 +938,7 @@ public class DatabaseManager {
         Object registrationStartInstantTemp = singleEventData.get(DatabaseEventFieldNames.registrationStartInstant.name());
         if (registrationStartInstantTemp == null) {
             //throw new EventDoesNotExist("this event was missing the registrationStartInstant field");
+            Log.e("Event", "this event was missing the registrationStartInstant field");
             return null;
         }
         Timestamp registrationStartInstantTimestamp = (Timestamp) registrationStartInstantTemp;
@@ -940,6 +947,7 @@ public class DatabaseManager {
         Object registrationEndInstantTemp = singleEventData.get(DatabaseEventFieldNames.registrationEndInstant.name());
         if (registrationEndInstantTemp == null) {
             //throw new EventDoesNotExist("this event was missing the registrationEndInstant field");
+            Log.e("Event", "this event was missing the registrationEndInstant field");
             return null;
         }
         Timestamp registrationEndInstantTimestamp = (Timestamp) registrationEndInstantTemp;
@@ -947,6 +955,7 @@ public class DatabaseManager {
 
         Object eventPosterTemp = singleEventData.get(DatabaseEventFieldNames.eventPoster.name());
         if (eventPosterTemp == null) {
+            Log.e("Event", "this event was missing the eventPoster field");
             return null;
         }
         String encodedEventPoster = (String) eventPosterTemp;
@@ -970,7 +979,9 @@ public class DatabaseManager {
             try {
                 event.addEntrant(entrantStatus.getEntrant(), entrantStatus.getJoinedFrom(), entrantStatus.getStatus());
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                // throw new RuntimeException(e);
+                Log.e("Event", "Error adding entrant to event: " + e.getMessage());
+                return null;
             }
         }
 

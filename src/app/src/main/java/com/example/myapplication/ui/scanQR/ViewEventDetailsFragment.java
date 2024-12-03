@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,10 @@ public class ViewEventDetailsFragment extends Fragment {
     TextView registerEnd;
     TextView geolocation;
     Button joinWaitlistBtn;
+    Button leaveWaitlistBtn;
+    Button acceptBtn;
+    Button declineBtn;
+    EntrantStatus userEntrant;
     ScanQRViewModel scanQRViewModel;
     DatabaseManager databaseManager;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withLocale(Locale.getDefault());
@@ -70,9 +75,13 @@ public class ViewEventDetailsFragment extends Fragment {
         registerEnd = view.findViewById(R.id.register_end_placeholder);
         geolocation = view.findViewById(R.id.download_QR_link);
         joinWaitlistBtn = view.findViewById(R.id.join_waitlist_button);
+        leaveWaitlistBtn = view.findViewById(R.id.leave_waitlist_button);
+        acceptBtn = view.findViewById(R.id.accept_button);
+        declineBtn = view.findViewById(R.id.decline_button);
         eventToView = scanQRViewModel.getEventToView();
         user = scanQRViewModel.getUser();
         databaseManager = new DatabaseManager();
+        userEntrant = null;
 
         eventName.setText(eventToView.getName()); // set event name
         // set event date
@@ -98,10 +107,47 @@ public class ViewEventDetailsFragment extends Fragment {
             Toast.makeText(requireActivity(), "Warning: Geolocation required to join event", Toast.LENGTH_SHORT).show();
         }
 
-
+        // Set onclick listeners for buttons
         joinWaitlistBtn.setOnClickListener(this::onClickJoinWaitlist);
-        // TODO add button to leave?
+        leaveWaitlistBtn.setOnClickListener(this::onClickLeaveWaitlist);
+        acceptBtn.setOnClickListener(this::onClickAccept);
+        declineBtn.setOnClickListener(this::onClickDecline);
 
+
+        try {
+            for (EntrantStatus entrant : eventToView.getEntrantStatuses()) {
+                if (entrant.getEntrant().getUniqueID().equals(user.getUniqueID())) {
+                    if (entrant.getStatus() == Status.none) {
+                        userEntrant = entrant;
+                        leaveWaitlistBtn.setVisibility(View.VISIBLE);
+                        break;
+                    } else if (entrant.getStatus() == Status.chosenAndPending) {
+                        userEntrant = entrant;
+                        acceptBtn.setVisibility(View.VISIBLE);
+                        declineBtn.setVisibility(View.VISIBLE);
+                        break;
+                    } else if (entrant.getStatus() == Status.chosenAndAccepted) {
+                        userEntrant = entrant;
+                        Toast.makeText(requireActivity(), "You have been accepted to this event", Toast.LENGTH_SHORT).show();
+                        break;
+                    } else if (entrant.getStatus() == Status.notChosen) {
+                        userEntrant = entrant;
+                        Toast.makeText(requireActivity(), "You were not chosen for this event. You may opt in again", Toast.LENGTH_SHORT).show();
+                        joinWaitlistBtn.setVisibility(View.VISIBLE);
+                        break;
+                    } else if (entrant.getStatus() == Status.chosenAndDeclined) {
+                        userEntrant = entrant;
+                        Toast.makeText(requireActivity(), "You declined to join this event", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e("ViewEventDetailsFragment", "Error getting entrant statuses", e);
+        }
+        if (userEntrant == null) {
+            joinWaitlistBtn.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -109,12 +155,63 @@ public class ViewEventDetailsFragment extends Fragment {
      * @param view
      */
     public void onClickJoinWaitlist(View view) {
-        if (user != null) {
+        if (userEntrant == null) {
             LatLng userLocation = new LatLng(1, 1); // user location
             Status userStatus = Status.none;
-            EntrantStatus newEntrant = new EntrantStatus(user, userLocation, userStatus);
-            databaseManager.createEntrantStatus(eventToView, newEntrant); // add entrant to database
+            userEntrant = new EntrantStatus(user, userLocation, userStatus);
+            databaseManager.createEntrantStatus(eventToView, userEntrant); // add entrant to database
+            Toast.makeText(requireActivity(), "You have been added to the waitlist", Toast.LENGTH_SHORT).show();
+            joinWaitlistBtn.setVisibility(View.GONE);
+        } else if (userEntrant.getStatus() == Status.notChosen) {
+            userEntrant.setStatus(Status.none);
+            databaseManager.updateEntrantStatus(userEntrant);
         }
+        joinWaitlistBtn.setVisibility(View.GONE);
+    }
+
+    /**
+     * Called when the user clicks the leave waitlist button.
+     * @param view
+     */
+    public void onClickLeaveWaitlist(View view) {
+        if (userEntrant != null) {
+            databaseManager.deleteEntrantStatus(userEntrant);
+            Boolean isDeleted = databaseManager.deleteEntrantStatus(userEntrant);
+            if (isDeleted) {
+                Toast.makeText(requireActivity(), "You have been removed from the waitlist", Toast.LENGTH_SHORT).show();
+            }
+            leaveWaitlistBtn.setVisibility(View.GONE);
+        }
+        leaveWaitlistBtn.setVisibility(View.GONE);
+    }
+
+    /**
+     * Called when the user clicks the accept button.
+     * @param view
+     */
+    public void onClickAccept(View view) {
+        if (userEntrant != null) {
+            userEntrant.setStatus(Status.chosenAndAccepted);
+            databaseManager.updateEntrantStatus(userEntrant);
+        }
+        Toast.makeText(requireActivity(), "You have accepted joining this event", Toast.LENGTH_SHORT).show();
+        acceptBtn.setVisibility(View.GONE);
+        declineBtn.setVisibility(View.GONE);
+
+    }
+    /**
+     * Called when the user clicks the decline button.
+     * @param view
+     */
+    public void onClickDecline(View view) {
+        if (userEntrant != null) {
+            userEntrant.setStatus(Status.chosenAndDeclined);
+            databaseManager.updateEntrantStatus(userEntrant);
+        }
+        Toast.makeText(requireActivity(), "You have declined joining this event", Toast.LENGTH_SHORT).show();
+        acceptBtn.setVisibility(View.GONE);
+        declineBtn.setVisibility(View.GONE);
+
     }
 
     /**
