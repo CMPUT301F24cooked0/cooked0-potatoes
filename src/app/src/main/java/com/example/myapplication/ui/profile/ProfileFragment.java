@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.AdminHomePage;
+import com.example.myapplication.ui.admin.AdminActivity;
 import com.example.myapplication.databinding.ProfileScreenFragmentBinding;
 
 public class ProfileFragment extends Fragment {
@@ -56,7 +56,7 @@ public class ProfileFragment extends Fragment {
 
 
         binding.adminButton.setOnClickListener(editButtonView -> {
-            Intent intent = new Intent(getActivity(), AdminHomePage.class);
+            Intent intent = new Intent(getActivity(), AdminActivity.class);
             startActivity(intent);
         });
     }

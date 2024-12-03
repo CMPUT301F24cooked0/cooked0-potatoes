@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -14,9 +13,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.DatabaseManager;
+import com.example.myapplication.Facility;
+import com.example.myapplication.FacilityArrayAdapter;
+import com.example.myapplication.R;
+
 import java.util.ArrayList;
 
-public class AdministratorBrowseFacilitiesFragment extends Fragment {
+public class AdminBrowseFacilitiesFragment extends Fragment {
     private ListView facilitiesList;
     private ArrayList<Facility> facilitiesDataList;
     private FacilityArrayAdapter facilityArrayAdapter;
@@ -49,7 +53,7 @@ public class AdministratorBrowseFacilitiesFragment extends Fragment {
 
         facilitiesList.setOnItemClickListener((parent,view1,position,id)->{
             Facility selectedFacility=facilitiesDataList.get(position);
-            Intent intent=new Intent(getContext(),AdminFacilityDetails.class);
+            Intent intent=new Intent(getContext(), AdminFacilityDetails.class);
             intent.putExtra("facilityRef",selectedFacility.getFacilityReference().getPath());
             startActivity(intent);
         });

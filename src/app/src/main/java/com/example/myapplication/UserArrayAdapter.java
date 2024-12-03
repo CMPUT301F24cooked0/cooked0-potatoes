@@ -23,7 +23,7 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         if(convertView==null){
-            convertView= LayoutInflater.from(context).inflate(R.layout.user_profile_summary,parent,false);
+            convertView= LayoutInflater.from(context).inflate(R.layout.admin_user_profile_summary,parent,false);
         }
         User currentUser=users.get(position);
         TextView userName=convertView.findViewById(R.id.user_profile_name);

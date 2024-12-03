@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,10 +13,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.DatabaseManager;
+import com.example.myapplication.Event;
+import com.example.myapplication.EventArrayAdapter;
+import com.example.myapplication.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdministratorBrowseEventsFragment extends Fragment {
+public class AdminBrowseEventsFragment extends Fragment {
     private ListView eventListView;
     private List<Event> eventList;
     private EventArrayAdapter eventArrayAdapter;
@@ -24,7 +29,7 @@ public class AdministratorBrowseEventsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
-        View view=inflater.inflate(R.layout.administrator_browse_events,container,false);
+        View view=inflater.inflate(R.layout.admin_browse_events,container,false);
         eventListView=view.findViewById(R.id.administrator_event_list);
         eventList=new ArrayList<>();
         eventArrayAdapter=new EventArrayAdapter(requireContext(),eventList);
@@ -50,7 +55,7 @@ public class AdministratorBrowseEventsFragment extends Fragment {
         eventListView.setOnItemClickListener((parent,view1,position,id)->{
             Event selectedEvent=eventList.get(position);
             String eventRefPath=selectedEvent.getEventReference().getPath();
-            Intent intent=new Intent(getContext(),AdministratorEventDetails.class);
+            Intent intent=new Intent(getContext(), AdminEventDetails.class);
             intent.putExtra("eventRef",eventRefPath);
             startActivity(intent);
         });

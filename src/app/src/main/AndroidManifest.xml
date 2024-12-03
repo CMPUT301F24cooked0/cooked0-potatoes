@@ -21,7 +21,7 @@
             android:name=".SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".AdminHomePage"
+            android:name=".ui.admin.AdminActivity"
             android:exported="false"/>
         <activity
             android:name=".MainActivity"
@@ -35,7 +35,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AdministratorEventDetails"/>
+        <activity android:name=".ui.admin.AdminEventDetails"/>
         <activity android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
